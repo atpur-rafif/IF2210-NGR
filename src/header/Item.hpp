@@ -5,12 +5,19 @@
 using namespace std;
 
 class Item {
-private:
+protected:
 	int price;
+	int id;
+	string code;
+	string name;
+	virtual void readAttributeFromStream(istream &inputStream) = 0;
 
 public:
-	Item(int price);
 	int getPrice();
+	int getId();
+	string getCode();
+	string getName();
+	friend istream &operator>>(istream &inputStream, Item &item);
 };
 
 enum InventoryItemType {
@@ -21,12 +28,15 @@ enum InventoryItemType {
 
 class InventoryItem : public Item {
 private:
+	string origin;
+	int addedWeight;
 	InventoryItemType type;
+	virtual void readAttributeFromStream(istream &inputStream);
 
 public:
+	InventoryItem();
 	InventoryItem(int price);
 	InventoryItemType getType();
-	friend istream &operator<<(istream &inputStream, InventoryItem item);
 };
 
 enum FarmItemType {
@@ -38,12 +48,13 @@ class FarmItem : public Item {
 private:
 	FarmItemType type;
 	int durationToHarvest;
+	virtual void readAttributeFromStream(istream &inputStream);
 
 public:
+	FarmItem();
 	FarmItem(int price, int durationToHarvest);
 	int getDurationToHarvest();
 	FarmItemType getType();
-	friend istream &operator<<(istream &inputStream, FarmItem item);
 };
 
 enum BarnItemType {
@@ -57,12 +68,13 @@ private:
 	BarnItemType type;
 	int weightToHarvest;
 	static int p;
+	virtual void readAttributeFromStream(istream &inputStream);
 
 public:
+	BarnItem();
 	BarnItem(int price, int weightToHarvest);
 	int getWeightToHarvest();
 	BarnItemType getType();
-	friend istream &operator<<(istream &inputStream, BarnItem item);
 };
 
 #endif

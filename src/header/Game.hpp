@@ -4,11 +4,12 @@
 #include "Item.hpp"
 #include "Player.hpp"
 #include "Recipe.hpp"
+#include <iostream>
 #include <utility>
 #include <vector>
+using namespace std;
 
 class Config {
-private:
 	int targetMoney;
 	int targetWeight;
 	pair<int, int> inventorySize;
@@ -16,6 +17,7 @@ private:
 	pair<int, int> barnSize;
 
 public:
+	Config();
 	Config(
 			int targetMoney,
 			int targetWeight,
@@ -23,7 +25,12 @@ public:
 			pair<int, int> farmSize,
 			pair<int, int> barnSize
 	);
-	friend istream &operator<<(istream &inputStream, Config config);
+	int getTargetMoney();
+	int getTargetWeight();
+	pair<int, int> getInventorySize();
+	pair<int, int> getFarmSize();
+	pair<int, int> getBarnSize();
+	friend istream &operator>>(istream &inputStream, Config &config);
 };
 
 class Game {
