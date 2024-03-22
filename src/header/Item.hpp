@@ -2,6 +2,7 @@
 #define ITEM_HPP
 
 #include <iostream>
+#include <map>
 using namespace std;
 
 class Item {
@@ -78,6 +79,19 @@ public:
 	BarnItem(int price, int weightToHarvest);
 	int getWeightToHarvest();
 	BarnItemType getType();
+};
+
+class RecipeItem : public Item {
+private:
+	map<string, int> recipe;
+	virtual void readAttributeFromStream(istream &inputStream);
+
+public:
+	RecipeItem();
+	virtual ~RecipeItem();
+
+	map<string, int> *getIngredients();
+	friend istream &operator>>(istream &inputStream, RecipeItem &item);
 };
 
 #endif

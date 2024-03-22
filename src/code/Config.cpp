@@ -16,7 +16,7 @@ static void readVectorConfigFile(string fullpath, vector<T> &vector) {
 	cout << fullpath << endl;
 	while (fileStream.peek() != EOF) {
 		T element;
-		fileStream >> element >> std::ws;
+		fileStream >> element >> ws;
 		vector.push_back(element);
 	}
 }
@@ -28,7 +28,7 @@ void Config::readConfig(
 		vector<InventoryItem> &inventoryItems,
 		vector<FarmItem> &farmItems,
 		vector<BarnItem> &barnItems,
-		vector<Recipe> &recipes
+		vector<RecipeItem> &recipes
 ) {
 	(void)players;
 	(void)recipes;
@@ -40,5 +40,5 @@ void Config::readConfig(
 	readVectorConfigFile(dir + "/" + inventoryItemFilename, inventoryItems);
 	readVectorConfigFile(dir + "/" + farmItemFilename, farmItems);
 	readVectorConfigFile(dir + "/" + barnItemFilename, barnItems);
-	// readVectorConfigFile(dir + inventoryItemFilename, recipes);
+	readVectorConfigFile(dir + "/" + recipeFilename, recipes);
 };

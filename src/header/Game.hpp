@@ -3,7 +3,6 @@
 
 #include "Item.hpp"
 #include "Player.hpp"
-#include "Recipe.hpp"
 #include <iostream>
 #include <utility>
 #include <vector>
@@ -42,7 +41,7 @@ public:
 			vector<InventoryItem> inventoryItems,
 			vector<FarmItem> farmItems,
 			vector<BarnItem> barnItems,
-			vector<Recipe> recipes
+			vector<RecipeItem> recipes
 	);
 };
 

@@ -14,7 +14,7 @@ public:
 			vector<InventoryItem> &inventoryItems,
 			vector<FarmItem> &farmItems,
 			vector<BarnItem> &barnItems,
-			vector<Recipe> &recipes
+			vector<RecipeItem> &recipes
 	);
 };
 

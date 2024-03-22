@@ -1,4 +1,6 @@
 #include "Item.hpp"
+#include <sstream>
+#include <string>
 
 int Item::getPrice() { return this->price; }
 int Item::getId() { return this->id; }
@@ -8,10 +10,12 @@ string Item::getName() { return this->name; }
 InventoryItem::InventoryItem() {}
 FarmItem::FarmItem() {}
 BarnItem::BarnItem() {}
+RecipeItem::RecipeItem() {}
 
 InventoryItem::~InventoryItem() {}
 FarmItem::~FarmItem() {}
 BarnItem::~BarnItem() {}
+RecipeItem::~RecipeItem() {}
 
 InventoryItemType InventoryItem::getType() { return this->type; }
 FarmItemType FarmItem::getType() { return this->type; }
@@ -23,6 +27,16 @@ istream &operator>>(istream &inputStream, Item &item) {
 	inputStream >> item.name;
 	item.readAttributeFromStream(inputStream);
 	inputStream >> item.price;
+	return inputStream;
+}
+
+// Don't we love exception???
+istream &operator>>(istream &inputStream, RecipeItem &item) {
+	inputStream >> item.id;
+	inputStream >> item.code;
+	inputStream >> item.name;
+	inputStream >> item.price;
+	item.readAttributeFromStream(inputStream);
 	return inputStream;
 }
 
@@ -53,4 +67,21 @@ void BarnItem::readAttributeFromStream(istream &inputStream) {
 	else if (type == "OMNIVORE") this->type = Omnivore;
 
 	inputStream >> this->weightToHarvest;
+}
+
+map<string, int> *RecipeItem::getIngredients() {
+	return &this->recipe;
+};
+
+void RecipeItem::readAttributeFromStream(istream &inputStream) {
+	string line;
+	getline(inputStream, line);
+	istringstream lineStream(line);
+
+	while (lineStream.peek() != EOF) {
+		string material;
+		int count;
+		lineStream >> material >> count >> ws;
+		this->recipe[material] = count;
+	}
 }
