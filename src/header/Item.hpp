@@ -35,6 +35,7 @@ private:
 
 public:
 	InventoryItem();
+	virtual ~InventoryItem();
 	InventoryItem(int price);
 	InventoryItemType getType();
 };
@@ -52,6 +53,7 @@ private:
 
 public:
 	FarmItem();
+	virtual ~FarmItem();
 	FarmItem(int price, int durationToHarvest);
 	int getDurationToHarvest();
 	FarmItemType getType();
@@ -72,6 +74,7 @@ private:
 
 public:
 	BarnItem();
+	virtual ~BarnItem();
 	BarnItem(int price, int weightToHarvest);
 	int getWeightToHarvest();
 	BarnItemType getType();

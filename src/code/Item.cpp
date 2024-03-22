@@ -9,6 +9,10 @@ InventoryItem::InventoryItem() {}
 FarmItem::FarmItem() {}
 BarnItem::BarnItem() {}
 
+InventoryItem::~InventoryItem() {}
+FarmItem::~FarmItem() {}
+BarnItem::~BarnItem() {}
+
 InventoryItemType InventoryItem::getType() { return this->type; }
 FarmItemType FarmItem::getType() { return this->type; }
 BarnItemType BarnItem::getType() { return this->type; }

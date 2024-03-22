@@ -8,7 +8,7 @@ EXE=$(OUT)/main
 TMP=tmp
 TMP_OBJ=$(OUT)/tmp_obj
 
-FLAGS=-I src/header -Wall -Wextra -Werror
+FLAGS=-I src/header -Wall -Wextra -Werror -std=c++20
 RECUR_WILDCARD=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call RECUR_WILDCARD,$d/,$2))
 SOURCE_CODE=$(call RECUR_WILDCARD,$(SRC),*.cpp)
 OBJECT_FILE=$(patsubst $(SRC)/%,$(OBJ)/%,$(patsubst %.cpp,%.o,$(SOURCE_CODE)))

@@ -1,13 +1,13 @@
 #include "Game.hpp"
 
-Config::Config(){};
-int Config::getTargetMoney() { return this->targetMoney; };
-int Config::getTargetWeight() { return this->targetWeight; };
-pair<int, int> Config::getInventorySize() { return this->inventorySize; };
-pair<int, int> Config::getBarnSize() { return this->barnSize; };
-pair<int, int> Config::getFarmSize() { return this->farmSize; };
+MiscConfig::MiscConfig(){};
+int MiscConfig::getTargetMoney() { return this->targetMoney; };
+int MiscConfig::getTargetWeight() { return this->targetWeight; };
+pair<int, int> MiscConfig::getInventorySize() { return this->inventorySize; };
+pair<int, int> MiscConfig::getBarnSize() { return this->barnSize; };
+pair<int, int> MiscConfig::getFarmSize() { return this->farmSize; };
 
-istream &operator>>(istream &inputStream, Config &config) {
+istream &operator>>(istream &inputStream, MiscConfig &config) {
 	inputStream >> config.targetMoney;
 	inputStream >> config.targetWeight;
 
