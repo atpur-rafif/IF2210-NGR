@@ -2,42 +2,53 @@
 #define PLAYER_HPP
 
 #include "Storage.hpp"
+
+enum PlayerType {
+	Farmer,
+	Breeder,
+	Mayor
+};
+
+class PlayerSpecialization {};
+
 class Player {
 private:
 	static int count;
-	Storage storage;
+
+	string username;
+	PlayerType type;
+	int weight;
+	int money;
+
+	PlayerSpecialization *specialization;
 
 public:
+	Player();
+	~Player();
 	virtual int calculateTax() = 0;
-	virtual void eat();
-	virtual void buy();
-	virtual void sell();
-	virtual void turn();
+	virtual void eat() = 0;
+	virtual void buy() = 0;
+	virtual void sell() = 0;
+	virtual void turn() = 0;
+	PlayerType getType();
+	friend istream &operator>>(istream &inputStream, Player &player);
 };
 
-class Farmer : public Player {
+class PlayerFarmer : public PlayerSpecialization {
 private:
-	static int count;
-	Storage farm;
-
 public:
 	void harvest();
 };
 
-class Breeder : public Player {
+class PlayerBreeder : public PlayerSpecialization {
 private:
-	static int count;
-	Storage barn;
-
 public:
 	void harvest();
 	void feed();
 };
 
-class Mayor : public Player {
+class PlayerMayor : public PlayerSpecialization {
 private:
-	static int count;
-
 public:
 	void build();
 };

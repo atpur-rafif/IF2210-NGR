@@ -29,7 +29,6 @@ void Config::readConfig(
 		ItemController<FarmItem> &farmItems,
 		ItemController<BarnItem> &barnItems,
 		ItemController<RecipeItem> &recipeItems
-
 ) {
 	(void)players;
 	(void)recipeItems;

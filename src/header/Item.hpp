@@ -46,6 +46,7 @@ protected:
 	virtual void readAttributeFromStream(istream &inputStream) = 0;
 
 public:
+	Item() : id(-1), code("   "){};
 	int getPrice();
 	int getId();
 	string getCode();
