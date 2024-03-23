@@ -10,14 +10,14 @@ const string barnItemFilename = "animal.txt";
 const string recipeFilename = "recipe.txt";
 
 template <class T>
-static void readVectorConfigFile(string fullpath, vector<T> &vector) {
+static void readItemConfigFile(string fullpath, ItemController<T> &controller) {
 	ifstream fileStream;
 	fileStream.open(fullpath);
 	cout << fullpath << endl;
 	while (fileStream.peek() != EOF) {
 		T element;
 		fileStream >> element >> ws;
-		vector.push_back(element);
+		controller.addItem(element);
 	}
 }
 
@@ -25,20 +25,21 @@ void Config::readConfig(
 		string dir,
 		MiscConfig &miscConfig,
 		vector<Player *> &players,
-		vector<InventoryItem> &inventoryItems,
-		vector<FarmItem> &farmItems,
-		vector<BarnItem> &barnItems,
-		vector<RecipeItem> &recipes
+		ItemController<InventoryItem> &inventoryItems,
+		ItemController<FarmItem> &farmItems,
+		ItemController<BarnItem> &barnItems,
+		ItemController<RecipeItem> &recipeItems
+
 ) {
 	(void)players;
-	(void)recipes;
+	(void)recipeItems;
 
 	ifstream miscFile;
 	miscFile.open(dir + "/" + miscFilename);
 	miscFile >> miscConfig;
 
-	readVectorConfigFile(dir + "/" + inventoryItemFilename, inventoryItems);
-	readVectorConfigFile(dir + "/" + farmItemFilename, farmItems);
-	readVectorConfigFile(dir + "/" + barnItemFilename, barnItems);
-	readVectorConfigFile(dir + "/" + recipeFilename, recipes);
+	readItemConfigFile(dir + "/" + inventoryItemFilename, inventoryItems);
+	readItemConfigFile(dir + "/" + farmItemFilename, farmItems);
+	readItemConfigFile(dir + "/" + barnItemFilename, barnItems);
+	readItemConfigFile(dir + "/" + recipeFilename, recipeItems);
 };

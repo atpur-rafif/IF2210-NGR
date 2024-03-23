@@ -35,14 +35,7 @@ public:
 class Game {
 private:
 public:
-	Game(
-			MiscConfig miscConfig,
-			vector<Player> players,
-			vector<InventoryItem> inventoryItems,
-			vector<FarmItem> farmItems,
-			vector<BarnItem> barnItems,
-			vector<RecipeItem> recipes
-	);
+	Game();
 };
 
 #endif

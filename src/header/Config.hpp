@@ -11,10 +11,10 @@ public:
 			string dir,
 			MiscConfig &miscConfig,
 			vector<Player *> &players,
-			vector<InventoryItem> &inventoryItems,
-			vector<FarmItem> &farmItems,
-			vector<BarnItem> &barnItems,
-			vector<RecipeItem> &recipes
+			ItemController<InventoryItem> &inventoryItems,
+			ItemController<FarmItem> &farmItems,
+			ItemController<BarnItem> &barnItems,
+			ItemController<RecipeItem> &recipeItems
 	);
 };
 

@@ -5,8 +5,40 @@
 #include <map>
 using namespace std;
 
+template <class T>
+class ItemController {
+private:
+	map<int, T> repository;
+
+public:
+	void addItem(T item) {
+		this->repository[item.getId()] = item;
+	}
+	int getIdByName(string name) {
+		for (auto const &i : this->repository) {
+			auto item = i.second;
+			if (item.getName() == name) {
+				return item.getId();
+			}
+		}
+	};
+	string getIdByCode(string code) {
+		for (auto const &i : this->repository) {
+			auto item = i.second;
+			if (item.getName() == code) {
+				return item.getId();
+			}
+		}
+	}
+	T createItemById(int id) {
+		return repository[id];
+	};
+};
+
 class Item {
 protected:
+	template <class T>
+	friend class ItemController;
 	int price;
 	int id;
 	string code;
