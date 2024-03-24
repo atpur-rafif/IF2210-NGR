@@ -7,10 +7,11 @@
 
 class Config {
 public:
+	// TODO: seperate state reader
 	static void readConfig(
 			string dir,
 			MiscConfig &miscConfig,
-			vector<Player *> &players,
+			PlayerController &players,
 			ItemController<InventoryItem> &inventoryItems,
 			ItemController<FarmItem> &farmItems,
 			ItemController<BarnItem> &barnItems,

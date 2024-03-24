@@ -21,14 +21,16 @@ public:
 				return item.getId();
 			}
 		}
+		return -1;
 	};
-	string getIdByCode(string code) {
+	int getIdByCode(string code) {
 		for (auto const &i : this->repository) {
 			auto item = i.second;
 			if (item.getName() == code) {
 				return item.getId();
 			}
 		}
+		return -1;
 	}
 	T createItemById(int id) {
 		return repository[id];
@@ -47,6 +49,7 @@ protected:
 
 public:
 	Item() : id(-1), code("   "){};
+	virtual ~Item();
 	int getPrice();
 	int getId();
 	string getCode();
@@ -83,6 +86,7 @@ class FarmItem : public Item {
 private:
 	FarmItemType type;
 	int durationToHarvest;
+	int currentAge;
 	virtual void readAttributeFromStream(istream &inputStream);
 
 public:
@@ -91,6 +95,8 @@ public:
 	FarmItem(int price, int durationToHarvest);
 	int getDurationToHarvest();
 	FarmItemType getType();
+	int getAge();
+	void setAge(int age);
 };
 
 enum BarnItemType {
@@ -103,6 +109,7 @@ class BarnItem : public Item {
 private:
 	BarnItemType type;
 	int weightToHarvest;
+	int currentWeight;
 	static int p;
 	virtual void readAttributeFromStream(istream &inputStream);
 
@@ -112,6 +119,8 @@ public:
 	BarnItem(int price, int weightToHarvest);
 	int getWeightToHarvest();
 	BarnItemType getType();
+	int getWeight();
+	void setWeight(int weight);
 };
 
 class RecipeItem : public Item {

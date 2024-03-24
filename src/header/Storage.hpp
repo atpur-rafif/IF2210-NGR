@@ -40,6 +40,20 @@ public:
 		this->get(x, y) = item;
 	};
 
+	// TODO: cache last empty found
+	void addItem(T item) {
+		for (int y = 0; y < this->height; ++y) {
+			for (int x = 0; x < this->width; ++x) {
+				int i = this->flat(x, y);
+				T current = this->storage.at(i);
+				if (current.getId() == -1) {
+					current = item;
+					return;
+				}
+			}
+		}
+	}
+
 	void print() {
 		for (int y = 0; y < this->height; ++y) {
 			cout << "| ";

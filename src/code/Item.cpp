@@ -12,6 +12,7 @@ FarmItem::FarmItem() {}
 BarnItem::BarnItem() {}
 RecipeItem::RecipeItem() {}
 
+Item::~Item(){};
 InventoryItem::~InventoryItem() {}
 FarmItem::~FarmItem() {}
 BarnItem::~BarnItem() {}
@@ -21,7 +22,13 @@ InventoryItemType InventoryItem::getType() { return this->type; }
 FarmItemType FarmItem::getType() { return this->type; }
 BarnItemType BarnItem::getType() { return this->type; }
 
-istream &operator>>(istream &inputStream, Item &item) {
+int FarmItem::getAge() { return this->currentAge; }
+void FarmItem::setAge(int age) { this->currentAge = age; }
+int BarnItem::getWeight() { return this->currentWeight; }
+void BarnItem::setWeight(int weight) { this->currentWeight = weight; }
+
+istream &
+operator>>(istream &inputStream, Item &item) {
 	inputStream >> item.id;
 	inputStream >> item.code;
 	inputStream >> item.name;
