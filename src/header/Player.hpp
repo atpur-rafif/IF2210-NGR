@@ -30,7 +30,7 @@ public:
 	string getUsername();
 	int getWeight();
 	int getMoney();
-	void readInventoryFromStream(istream &inputStream, ItemController<InventoryItem> inventoryController);
+	void readInventoryFromStream(istream &inputStream, ItemFactory<InventoryItem> inventoryFactory);
 };
 
 class PlayerFarmer : public Player {
@@ -47,7 +47,7 @@ public:
 	// virtual void turn();
 
 	void harvest();
-	void readFarmFromStream(istream &inputStream, ItemController<FarmItem> farmController);
+	void readFarmFromStream(istream &inputStream, ItemFactory<FarmItem> farmFactory);
 };
 
 class PlayerBreeder : public Player {
@@ -64,7 +64,7 @@ public:
 	// virtual void turn();
 
 	void harvest();
-	void readBarnFromStream(istream &inputStream, ItemController<BarnItem> farmController);
+	void readBarnFromStream(istream &inputStream, ItemFactory<BarnItem> barnFactory);
 	void feed();
 };
 

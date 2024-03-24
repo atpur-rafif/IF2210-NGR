@@ -11,7 +11,7 @@ const string recipeFilename = "recipe.txt";
 const string stateFilename = "state.txt";
 
 template <class T>
-static void readItemConfigFile(string fullpath, ItemController<T> &controller) {
+static void readItemConfigFile(string fullpath, ItemFactory<T> &controller) {
 	ifstream fileStream;
 	fileStream.open(fullpath);
 	cout << fullpath << endl;
@@ -26,10 +26,10 @@ void Config::readConfig(
 		string dir,
 		MiscConfig &miscConfig,
 		PlayerController &players,
-		ItemController<InventoryItem> &inventoryItems,
-		ItemController<FarmItem> &farmItems,
-		ItemController<BarnItem> &barnItems,
-		ItemController<RecipeItem> &recipeItems
+		ItemFactory<InventoryItem> &inventoryFactory,
+		ItemFactory<FarmItem> &farmFactory,
+		ItemFactory<BarnItem> &barnFactory,
+		ItemFactory<RecipeItem> &recipeFactory
 ) {
 	(void)players;
 
@@ -37,10 +37,10 @@ void Config::readConfig(
 	miscFile.open(dir + "/" + miscFilename);
 	miscFile >> miscConfig;
 
-	readItemConfigFile(dir + "/" + inventoryItemFilename, inventoryItems);
-	readItemConfigFile(dir + "/" + farmItemFilename, farmItems);
-	readItemConfigFile(dir + "/" + barnItemFilename, barnItems);
-	readItemConfigFile(dir + "/" + recipeFilename, recipeItems);
+	readItemConfigFile(dir + "/" + inventoryItemFilename, inventoryFactory);
+	readItemConfigFile(dir + "/" + farmItemFilename, farmFactory);
+	readItemConfigFile(dir + "/" + barnItemFilename, barnFactory);
+	readItemConfigFile(dir + "/" + recipeFilename, recipeFactory);
 
 	ifstream stateFile;
 	stateFile.open(dir + "/" + stateFilename);
@@ -55,17 +55,17 @@ void Config::readConfig(
 		stateFile >> username >> type >> weight >> money;
 		if (type == "Petani") {
 			PlayerFarmer farmer(username, weight, money);
-			farmer.readInventoryFromStream(stateFile, inventoryItems);
-			farmer.readFarmFromStream(stateFile, farmItems);
+			farmer.readInventoryFromStream(stateFile, inventoryFactory);
+			farmer.readFarmFromStream(stateFile, farmFactory);
 			players.addFarmer(farmer);
 		} else if (type == "Peternak") {
 			PlayerBreeder breeder(username, weight, money);
-			breeder.readInventoryFromStream(stateFile, inventoryItems);
-			breeder.readBarnFromStream(stateFile, barnItems);
+			breeder.readInventoryFromStream(stateFile, inventoryFactory);
+			breeder.readBarnFromStream(stateFile, barnFactory);
 			players.addBreeder(breeder);
 		} else if (type == "Walikota") {
 			PlayerMayor mayor(username, weight, money);
-			mayor.readInventoryFromStream(stateFile, inventoryItems);
+			mayor.readInventoryFromStream(stateFile, inventoryFactory);
 			players.addMayor(mayor);
 		}
 	}

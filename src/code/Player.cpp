@@ -29,19 +29,19 @@ string Player::getUsername() { return this->username; }
 int Player::getWeight() { return this->weight; }
 int Player::getMoney() { return this->money; }
 
-void Player::readInventoryFromStream(istream &inputStream, ItemController<InventoryItem> inventoryController) {
+void Player::readInventoryFromStream(istream &inputStream, ItemFactory<InventoryItem> inventoryFactory) {
 	int inventoryCount;
 	inputStream >> inventoryCount;
 	while (inventoryCount--) {
 		string name;
 		inputStream >> name;
-		int id = inventoryController.getIdByName(name);
-		InventoryItem item = inventoryController.createItemById(id);
+		int id = inventoryFactory.getIdByName(name);
+		InventoryItem item = inventoryFactory.createItemById(id);
 		this->inventory.addItem(item);
 	}
 }
 
-void PlayerFarmer::readFarmFromStream(istream &inputStream, ItemController<FarmItem> farmController) {
+void PlayerFarmer::readFarmFromStream(istream &inputStream, ItemFactory<FarmItem> farmFactory) {
 	int farmCount;
 	inputStream >> farmCount;
 	while (farmCount--) {
@@ -51,8 +51,8 @@ void PlayerFarmer::readFarmFromStream(istream &inputStream, ItemController<FarmI
 		string name;
 		inputStream >> name;
 
-		int id = farmController.getIdByName(name);
-		FarmItem item = farmController.createItemById(id);
+		int id = farmFactory.getIdByName(name);
+		FarmItem item = farmFactory.createItemById(id);
 
 		int age;
 		inputStream >> age;
@@ -62,7 +62,7 @@ void PlayerFarmer::readFarmFromStream(istream &inputStream, ItemController<FarmI
 	}
 };
 
-void PlayerBreeder::readBarnFromStream(istream &inputStream, ItemController<BarnItem> barnController) {
+void PlayerBreeder::readBarnFromStream(istream &inputStream, ItemFactory<BarnItem> barnFactory) {
 	int barnCount;
 	inputStream >> barnCount;
 	while (barnCount--) {
@@ -72,8 +72,8 @@ void PlayerBreeder::readBarnFromStream(istream &inputStream, ItemController<Barn
 		string name;
 		inputStream >> name;
 
-		int id = barnController.getIdByName(name);
-		BarnItem item = barnController.createItemById(id);
+		int id = barnFactory.getIdByName(name);
+		BarnItem item = barnFactory.createItemById(id);
 
 		int age;
 		inputStream >> age;

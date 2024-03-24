@@ -6,7 +6,7 @@
 using namespace std;
 
 template <class T>
-class ItemController {
+class ItemFactory {
 private:
 	map<int, T> repository;
 
@@ -40,7 +40,7 @@ public:
 class Item {
 protected:
 	template <class T>
-	friend class ItemController;
+	friend class ItemFactory;
 	int price;
 	int id;
 	string code;

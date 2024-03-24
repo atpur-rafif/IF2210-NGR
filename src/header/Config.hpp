@@ -12,10 +12,10 @@ public:
 			string dir,
 			MiscConfig &miscConfig,
 			PlayerController &players,
-			ItemController<InventoryItem> &inventoryItems,
-			ItemController<FarmItem> &farmItems,
-			ItemController<BarnItem> &barnItems,
-			ItemController<RecipeItem> &recipeItems
+			ItemFactory<InventoryItem> &inventoryFactory,
+			ItemFactory<FarmItem> &farmFactory,
+			ItemFactory<BarnItem> &barnFactory,
+			ItemFactory<RecipeItem> &recipeFactory
 	);
 };
 
