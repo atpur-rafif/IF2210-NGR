@@ -1,4 +1,5 @@
 #include "Player.hpp"
+#include <algorithm>
 
 // clang-format off
 

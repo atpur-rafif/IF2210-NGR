@@ -64,8 +64,6 @@ public:
 			cout << endl;
 		}
 	}
-
-	friend istream &operator>>(istream &inputStream, Storage<T> templateStorage);
 };
 
 #endif
