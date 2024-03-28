@@ -26,9 +26,14 @@ PlayerFarmer::~PlayerFarmer() {}
 PlayerBreeder::~PlayerBreeder() {}
 PlayerMayor::~PlayerMayor() {}
 
+PlayerFarmer *PlayerFarmer::clone() const { return new PlayerFarmer(*this); }
+PlayerBreeder *PlayerBreeder::clone() const { return new PlayerBreeder(*this); }
+PlayerMayor *PlayerMayor::clone() const { return new PlayerMayor(*this); }
+
 string Player::getUsername() { return this->username; }
 int Player::getWeight() { return this->weight; }
 int Player::getMoney() { return this->money; }
+PlayerType Player::getType() { return this->type; }
 
 void Player::readProductFromStream(istream &inputStream, ItemFactory<ProductItem> productFactory) {
 	int productCount;
@@ -85,34 +90,18 @@ void PlayerBreeder::readBarnFromStream(istream &inputStream, ItemFactory<BarnIte
 };
 
 void PlayerController::rearrangePosition() {
-	this->players.clear();
-	for (auto &farmer : this->farmer) this->players.push_back(&farmer);
-	for (auto &breeder : this->breeder) this->players.push_back(&breeder);
-	for (auto &mayor : this->mayor) this->players.push_back(&mayor);
-
 	auto begin = this->players.begin();
 	auto end = begin + this->players.size();
-	(void)end;
-	sort(begin, end, [](Player *a, Player *b) {
+	sort(begin, end, [](Heapify<Player> a, Heapify<Player> b) {
 		return a->getUsername() < b->getUsername();
 	});
 }
 
-void PlayerController::addFarmer(PlayerFarmer farmer) {
-	this->farmer.push_back(farmer);
+void PlayerController::addPlayer(Heapify<Player> player) {
+	this->players.push_back(player);
 	this->rearrangePosition();
 }
 
-void PlayerController::addBreeder(PlayerBreeder breeder) {
-	this->breeder.push_back(breeder);
-	this->rearrangePosition();
-}
-
-void PlayerController::addMayor(PlayerMayor mayor) {
-	this->mayor.push_back(mayor);
-	this->rearrangePosition();
-}
-
-vector<Player *> *PlayerController::getPlayers() {
+vector<Heapify<Player>> *PlayerController::getPlayers() {
 	return &(this->players);
 };

@@ -1,7 +1,6 @@
 #include "Config.hpp"
 #include "Item.hpp"
-#include "filesystem"
-#include <filesystem>
+#include <fstream>
 
 const string miscFilename = "misc.txt";
 const string productItemFilename = "product.txt";
@@ -53,20 +52,25 @@ void Config::readConfig(
 		int weight;
 		int money;
 		stateFile >> username >> type >> weight >> money;
+
+		Heapify<Player> heapPlayer(NULL);
 		if (type == "Petani") {
 			PlayerFarmer farmer(username, weight, money);
 			farmer.readProductFromStream(stateFile, productFactory);
 			farmer.readFarmFromStream(stateFile, farmFactory);
-			players.addFarmer(farmer);
+			heapPlayer.set(&farmer);
 		} else if (type == "Peternak") {
 			PlayerBreeder breeder(username, weight, money);
 			breeder.readProductFromStream(stateFile, productFactory);
 			breeder.readBarnFromStream(stateFile, barnFactory);
-			players.addBreeder(breeder);
+			heapPlayer.set(&breeder);
 		} else if (type == "Walikota") {
 			PlayerMayor mayor(username, weight, money);
 			mayor.readProductFromStream(stateFile, productFactory);
-			players.addMayor(mayor);
+			heapPlayer.set(&mayor);
+		} else {
+			throw "Invalid player type";
 		}
+		players.addPlayer(heapPlayer);
 	}
 };

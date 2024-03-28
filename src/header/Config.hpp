@@ -3,7 +3,6 @@
 
 #include "Game.hpp"
 #include "Item.hpp"
-#include <fstream>
 
 class Config {
 public:

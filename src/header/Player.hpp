@@ -1,6 +1,7 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
+#include "Heapify.hpp"
 #include "Item.hpp"
 #include "Storage.hpp"
 
@@ -13,7 +14,7 @@ enum PlayerType {
 class Player {
 	friend class PlayerController;
 
-private:
+protected:
 	string username;
 	PlayerType type;
 	int weight;
@@ -22,6 +23,7 @@ private:
 
 public:
 	Player(string username, PlayerType type, int weight, int money);
+	virtual Player *clone() const = 0;
 	virtual ~Player();
 	// virtual int calculateTax() = 0;
 	// virtual void eat() = 0;
@@ -34,13 +36,12 @@ public:
 };
 
 class PlayerFarmer : public Player {
-	friend class Player;
-
 private:
 	Storage<FarmItem> farm;
 
 public:
 	PlayerFarmer(string username, int weight, int money);
+	PlayerFarmer *clone() const override;
 	virtual ~PlayerFarmer();
 	// virtual int calculateTax();
 	// virtual void eat();
@@ -51,13 +52,12 @@ public:
 };
 
 class PlayerBreeder : public Player {
-	friend class Player;
-
 private:
 	Storage<BarnItem> barn;
 
 public:
 	PlayerBreeder(string username, int weight, int money);
+	PlayerBreeder *clone() const override;
 	virtual ~PlayerBreeder();
 	// virtual int calculateTax();
 	// virtual void eat();
@@ -69,11 +69,10 @@ public:
 };
 
 class PlayerMayor : public Player {
-	friend class Player;
-
 private:
 public:
 	PlayerMayor(string username, int weight, int money);
+	PlayerMayor *clone() const override;
 	virtual ~PlayerMayor();
 	// virtual int calculateTax();
 	// virtual void eat();
@@ -84,17 +83,12 @@ public:
 
 class PlayerController {
 private:
-	vector<Player *> players;
-	vector<PlayerFarmer> farmer;
-	vector<PlayerBreeder> breeder;
-	vector<PlayerMayor> mayor;
+	vector<Heapify<Player>> players;
 	void rearrangePosition();
 
 public:
-	void addFarmer(PlayerFarmer farmer);
-	void addBreeder(PlayerBreeder breeder);
-	void addMayor(PlayerMayor mayor);
-	vector<Player *> *getPlayers();
+	void addPlayer(Heapify<Player> player);
+	vector<Heapify<Player>> *getPlayers();
 };
 
 #endif
