@@ -6,7 +6,7 @@ const string miscFilename = "misc.txt";
 const string productItemFilename = "product.txt";
 const string farmItemFilename = "plant.txt";
 const string barnItemFilename = "animal.txt";
-const string recipeFilename = "recipe.txt";
+const string buildingFilename = "recipe.txt";
 const string stateFilename = "state.txt";
 
 template <class T>
@@ -28,7 +28,7 @@ void Config::readConfig(
 		ItemFactory<ProductItem> &productFactory,
 		ItemFactory<FarmItem> &farmFactory,
 		ItemFactory<BarnItem> &barnFactory,
-		ItemFactory<RecipeItem> &recipeFactory
+		ItemFactory<BuildingItem> &buildingFactory
 ) {
 	(void)players;
 
@@ -39,7 +39,7 @@ void Config::readConfig(
 	readItemConfigFile(dir + "/" + productItemFilename, productFactory);
 	readItemConfigFile(dir + "/" + farmItemFilename, farmFactory);
 	readItemConfigFile(dir + "/" + barnItemFilename, barnFactory);
-	readItemConfigFile(dir + "/" + recipeFilename, recipeFactory);
+	readItemConfigFile(dir + "/" + buildingFilename, buildingFactory);
 
 	ifstream stateFile;
 	stateFile.open(dir + "/" + stateFilename);

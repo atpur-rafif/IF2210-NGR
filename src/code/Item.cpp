@@ -12,18 +12,18 @@ Item::Item() : id(-1), code("   ") {}
 ProductItem::ProductItem() { this->itemType = Product; }
 FarmItem::FarmItem() { this->itemType = Farm; }
 BarnItem::BarnItem() { this->itemType = Barn; }
-RecipeItem::RecipeItem() { this->itemType = Recipe; }
+BuildingItem::BuildingItem() { this->itemType = Building; }
 
 Item::~Item(){};
 ProductItem::~ProductItem() {}
 FarmItem::~FarmItem() {}
 BarnItem::~BarnItem() {}
-RecipeItem::~RecipeItem() {}
+BuildingItem::~BuildingItem() {}
 
 ProductItem *ProductItem::clone() const { return new ProductItem(*this); };
 FarmItem *FarmItem::clone() const { return new FarmItem(*this); };
 BarnItem *BarnItem::clone() const { return new BarnItem(*this); };
-RecipeItem *RecipeItem::clone() const { return new RecipeItem(*this); };
+BuildingItem *BuildingItem::clone() const { return new BuildingItem(*this); };
 
 ProductItemType ProductItem::getType() { return this->type; }
 FarmItemType FarmItem::getType() { return this->type; }
@@ -45,7 +45,7 @@ operator>>(istream &inputStream, Item &item) {
 }
 
 // Don't we love exception???
-istream &operator>>(istream &inputStream, RecipeItem &item) {
+istream &operator>>(istream &inputStream, BuildingItem &item) {
 	inputStream >> item.id;
 	inputStream >> item.code;
 	inputStream >> item.name;
@@ -83,11 +83,11 @@ void BarnItem::readAttributeFromStream(istream &inputStream) {
 	inputStream >> this->weightToHarvest;
 }
 
-map<string, int> *RecipeItem::getIngredients() {
-	return &this->recipe;
+map<string, int> *BuildingItem::getIngredients() {
+	return &this->building;
 };
 
-void RecipeItem::readAttributeFromStream(istream &inputStream) {
+void BuildingItem::readAttributeFromStream(istream &inputStream) {
 	string line;
 	getline(inputStream, line);
 	istringstream lineStream(line);
@@ -96,6 +96,6 @@ void RecipeItem::readAttributeFromStream(istream &inputStream) {
 		string material;
 		int count;
 		lineStream >> material >> count >> ws;
-		this->recipe[material] = count;
+		this->building[material] = count;
 	}
 }

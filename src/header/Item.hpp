@@ -41,7 +41,7 @@ enum ItemType {
 	Product,
 	Farm,
 	Barn,
-	Recipe
+	Building
 };
 
 class Item {
@@ -136,18 +136,18 @@ public:
 	void setWeight(int weight);
 };
 
-class RecipeItem : public Item {
+class BuildingItem : public Item {
 private:
-	map<string, int> recipe;
+	map<string, int> building;
 	virtual void readAttributeFromStream(istream &inputStream);
 
 public:
-	RecipeItem();
-	virtual RecipeItem *clone() const;
-	virtual ~RecipeItem();
+	BuildingItem();
+	virtual BuildingItem *clone() const;
+	virtual ~BuildingItem();
 
 	map<string, int> *getIngredients();
-	friend istream &operator>>(istream &inputStream, RecipeItem &item);
+	friend istream &operator>>(istream &inputStream, BuildingItem &item);
 };
 
 #endif

@@ -14,7 +14,7 @@ public:
 			ItemFactory<ProductItem> &productFactory,
 			ItemFactory<FarmItem> &farmFactory,
 			ItemFactory<BarnItem> &barnFactory,
-			ItemFactory<RecipeItem> &recipeFactory
+			ItemFactory<BuildingItem> &buildingFactory
 	);
 };
 
