@@ -37,6 +37,13 @@ public:
 	};
 };
 
+enum ItemType {
+	Product,
+	Farm,
+	Barn,
+	Recipe
+};
+
 class Item {
 protected:
 	template <class T>
@@ -45,16 +52,18 @@ protected:
 	int id;
 	string code;
 	string name;
+	ItemType itemType;
 	virtual void readAttributeFromStream(istream &inputStream) = 0;
 
 public:
-	Item() : id(-1), code("   "){};
+	Item();
 	virtual Item *clone() const = 0;
 	virtual ~Item();
 	int getPrice();
 	int getId();
 	string getCode();
 	string getName();
+	ItemType getItemType();
 	friend istream &operator>>(istream &inputStream, Item &item);
 };
 

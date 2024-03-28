@@ -6,11 +6,13 @@ int Item::getPrice() { return this->price; }
 int Item::getId() { return this->id; }
 string Item::getCode() { return this->code; }
 string Item::getName() { return this->name; }
+ItemType Item::getItemType() { return this->itemType; }
 
-ProductItem::ProductItem() {}
-FarmItem::FarmItem() {}
-BarnItem::BarnItem() {}
-RecipeItem::RecipeItem() {}
+Item::Item() : id(-1), code("   ") {}
+ProductItem::ProductItem() { this->itemType = Product; }
+FarmItem::FarmItem() { this->itemType = Farm; }
+BarnItem::BarnItem() { this->itemType = Barn; }
+RecipeItem::RecipeItem() { this->itemType = Recipe; }
 
 Item::~Item(){};
 ProductItem::~ProductItem() {}
