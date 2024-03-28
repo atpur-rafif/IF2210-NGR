@@ -4,7 +4,7 @@
 #include <filesystem>
 
 const string miscFilename = "misc.txt";
-const string inventoryItemFilename = "product.txt";
+const string productItemFilename = "product.txt";
 const string farmItemFilename = "plant.txt";
 const string barnItemFilename = "animal.txt";
 const string recipeFilename = "recipe.txt";
@@ -26,7 +26,7 @@ void Config::readConfig(
 		string dir,
 		MiscConfig &miscConfig,
 		PlayerController &players,
-		ItemFactory<InventoryItem> &inventoryFactory,
+		ItemFactory<ProductItem> &productFactory,
 		ItemFactory<FarmItem> &farmFactory,
 		ItemFactory<BarnItem> &barnFactory,
 		ItemFactory<RecipeItem> &recipeFactory
@@ -37,7 +37,7 @@ void Config::readConfig(
 	miscFile.open(dir + "/" + miscFilename);
 	miscFile >> miscConfig;
 
-	readItemConfigFile(dir + "/" + inventoryItemFilename, inventoryFactory);
+	readItemConfigFile(dir + "/" + productItemFilename, productFactory);
 	readItemConfigFile(dir + "/" + farmItemFilename, farmFactory);
 	readItemConfigFile(dir + "/" + barnItemFilename, barnFactory);
 	readItemConfigFile(dir + "/" + recipeFilename, recipeFactory);
@@ -55,17 +55,17 @@ void Config::readConfig(
 		stateFile >> username >> type >> weight >> money;
 		if (type == "Petani") {
 			PlayerFarmer farmer(username, weight, money);
-			farmer.readInventoryFromStream(stateFile, inventoryFactory);
+			farmer.readProductFromStream(stateFile, productFactory);
 			farmer.readFarmFromStream(stateFile, farmFactory);
 			players.addFarmer(farmer);
 		} else if (type == "Peternak") {
 			PlayerBreeder breeder(username, weight, money);
-			breeder.readInventoryFromStream(stateFile, inventoryFactory);
+			breeder.readProductFromStream(stateFile, productFactory);
 			breeder.readBarnFromStream(stateFile, barnFactory);
 			players.addBreeder(breeder);
 		} else if (type == "Walikota") {
 			PlayerMayor mayor(username, weight, money);
-			mayor.readInventoryFromStream(stateFile, inventoryFactory);
+			mayor.readProductFromStream(stateFile, productFactory);
 			players.addMayor(mayor);
 		}
 	}

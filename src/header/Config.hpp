@@ -12,7 +12,7 @@ public:
 			string dir,
 			MiscConfig &miscConfig,
 			PlayerController &players,
-			ItemFactory<InventoryItem> &inventoryFactory,
+			ItemFactory<ProductItem> &productFactory,
 			ItemFactory<FarmItem> &farmFactory,
 			ItemFactory<BarnItem> &barnFactory,
 			ItemFactory<RecipeItem> &recipeFactory

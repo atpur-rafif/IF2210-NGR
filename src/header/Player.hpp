@@ -18,7 +18,7 @@ private:
 	PlayerType type;
 	int weight;
 	int money;
-	Storage<InventoryItem> inventory;
+	Storage<ProductItem> inventory;
 
 public:
 	Player(string username, PlayerType type, int weight, int money);
@@ -30,7 +30,7 @@ public:
 	string getUsername();
 	int getWeight();
 	int getMoney();
-	void readInventoryFromStream(istream &inputStream, ItemFactory<InventoryItem> inventoryFactory);
+	void readProductFromStream(istream &inputStream, ItemFactory<ProductItem> productFactory);
 };
 
 class PlayerFarmer : public Player {

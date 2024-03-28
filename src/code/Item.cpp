@@ -7,18 +7,23 @@ int Item::getId() { return this->id; }
 string Item::getCode() { return this->code; }
 string Item::getName() { return this->name; }
 
-InventoryItem::InventoryItem() {}
+ProductItem::ProductItem() {}
 FarmItem::FarmItem() {}
 BarnItem::BarnItem() {}
 RecipeItem::RecipeItem() {}
 
 Item::~Item(){};
-InventoryItem::~InventoryItem() {}
+ProductItem::~ProductItem() {}
 FarmItem::~FarmItem() {}
 BarnItem::~BarnItem() {}
 RecipeItem::~RecipeItem() {}
 
-InventoryItemType InventoryItem::getType() { return this->type; }
+ProductItem *ProductItem::clone() const { return new ProductItem(*this); };
+FarmItem *FarmItem::clone() const { return new FarmItem(*this); };
+BarnItem *BarnItem::clone() const { return new BarnItem(*this); };
+RecipeItem *RecipeItem::clone() const { return new RecipeItem(*this); };
+
+ProductItemType ProductItem::getType() { return this->type; }
 FarmItemType FarmItem::getType() { return this->type; }
 BarnItemType BarnItem::getType() { return this->type; }
 
@@ -47,7 +52,7 @@ istream &operator>>(istream &inputStream, RecipeItem &item) {
 	return inputStream;
 }
 
-void InventoryItem::readAttributeFromStream(istream &inputStream) {
+void ProductItem::readAttributeFromStream(istream &inputStream) {
 	string type;
 	inputStream >> type;
 	if (type == "PRODUCT_MATERIAL_PLANT") this->type = MaterialPlant;

@@ -30,14 +30,14 @@ string Player::getUsername() { return this->username; }
 int Player::getWeight() { return this->weight; }
 int Player::getMoney() { return this->money; }
 
-void Player::readInventoryFromStream(istream &inputStream, ItemFactory<InventoryItem> inventoryFactory) {
-	int inventoryCount;
-	inputStream >> inventoryCount;
-	while (inventoryCount--) {
+void Player::readProductFromStream(istream &inputStream, ItemFactory<ProductItem> productFactory) {
+	int productCount;
+	inputStream >> productCount;
+	while (productCount--) {
 		string name;
 		inputStream >> name;
-		int id = inventoryFactory.getIdByName(name);
-		InventoryItem item = inventoryFactory.createItemById(id);
+		int id = productFactory.getIdByName(name);
+		ProductItem item = productFactory.createItemById(id);
 		this->inventory.addItem(item);
 	}
 }
