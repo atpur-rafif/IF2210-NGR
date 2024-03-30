@@ -10,16 +10,18 @@ class Heapify {
 	T *pointer;
 
 public:
+	Heapify() : Heapify(NULL) {}
+
 	Heapify(T *value) {
 		this->set(value);
 	}
 
 	Heapify(const Heapify<T> &from) {
-		pointer = from->clone();
+		*this = from;
 	}
 
 	Heapify &operator=(const Heapify<T> &from) {
-		pointer = from->clone();
+		this->set(from.getRaw());
 		return *this;
 	}
 
@@ -28,7 +30,11 @@ public:
 	}
 
 	T *operator->() const {
-		return pointer;
+		return this->pointer;
+	}
+
+	T *getRaw() const {
+		return this->pointer;
 	}
 
 	void set(T *value) {

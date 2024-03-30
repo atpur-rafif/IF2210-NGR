@@ -20,10 +20,10 @@ FarmItem::~FarmItem() {}
 BarnItem::~BarnItem() {}
 BuildingItem::~BuildingItem() {}
 
-ProductItem *ProductItem::clone() const { return new ProductItem(*this); };
-FarmItem *FarmItem::clone() const { return new FarmItem(*this); };
-BarnItem *BarnItem::clone() const { return new BarnItem(*this); };
-BuildingItem *BuildingItem::clone() const { return new BuildingItem(*this); };
+ProductItem *ProductItem::clone() const { return new ProductItem(*this); }
+FarmItem *FarmItem::clone() const { return new FarmItem(*this); }
+BarnItem *BarnItem::clone() const { return new BarnItem(*this); }
+BuildingItem *BuildingItem::clone() const { return new BuildingItem(*this); }
 
 ProductItemType ProductItem::getProductItemType() { return this->productItemType; }
 FarmItemType FarmItem::getFarmItemType() { return this->farmItemType; }

@@ -11,10 +11,7 @@ public:
 			string dir,
 			MiscConfig &miscConfig,
 			PlayerController &players,
-			ItemFactory<ProductItem> &productFactory,
-			ItemFactory<FarmItem> &farmFactory,
-			ItemFactory<BarnItem> &barnFactory,
-			ItemFactory<BuildingItem> &buildingFactory
+			ItemFactory &itemFactory
 	);
 };
 

@@ -1,41 +1,10 @@
 #ifndef ITEM_HPP
 #define ITEM_HPP
 
+#include "Heapify.hpp"
 #include <iostream>
 #include <map>
 using namespace std;
-
-template <class T>
-class ItemFactory {
-private:
-	map<int, T> repository;
-
-public:
-	void addItem(T item) {
-		this->repository[item.getId()] = item;
-	}
-	int getIdByName(string name) {
-		for (auto const &i : this->repository) {
-			auto item = i.second;
-			if (item.getName() == name) {
-				return item.getId();
-			}
-		}
-		return -1;
-	};
-	int getIdByCode(string code) {
-		for (auto const &i : this->repository) {
-			auto item = i.second;
-			if (item.getName() == code) {
-				return item.getId();
-			}
-		}
-		return -1;
-	}
-	T createItemById(int id) {
-		return repository[id];
-	};
-};
 
 enum ItemType {
 	Product,
@@ -46,8 +15,6 @@ enum ItemType {
 
 class Item {
 protected:
-	template <class T>
-	friend class ItemFactory;
 	int price;
 	int id;
 	string code;
@@ -148,6 +115,28 @@ public:
 
 	map<string, int> *getIngredients();
 	friend istream &operator>>(istream &inputStream, BuildingItem &item);
+};
+
+class ItemFactory {
+private:
+public:
+	map<string, Heapify<Item>> repository;
+	// TODO: Item instance guard
+	template <class T>
+	void addItem(T item) {
+		Item *base = &item;
+		Heapify<Item> heap = Heapify(base);
+		this->repository[item.getCode()] = heap;
+	}
+
+	template <class T>
+	void createItem(string code, Heapify<T> &result) {
+		cout << this->repository[code]->getCode();
+		Item *base = this->repository[code].getRaw();
+		Item *clone = base->clone();
+		T *ptr = dynamic_cast<T *>(clone);
+		result.set(ptr);
+	}
 };
 
 #endif
