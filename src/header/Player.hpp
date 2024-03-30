@@ -12,8 +12,6 @@ enum PlayerType {
 };
 
 class Player {
-	friend class PlayerController;
-
 protected:
 	string username;
 	PlayerType type;
@@ -25,14 +23,11 @@ public:
 	Player(string username, PlayerType type, int weight, int money);
 	virtual Player *clone() const = 0;
 	virtual ~Player();
-	// virtual int calculateTax() = 0;
-	// virtual void eat() = 0;
-	// virtual void turn() = 0;
+
 	PlayerType getType();
 	string getUsername();
 	int getWeight();
 	int getMoney();
-	void readProductFromStream(istream &inputStream, ItemFactory<ProductItem> productFactory);
 };
 
 class PlayerFarmer : public Player {
@@ -43,12 +38,8 @@ public:
 	PlayerFarmer(string username, int weight, int money);
 	PlayerFarmer *clone() const override;
 	virtual ~PlayerFarmer();
-	// virtual int calculateTax();
-	// virtual void eat();
-	// virtual void turn();
 
 	void harvest();
-	void readFarmFromStream(istream &inputStream, ItemFactory<FarmItem> farmFactory);
 };
 
 class PlayerBreeder : public Player {
@@ -59,12 +50,8 @@ public:
 	PlayerBreeder(string username, int weight, int money);
 	PlayerBreeder *clone() const override;
 	virtual ~PlayerBreeder();
-	// virtual int calculateTax();
-	// virtual void eat();
-	// virtual void turn();
 
 	void harvest();
-	void readBarnFromStream(istream &inputStream, ItemFactory<BarnItem> barnFactory);
 	void feed();
 };
 
@@ -74,9 +61,6 @@ public:
 	PlayerMayor(string username, int weight, int money);
 	PlayerMayor *clone() const override;
 	virtual ~PlayerMayor();
-	// virtual int calculateTax();
-	// virtual void eat();
-	// virtual void turn();
 
 	void build();
 };
