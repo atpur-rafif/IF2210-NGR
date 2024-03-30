@@ -6,9 +6,7 @@ SpecializationType Player::getType() { return this->type; }
 int Player::getWeight() { return this->weight; }
 int Player::getMoney() { return this->money; }
 string Player::getUsername() { return this->username; }
-Storage<Heapify<Item>> &Player::getInventory() {
-	return this->inventory;
-};
+HeapifyStorage<Item> &Player::getInventory() { return this->inventory; }
 
 PlayerSpecialization::PlayerSpecialization() {}
 FarmerSpecialization::FarmerSpecialization() {}
@@ -23,6 +21,9 @@ MayorSpecialization::~MayorSpecialization() {}
 FarmerSpecialization *FarmerSpecialization::clone() const { return new FarmerSpecialization(*this); }
 BreederSpecialization *BreederSpecialization::clone() const { return new BreederSpecialization(*this); }
 MayorSpecialization *MayorSpecialization::clone() const { return new MayorSpecialization(*this); }
+
+Storage<FarmItem> & ::FarmerSpecialization::getFarm() { return this->farm; };
+Storage<BarnItem> & ::BreederSpecialization::getBarn() { return this->barn; };
 
 PlayerSpecialization &Player::getSpecialization() { return *this->specialization.getRaw(); };
 void Player::specialize(PlayerSpecialization &specialization) { this->specialization = Heapify(&specialization); }
@@ -44,7 +45,7 @@ istream &operator>>(istream &inputStream, Player &player) {
 
 void Player::readInventoryFromStream(istream &inputStream, MiscConfig &miscConfig, ItemFactory &itemFactory) {
 	auto size = miscConfig.getInventorySize();
-	this->inventory = Storage<Heapify<Item>>(size.first, size.second);
+	this->inventory = HeapifyStorage<Item>(size.first, size.second);
 
 	int count;
 	inputStream >> count;
