@@ -7,11 +7,12 @@
 class PlayerController : public GameObject {
 private:
 	vector<Player> players;
+	vector<Player *> ordered;
 	void rearrangePosition();
 
 public:
 	void addPlayer(Player player);
-	vector<Player> *getPlayers();
+	vector<Player *> *getPlayers();
 };
 
 #endif
