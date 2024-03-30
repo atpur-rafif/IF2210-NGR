@@ -1,20 +1,15 @@
 #ifndef ITEM_FACTORY_HPP
 #define ITEM_FACTORY_HPP
 
+#include "GameObject.hpp"
 #include "Heapify.hpp"
 #include "Item.hpp"
 #include <functional>
 
-class ItemFactory {
+class ItemFactory : public GameObject {
 private:
 	map<string, Heapify<Item>> repository;
-	string codeFinder(function<bool(Item *)> &lambda) {
-		for (const auto &i : this->repository) {
-			auto item = i.second.getRaw();
-			if (lambda(item)) return item->getCode();
-		}
-		throw "Item not found";
-	}
+	string codeFinder(function<bool(Item *)> &lambda);
 
 public:
 	// TODO: Item instance guard
@@ -31,18 +26,12 @@ public:
 		Item *clone = base->clone();
 		T *ptr = dynamic_cast<T *>(clone);
 		result = *ptr;
+		result.setContext(this->getContext());
 	}
 
-	Heapify<Item> createBaseItem(string code) {
-		return Heapify(this->repository[code]);
-	}
+	Heapify<Item> createBaseItem(string code);
 
-	string getCodeByName(const string name) {
-		function<bool(Item *)> fn = [name](Item *item) {
-			return item->getName() == name;
-		};
-		return this->codeFinder(fn);
-	}
+	string getCodeByName(const string name);
 };
 
 #endif

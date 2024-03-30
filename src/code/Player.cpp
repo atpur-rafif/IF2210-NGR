@@ -1,7 +1,8 @@
 #include "Player.hpp"
-#include "Game.hpp"
+#include "GameContext.hpp"
 
 Player::Player() {}
+Player::~Player() {}
 
 SpecializationType Player::getType() { return this->type; }
 int Player::getWeight() { return this->weight; }

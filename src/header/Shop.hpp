@@ -1,6 +1,10 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-class Shop {};
+#include "GameObject.hpp"
+class Shop : public GameObject {
+public:
+	Shop() {}
+};
 
 #endif

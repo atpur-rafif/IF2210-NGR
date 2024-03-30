@@ -1,6 +1,7 @@
 #ifndef ITEM_HPP
 #define ITEM_HPP
 
+#include "GameObject.hpp"
 #include <iostream>
 #include <map>
 using namespace std;
@@ -12,7 +13,7 @@ enum ItemType {
 	Building
 };
 
-class Item {
+class Item : public GameObject {
 protected:
 	int price;
 	int id;

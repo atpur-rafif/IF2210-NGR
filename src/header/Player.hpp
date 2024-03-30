@@ -1,6 +1,7 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
+#include "GameObject.hpp"
 #include "Heapify.hpp"
 #include "Item.hpp"
 #include "ItemFactory.hpp"
@@ -15,17 +16,18 @@ enum SpecializationType {
 	Mayor
 };
 
-class PlayerSpecialization {
+class PlayerSpecialization : public GameObject {
 private:
 public:
 	PlayerSpecialization();
 	virtual PlayerSpecialization *clone() const = 0;
 	virtual ~PlayerSpecialization();
 
+	// TODO: Use GameObject interface instead using GameContext parameter
 	virtual void readSpecializationFromStream(istream &inputStream, GameContext &context) = 0;
 };
 
-class Player {
+class Player : public GameObject {
 protected:
 	string username;
 	SpecializationType type;
@@ -37,6 +39,7 @@ protected:
 
 public:
 	Player();
+	virtual ~Player();
 
 	SpecializationType getType();
 	int getWeight();
