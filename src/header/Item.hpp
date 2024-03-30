@@ -76,7 +76,6 @@ public:
 	int getDurationToHarvest();
 	FarmItemType getFarmItemType();
 	int getAge();
-
 	void setAge(int age);
 };
 

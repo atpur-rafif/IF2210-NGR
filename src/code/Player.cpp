@@ -66,13 +66,15 @@ void FarmerSpecialization::readSpecializationFromStream(istream &inputStream, Mi
 	int count;
 	inputStream >> count;
 	while (count--) {
-		string location, name, age;
+		int age;
+		string location, name;
 		inputStream >> location >> name >> age;
 
 		FarmItem item;
 		string code = itemFactory.getCodeByName(name);
 		itemFactory.createItem(code, item);
-		this->farm.addItem(item);
+		item.setAge(age);
+		this->farm.setItem(location, item);
 	}
 };
 
@@ -84,13 +86,15 @@ void BreederSpecialization::readSpecializationFromStream(istream &inputStream, M
 	int count;
 	inputStream >> count;
 	while (count--) {
-		string location, name, weight;
+		int weight;
+		string location, name;
 		inputStream >> location >> name >> weight;
 
 		BarnItem item;
 		string code = itemFactory.getCodeByName(name);
 		itemFactory.createItem(code, item);
-		this->barn.addItem(item);
+		item.setWeight(weight);
+		this->barn.setItem(location, item);
 	}
 };
 
