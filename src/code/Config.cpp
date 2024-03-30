@@ -22,20 +22,17 @@ const string stateFilename = "state.txt";
 
 void Config::readConfig(
 		string dir,
-		MiscConfig &miscConfig,
-		PlayerController &players,
-		ItemFactory &itemFactory
+		GameContext &context
 ) {
-	(void)players;
 
 	ifstream miscFile;
 	miscFile.open(dir + "/" + miscFilename);
-	miscFile >> miscConfig;
+	miscFile >> context.miscConfig;
 
-	readItemConfigFileMacro(ProductItem, dir, productItemFilename, itemFactory);
-	readItemConfigFileMacro(FarmItem, dir, farmItemFilename, itemFactory);
-	readItemConfigFileMacro(BarnItem, dir, barnItemFilename, itemFactory);
-	readItemConfigFileMacro(BuildingItem, dir, buildingFilename, itemFactory);
+	readItemConfigFileMacro(ProductItem, dir, productItemFilename, context.itemFactory);
+	readItemConfigFileMacro(FarmItem, dir, farmItemFilename, context.itemFactory);
+	readItemConfigFileMacro(BarnItem, dir, barnItemFilename, context.itemFactory);
+	readItemConfigFileMacro(BuildingItem, dir, buildingFilename, context.itemFactory);
 
 	ifstream stateFile;
 	stateFile.open(dir + "/" + stateFilename);
@@ -44,7 +41,7 @@ void Config::readConfig(
 	while (playerCount--) {
 		Player player;
 		stateFile >> player;
-		player.readInventoryFromStream(stateFile, miscConfig, itemFactory);
+		player.readInventoryFromStream(stateFile, context.miscConfig, context.itemFactory);
 
 		if (player.getType() == Farmer) {
 			FarmerSpecialization farmer;
@@ -59,7 +56,7 @@ void Config::readConfig(
 			throw "Player specialization undefined";
 		}
 
-		player.getSpecialization().readSpecializationFromStream(stateFile, miscConfig, itemFactory);
-		players.addPlayer(player);
+		player.getSpecialization().readSpecializationFromStream(stateFile, context);
+		context.players.addPlayer(player);
 	}
 };

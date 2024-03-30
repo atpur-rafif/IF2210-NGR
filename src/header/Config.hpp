@@ -1,18 +1,14 @@
 #ifndef CLI_HPP
 #define CLI_HPP
 
-#include "ItemFactory.hpp"
-#include "MiscConfig.hpp"
-#include "PlayerController.hpp"
+#include "Game.hpp"
 
 class Config {
 public:
-	// TODO: seperate state reader
+	// TODO: Seperate state reader
 	static void readConfig(
 			string dir,
-			MiscConfig &miscConfig,
-			PlayerController &players,
-			ItemFactory &itemFactory
+			GameContext &context
 	);
 };
 

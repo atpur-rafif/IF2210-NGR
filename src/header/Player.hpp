@@ -7,6 +7,8 @@
 #include "MiscConfig.hpp"
 #include "Storage.hpp"
 
+class GameContext;
+
 enum SpecializationType {
 	Farmer,
 	Breeder,
@@ -20,7 +22,7 @@ public:
 	virtual PlayerSpecialization *clone() const = 0;
 	virtual ~PlayerSpecialization();
 
-	virtual void readSpecializationFromStream(istream &inputStream, MiscConfig &miscConfig, ItemFactory &itemFactory) = 0;
+	virtual void readSpecializationFromStream(istream &inputStream, GameContext &context) = 0;
 };
 
 class Player {
@@ -59,7 +61,7 @@ public:
 	virtual ~FarmerSpecialization();
 
 	Storage<FarmItem> &getFarm();
-	virtual void readSpecializationFromStream(istream &inputStream, MiscConfig &miscConfig, ItemFactory &itemFactory);
+	virtual void readSpecializationFromStream(istream &inputStream, GameContext &context);
 };
 
 class BreederSpecialization : public PlayerSpecialization {
@@ -72,7 +74,7 @@ public:
 	virtual ~BreederSpecialization();
 
 	Storage<BarnItem> &getBarn();
-	virtual void readSpecializationFromStream(istream &inputStream, MiscConfig &miscConfig, ItemFactory &itemFactory);
+	virtual void readSpecializationFromStream(istream &inputStream, GameContext &context);
 };
 
 class MayorSpecialization : public PlayerSpecialization {
@@ -82,7 +84,7 @@ public:
 	virtual MayorSpecialization *clone() const;
 	virtual ~MayorSpecialization();
 
-	virtual void readSpecializationFromStream(istream &inputStream, MiscConfig &miscConfig, ItemFactory &itemFactory);
+	virtual void readSpecializationFromStream(istream &inputStream, GameContext &context);
 };
 
 #endif

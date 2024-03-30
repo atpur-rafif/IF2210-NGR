@@ -1,4 +1,5 @@
 #include "Player.hpp"
+#include "Game.hpp"
 
 Player::Player() {}
 
@@ -58,9 +59,8 @@ void Player::readInventoryFromStream(istream &inputStream, MiscConfig &miscConfi
 	}
 };
 
-// TODO: Set item attribute
-void FarmerSpecialization::readSpecializationFromStream(istream &inputStream, MiscConfig &miscConfig, ItemFactory &itemFactory) {
-	auto size = miscConfig.getFarmSize();
+void FarmerSpecialization::readSpecializationFromStream(istream &inputStream, GameContext &context) {
+	auto size = context.miscConfig.getFarmSize();
 	this->farm = Storage<FarmItem>(size.first, size.second);
 
 	int count;
@@ -71,16 +71,15 @@ void FarmerSpecialization::readSpecializationFromStream(istream &inputStream, Mi
 		inputStream >> location >> name >> age;
 
 		FarmItem item;
-		string code = itemFactory.getCodeByName(name);
-		itemFactory.createItem(code, item);
+		string code = context.itemFactory.getCodeByName(name);
+		context.itemFactory.createItem(code, item);
 		item.setAge(age);
 		this->farm.setItem(location, item);
 	}
 };
 
-// TODO: Set item attribute
-void BreederSpecialization::readSpecializationFromStream(istream &inputStream, MiscConfig &miscConfig, ItemFactory &itemFactory) {
-	auto size = miscConfig.getBarnSize();
+void BreederSpecialization::readSpecializationFromStream(istream &inputStream, GameContext &context) {
+	auto size = context.miscConfig.getBarnSize();
 	this->barn = Storage<BarnItem>(size.first, size.second);
 
 	int count;
@@ -91,15 +90,14 @@ void BreederSpecialization::readSpecializationFromStream(istream &inputStream, M
 		inputStream >> location >> name >> weight;
 
 		BarnItem item;
-		string code = itemFactory.getCodeByName(name);
-		itemFactory.createItem(code, item);
+		string code = context.itemFactory.getCodeByName(name);
+		context.itemFactory.createItem(code, item);
 		item.setWeight(weight);
 		this->barn.setItem(location, item);
 	}
 };
 
-void MayorSpecialization::readSpecializationFromStream(istream &inputStream, MiscConfig &config, ItemFactory &itemFactory) {
+void MayorSpecialization::readSpecializationFromStream(istream &inputStream, GameContext &context) {
 	(void)inputStream;
-	(void)config;
-	(void)itemFactory;
+	(void)context;
 };
