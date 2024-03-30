@@ -15,7 +15,9 @@ protected:
 	int width;
 	int height;
 	vector<optional<T>> storage;
+
 	int flat(int x, int y) { return y * this->width + x; };
+
 	static int stringToInt(string value) {
 		int result = 0;
 		int length = value.length();
@@ -25,6 +27,27 @@ protected:
 		return result;
 	}
 
+	static pair<int, int> parseCoordinate(string str) {
+		int len = str.length();
+
+		string x = "";
+		string y = "";
+		for (int i = 0; i < len; ++i) {
+			auto ch = str.at(i);
+			if (
+					('A' <= ch && ch <= 'Z') ||
+					('a' <= ch && ch <= 'z')
+			) x += ch;
+			else if (
+					('0' <= ch && ch <= '9')
+			) y += ch;
+		}
+
+		if (x.length() == 0 || y.length() == 0) throw "Invalid coordinate";
+
+		return {stringToInt(x), stoi(y) - 1};
+	}
+
 public:
 	Storage() : Storage(0, 0){};
 
@@ -32,15 +55,14 @@ public:
 		this->storage.resize(width * height);
 	};
 
-	T *getItem(string x, int y) {
-		auto val = this->storage[this->flat(this->stringToInt(x), y)];
-		if (val.has_value()) return &val.value();
-		else return NULL;
+	optional<T> &getItem(string coordinate) {
+		auto c = this->parseCoordinate(coordinate);
+		return this->storage[this->flat(c.first, c.second)];
 	};
 
-	void setItem(string x, int y, T item) {
-		int ix = this->stringToInt(x);
-		int i = this->flat(ix, y);
+	void setItem(string coordinate, T &item) {
+		auto c = this->parseCoordinate(coordinate);
+		int i = this->flat(c.first, c.second);
 		this->storage[i] = item;
 	};
 
@@ -75,17 +97,12 @@ public:
 	}
 };
 
+// TODO: This is temporary solution, will be refactored
 template <class T>
 class HeapifyStorage : public Storage<Heapify<T>> {
 public:
 	HeapifyStorage() : HeapifyStorage(0, 0){};
 	HeapifyStorage(int width, int height) : Storage<Heapify<T>>(width, height){};
-
-	T *getItem(string x, int y) {
-		auto val = this->storage[this->flat(this->stringToInt(x), y)];
-		if (val.has_value()) return val->getRaw();
-		else return NULL;
-	};
 
 	void print() {
 		for (int y = 0; y < this->height; ++y) {
