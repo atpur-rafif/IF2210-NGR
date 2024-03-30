@@ -6,13 +6,13 @@ int Item::getPrice() { return this->price; }
 int Item::getId() { return this->id; }
 string Item::getCode() { return this->code; }
 string Item::getName() { return this->name; }
-ItemType Item::getItemType() { return this->itemType; }
+ItemType Item::getType() { return this->type; }
 
 Item::Item() : id(-1), code("   ") {}
-ProductItem::ProductItem() { this->itemType = Product; }
-FarmItem::FarmItem() { this->itemType = Farm; }
-BarnItem::BarnItem() { this->itemType = Barn; }
-BuildingItem::BuildingItem() { this->itemType = Building; }
+ProductItem::ProductItem() { this->type = Product; }
+FarmItem::FarmItem() { this->type = Farm; }
+BarnItem::BarnItem() { this->type = Barn; }
+BuildingItem::BuildingItem() { this->type = Building; }
 
 Item::~Item(){};
 ProductItem::~ProductItem() {}
@@ -25,9 +25,9 @@ FarmItem *FarmItem::clone() const { return new FarmItem(*this); };
 BarnItem *BarnItem::clone() const { return new BarnItem(*this); };
 BuildingItem *BuildingItem::clone() const { return new BuildingItem(*this); };
 
-ProductItemType ProductItem::getType() { return this->type; }
-FarmItemType FarmItem::getType() { return this->type; }
-BarnItemType BarnItem::getType() { return this->type; }
+ProductItemType ProductItem::getProductItemType() { return this->productItemType; }
+FarmItemType FarmItem::getFarmItemType() { return this->farmItemType; }
+BarnItemType BarnItem::getBarnItemType() { return this->barnItemType; }
 
 int FarmItem::getAge() { return this->currentAge; }
 void FarmItem::setAge(int age) { this->currentAge = age; }
@@ -57,9 +57,9 @@ istream &operator>>(istream &inputStream, BuildingItem &item) {
 void ProductItem::readAttributeFromStream(istream &inputStream) {
 	string type;
 	inputStream >> type;
-	if (type == "PRODUCT_MATERIAL_PLANT") this->type = MaterialPlant;
-	else if (type == "PRODUCT_FRUIT_PLANT") this->type = MaterialPlant;
-	else if (type == "PRODUCT_ANIMAL") this->type = Animal;
+	if (type == "PRODUCT_MATERIAL_PLANT") this->productItemType = MaterialPlant;
+	else if (type == "PRODUCT_FRUIT_PLANT") this->productItemType = MaterialPlant;
+	else if (type == "PRODUCT_ANIMAL") this->productItemType = Animal;
 
 	inputStream >> this->origin;
 	inputStream >> this->addedWeight;
@@ -68,17 +68,17 @@ void ProductItem::readAttributeFromStream(istream &inputStream) {
 void FarmItem::readAttributeFromStream(istream &inputStream) {
 	string type;
 	inputStream >> type;
-	if (type == "MATERIAL_PLANT") this->type = Material;
-	else if (type == "FRUIT_PLANT") this->type = Fruit;
+	if (type == "MATERIAL_PLANT") this->farmItemType = Material;
+	else if (type == "FRUIT_PLANT") this->farmItemType = Fruit;
 	inputStream >> this->durationToHarvest;
 }
 
 void BarnItem::readAttributeFromStream(istream &inputStream) {
 	string type;
 	inputStream >> type;
-	if (type == "HERBIVORE") this->type = Herbivore;
-	else if (type == "CARNIVORE") this->type = Carnivore;
-	else if (type == "OMNIVORE") this->type = Omnivore;
+	if (type == "HERBIVORE") this->barnItemType = Herbivore;
+	else if (type == "CARNIVORE") this->barnItemType = Carnivore;
+	else if (type == "OMNIVORE") this->barnItemType = Omnivore;
 
 	inputStream >> this->weightToHarvest;
 }

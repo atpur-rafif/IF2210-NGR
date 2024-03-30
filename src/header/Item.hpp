@@ -52,7 +52,7 @@ protected:
 	int id;
 	string code;
 	string name;
-	ItemType itemType;
+	ItemType type;
 	virtual void readAttributeFromStream(istream &inputStream) = 0;
 
 public:
@@ -63,7 +63,7 @@ public:
 	int getId();
 	string getCode();
 	string getName();
-	ItemType getItemType();
+	ItemType getType();
 	friend istream &operator>>(istream &inputStream, Item &item);
 };
 
@@ -77,7 +77,7 @@ class ProductItem : public Item {
 private:
 	string origin;
 	int addedWeight;
-	ProductItemType type;
+	ProductItemType productItemType;
 	virtual void readAttributeFromStream(istream &inputStream);
 
 public:
@@ -85,7 +85,7 @@ public:
 	virtual ProductItem *clone() const;
 	virtual ~ProductItem();
 	ProductItem(int price);
-	ProductItemType getType();
+	ProductItemType getProductItemType();
 };
 
 enum FarmItemType {
@@ -95,7 +95,7 @@ enum FarmItemType {
 
 class FarmItem : public Item {
 private:
-	FarmItemType type;
+	FarmItemType farmItemType;
 	int durationToHarvest;
 	int currentAge;
 	virtual void readAttributeFromStream(istream &inputStream);
@@ -106,7 +106,7 @@ public:
 	virtual ~FarmItem();
 	FarmItem(int price, int durationToHarvest);
 	int getDurationToHarvest();
-	FarmItemType getType();
+	FarmItemType getFarmItemType();
 	int getAge();
 	void setAge(int age);
 };
@@ -119,7 +119,7 @@ enum BarnItemType {
 
 class BarnItem : public Item {
 private:
-	BarnItemType type;
+	BarnItemType barnItemType;
 	int weightToHarvest;
 	int currentWeight;
 	static int p;
@@ -131,7 +131,7 @@ public:
 	virtual ~BarnItem();
 	BarnItem(int price, int weightToHarvest);
 	int getWeightToHarvest();
-	BarnItemType getType();
+	BarnItemType getBarnItemType();
 	int getWeight();
 	void setWeight(int weight);
 };
