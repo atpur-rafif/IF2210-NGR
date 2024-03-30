@@ -23,12 +23,19 @@ public:
 		return *this;
 	}
 
+	~Heapify() {
+		if (this->pointer != NULL) delete this->pointer;
+	}
+
 	T *operator->() const {
 		return pointer;
 	}
 
 	void set(T *value) {
-		if (value == NULL) return;
+		if (value == NULL) {
+			this->pointer = NULL;
+			return;
+		};
 		pointer = value->clone();
 	}
 };
