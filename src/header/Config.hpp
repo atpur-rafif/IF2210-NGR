@@ -1,8 +1,8 @@
 #ifndef CLI_HPP
 #define CLI_HPP
 
-#include "Game.hpp"
 #include "ItemFactory.hpp"
+#include "MiscConfig.hpp"
 #include "PlayerController.hpp"
 
 class Config {

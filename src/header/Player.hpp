@@ -1,10 +1,10 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include "Game.hpp"
 #include "Heapify.hpp"
 #include "Item.hpp"
 #include "ItemFactory.hpp"
+#include "MiscConfig.hpp"
 #include "Storage.hpp"
 
 enum SpecializationType {
