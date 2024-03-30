@@ -1,11 +1,8 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include "Item.hpp"
-#include "Player.hpp"
 #include <iostream>
 #include <utility>
-#include <vector>
 using namespace std;
 
 class MiscConfig {

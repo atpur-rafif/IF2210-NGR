@@ -1,7 +1,6 @@
 #ifndef STORAGE_HPP
 #define STORAGE_HPP
 
-#include "Item.hpp"
 #include <iostream>
 #include <vector>
 using namespace std;

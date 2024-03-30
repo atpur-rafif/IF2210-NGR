@@ -2,7 +2,8 @@
 #define CLI_HPP
 
 #include "Game.hpp"
-#include "Item.hpp"
+#include "ItemFactory.hpp"
+#include "PlayerController.hpp"
 
 class Config {
 public:

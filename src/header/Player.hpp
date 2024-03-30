@@ -1,7 +1,6 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include "Heapify.hpp"
 #include "Item.hpp"
 #include "Storage.hpp"
 
@@ -36,7 +35,7 @@ private:
 
 public:
 	PlayerFarmer(string username, int weight, int money);
-	PlayerFarmer *clone() const override;
+	PlayerFarmer *clone() const;
 	virtual ~PlayerFarmer();
 
 	void harvest();
@@ -48,7 +47,7 @@ private:
 
 public:
 	PlayerBreeder(string username, int weight, int money);
-	PlayerBreeder *clone() const override;
+	PlayerBreeder *clone() const;
 	virtual ~PlayerBreeder();
 
 	void harvest();
@@ -59,20 +58,10 @@ class PlayerMayor : public Player {
 private:
 public:
 	PlayerMayor(string username, int weight, int money);
-	PlayerMayor *clone() const override;
+	PlayerMayor *clone() const;
 	virtual ~PlayerMayor();
 
 	void build();
-};
-
-class PlayerController {
-private:
-	vector<Heapify<Player>> players;
-	void rearrangePosition();
-
-public:
-	void addPlayer(Heapify<Player> player);
-	vector<Heapify<Player>> *getPlayers();
 };
 
 #endif
