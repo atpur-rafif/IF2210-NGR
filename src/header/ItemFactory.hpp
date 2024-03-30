@@ -33,6 +33,10 @@ public:
 		result = *ptr;
 	}
 
+	Heapify<Item> createBaseItem(string code) {
+		return Heapify(this->repository[code]);
+	}
+
 	string getCodeByName(const string name) {
 		function<bool(Item *)> fn = [name](Item *item) {
 			return item->getName() == name;

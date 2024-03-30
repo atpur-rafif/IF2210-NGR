@@ -8,7 +8,7 @@ string Item::getCode() { return this->code; }
 string Item::getName() { return this->name; }
 ItemType Item::getType() { return this->type; }
 
-Item::Item() : id(-1), code("   ") {}
+Item::Item() {}
 ProductItem::ProductItem() { this->type = Product; }
 FarmItem::FarmItem() { this->type = Farm; }
 BarnItem::BarnItem() { this->type = Barn; }
@@ -34,8 +34,7 @@ void FarmItem::setAge(int age) { this->currentAge = age; }
 int BarnItem::getWeight() { return this->currentWeight; }
 void BarnItem::setWeight(int weight) { this->currentWeight = weight; }
 
-istream &
-operator>>(istream &inputStream, Item &item) {
+istream &operator>>(istream &inputStream, Item &item) {
 	inputStream >> item.id;
 	inputStream >> item.code;
 	inputStream >> item.name;

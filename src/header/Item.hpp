@@ -25,11 +25,13 @@ public:
 	Item();
 	virtual Item *clone() const = 0;
 	virtual ~Item();
+
 	int getPrice();
 	int getId();
 	string getCode();
 	string getName();
 	ItemType getType();
+
 	friend istream &operator>>(istream &inputStream, Item &item);
 };
 
@@ -50,7 +52,7 @@ public:
 	ProductItem();
 	virtual ProductItem *clone() const;
 	virtual ~ProductItem();
-	ProductItem(int price);
+
 	ProductItemType getProductItemType();
 };
 
@@ -70,10 +72,11 @@ public:
 	FarmItem();
 	virtual FarmItem *clone() const;
 	virtual ~FarmItem();
-	FarmItem(int price, int durationToHarvest);
+
 	int getDurationToHarvest();
 	FarmItemType getFarmItemType();
 	int getAge();
+
 	void setAge(int age);
 };
 
@@ -95,7 +98,7 @@ public:
 	BarnItem();
 	virtual BarnItem *clone() const;
 	virtual ~BarnItem();
-	BarnItem(int price, int weightToHarvest);
+
 	int getWeightToHarvest();
 	BarnItemType getBarnItemType();
 	int getWeight();
@@ -113,6 +116,7 @@ public:
 	virtual ~BuildingItem();
 
 	map<string, int> *getIngredients();
+
 	friend istream &operator>>(istream &inputStream, BuildingItem &item);
 };
 

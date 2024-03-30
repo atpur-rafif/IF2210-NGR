@@ -1,10 +1,23 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
+#include "Game.hpp"
+#include "Heapify.hpp"
 #include "Item.hpp"
+#include "ItemFactory.hpp"
 #include "Storage.hpp"
 
-enum PlayerType {
+class PlayerSpecialization {
+private:
+public:
+	PlayerSpecialization();
+	virtual PlayerSpecialization *clone() const = 0;
+	virtual ~PlayerSpecialization();
+
+	virtual void readSpecializationFromStream(istream &inputStream, MiscConfig &miscConfig, ItemFactory &itemFactory) = 0;
+};
+
+enum SpecializationType {
 	Farmer,
 	Breeder,
 	Mayor
@@ -13,55 +26,61 @@ enum PlayerType {
 class Player {
 protected:
 	string username;
-	PlayerType type;
+	SpecializationType type;
 	int weight;
 	int money;
-	Storage<ProductItem> inventory;
+	Storage<Heapify<Item>> inventory;
+
+	Heapify<PlayerSpecialization> specialization;
 
 public:
-	Player(string username, PlayerType type, int weight, int money);
-	virtual Player *clone() const = 0;
-	virtual ~Player();
+	Player();
 
-	PlayerType getType();
-	string getUsername();
+	SpecializationType getType();
 	int getWeight();
 	int getMoney();
+	string getUsername();
+	Storage<Heapify<Item>> &getInventory();
+
+	PlayerSpecialization &getSpecialization();
+	void specialize(PlayerSpecialization &specialization);
+
+	friend istream &operator>>(istream &inputStream, Player &player);
+	void readInventoryFromStream(istream &inputStream, MiscConfig &config, ItemFactory &itemFactory);
 };
 
-class PlayerFarmer : public Player {
+class FarmerSpecialization : public PlayerSpecialization {
 private:
 	Storage<FarmItem> farm;
 
 public:
-	PlayerFarmer(string username, int weight, int money);
-	PlayerFarmer *clone() const;
-	virtual ~PlayerFarmer();
+	FarmerSpecialization();
+	virtual FarmerSpecialization *clone() const;
+	virtual ~FarmerSpecialization();
 
-	void harvest();
+	virtual void readSpecializationFromStream(istream &inputStream, MiscConfig &miscConfig, ItemFactory &itemFactory);
 };
 
-class PlayerBreeder : public Player {
+class BreederSpecialization : public PlayerSpecialization {
 private:
 	Storage<BarnItem> barn;
 
 public:
-	PlayerBreeder(string username, int weight, int money);
-	PlayerBreeder *clone() const;
-	virtual ~PlayerBreeder();
+	BreederSpecialization();
+	virtual BreederSpecialization *clone() const;
+	virtual ~BreederSpecialization();
 
-	void harvest();
-	void feed();
+	virtual void readSpecializationFromStream(istream &inputStream, MiscConfig &miscConfig, ItemFactory &itemFactory);
 };
 
-class PlayerMayor : public Player {
+class MayorSpecialization : public PlayerSpecialization {
 private:
 public:
-	PlayerMayor(string username, int weight, int money);
-	PlayerMayor *clone() const;
-	virtual ~PlayerMayor();
+	MayorSpecialization();
+	virtual MayorSpecialization *clone() const;
+	virtual ~MayorSpecialization();
 
-	void build();
+	virtual void readSpecializationFromStream(istream &inputStream, MiscConfig &miscConfig, ItemFactory &itemFactory);
 };
 
 #endif

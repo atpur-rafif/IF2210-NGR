@@ -2,6 +2,8 @@
 #define HEAPIFY_HPP
 
 #include <cstddef>
+#include <iostream>
+using namespace std;
 
 // Make sure to use value with derived type, instead base type
 // Somehow the compiler doesn't want to clone using derived virtual method with base type

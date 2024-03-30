@@ -11,6 +11,7 @@ private:
 	int width;
 	int height;
 	vector<T> storage;
+	vector<bool> filled;
 	int flat(int x, int y) { return y * this->width + x; };
 	static int stringToInt(string value) {
 		int result = 0;
@@ -20,45 +21,50 @@ private:
 		}
 		return result;
 	}
-	T &get(string x, int y) {
-		return this->storage.at(this->flat(this->stringToInt(x), y));
-	}
 
 public:
 	Storage() : Storage(0, 0){};
 
 	Storage(int width, int height) : width(width), height(height) {
 		this->storage.resize(width * height);
+		this->filled.resize(width * height);
+		for (int i = 0; i < width * height; ++i)
+			this->filled[i] = false;
 	};
 
 	T &getItem(string x, int y) {
-		return this->get(x, y);
+		return this->storage[this->flat(this->stringToInt(x), y)];
 	};
 
 	void setItem(string x, int y, T item) {
-		this->get(x, y) = item;
+		int ix = this->stringToInt(x);
+		int i = this->flat(ix, y);
+		this->filled[i] = true;
+		this->storage[i] = item;
 	};
 
-	// TODO: cache last empty found
 	void addItem(T item) {
 		for (int y = 0; y < this->height; ++y) {
 			for (int x = 0; x < this->width; ++x) {
 				int i = this->flat(x, y);
-				T current = this->storage.at(i);
-				if (current.getId() == -1) {
-					current = item;
+				if (!this->filled[i]) {
+					this->filled[i] = true;
+					this->storage[i] = item;
 					return;
 				}
 			}
 		}
 	}
 
+	// TODO: Generalize iterator
 	void print() {
 		for (int y = 0; y < this->height; ++y) {
 			cout << "| ";
 			for (int x = 0; x < this->width; ++x) {
 				int i = this->flat(x, y);
-				cout << this->storage.at(i).getCode() << " | ";
+				if (!this->filled[i]) cout << "   ";
+				else cout << this->storage.at(i)->getCode();
+				cout << " | ";
 			}
 			cout << endl;
 		}

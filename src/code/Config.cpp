@@ -7,7 +7,7 @@ const string productItemFilename = "product.txt";
 const string farmItemFilename = "plant.txt";
 const string barnItemFilename = "animal.txt";
 const string buildingFilename = "recipe.txt";
-// const string stateFilename = "state.txt";
+const string stateFilename = "state.txt";
 
 #define readItemConfigFileMacro(type, dir, filename, itemFactory) \
 	{                                                               \
@@ -36,4 +36,30 @@ void Config::readConfig(
 	readItemConfigFileMacro(FarmItem, dir, farmItemFilename, itemFactory);
 	readItemConfigFileMacro(BarnItem, dir, barnItemFilename, itemFactory);
 	readItemConfigFileMacro(BuildingItem, dir, buildingFilename, itemFactory);
+
+	ifstream stateFile;
+	stateFile.open(dir + "/" + stateFilename);
+	int playerCount;
+	stateFile >> playerCount;
+	while (playerCount--) {
+		Player player;
+		stateFile >> player;
+		player.readInventoryFromStream(stateFile, miscConfig, itemFactory);
+
+		if (player.getType() == Farmer) {
+			FarmerSpecialization farmer;
+			player.specialize(farmer);
+		} else if (player.getType() == Breeder) {
+			BreederSpecialization breeder;
+			player.specialize(breeder);
+		} else if (player.getType() == Mayor) {
+			MayorSpecialization mayor;
+			player.specialize(mayor);
+		} else {
+			throw "Player specialization undefined";
+		}
+
+		player.getSpecialization().readSpecializationFromStream(stateFile, miscConfig, itemFactory);
+		players.addPlayer(player);
+	}
 };

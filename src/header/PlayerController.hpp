@@ -1,17 +1,16 @@
 #ifndef PLAYER_CONTROLLER_HPP
 #define PLAYER_CONTROLLER_HPP
 
-#include "Heapify.hpp"
 #include "Player.hpp"
 
 class PlayerController {
 private:
-	vector<Heapify<Player>> players;
+	vector<Player> players;
 	void rearrangePosition();
 
 public:
-	void addPlayer(Heapify<Player> player);
-	vector<Heapify<Player>> *getPlayers();
+	void addPlayer(Player player);
+	vector<Player> *getPlayers();
 };
 
 #endif

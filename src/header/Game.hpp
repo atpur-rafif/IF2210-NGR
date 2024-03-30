@@ -8,7 +8,7 @@ using namespace std;
 class MiscConfig {
 	int targetMoney;
 	int targetWeight;
-	pair<int, int> productSize;
+	pair<int, int> inventorySize;
 	pair<int, int> farmSize;
 	pair<int, int> barnSize;
 
@@ -23,7 +23,7 @@ public:
 	);
 	int getTargetMoney();
 	int getTargetWeight();
-	pair<int, int> getProductSize();
+	pair<int, int> getInventorySize();
 	pair<int, int> getFarmSize();
 	pair<int, int> getBarnSize();
 	friend istream &operator>>(istream &inputStream, MiscConfig &miscConfig);
