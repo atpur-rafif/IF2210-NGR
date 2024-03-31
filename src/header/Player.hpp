@@ -24,8 +24,6 @@ public:
 	Player();
 	virtual ~Player();
 	virtual Player *clone();
-
-	friend istream &operator>>(istream &inputStream, Heapify<Player> &player);
 };
 
 class Farmer : public Player {

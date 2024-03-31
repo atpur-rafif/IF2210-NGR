@@ -16,6 +16,7 @@ public:
 	void addPlayer(Heapify<Player> &player);
 	void rearrangePosition();
 	vector<Player *> *getPlayers();
+	Heapify<Player> readPlayerFromStream(istream &inputStream);
 };
 
 #endif
