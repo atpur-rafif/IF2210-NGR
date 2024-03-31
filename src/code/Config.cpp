@@ -41,7 +41,8 @@ void Config::readConfig(
 	while (playerCount--) {
 		Player player;
 		stateFile >> player;
-		player.readInventoryFromStream(stateFile, context.miscConfig, context.itemFactory);
+		player.setContext(context);
+		player.readInventoryFromStream(stateFile);
 
 		if (player.getType() == Farmer) {
 			FarmerSpecialization farmer;
@@ -56,7 +57,7 @@ void Config::readConfig(
 			throw "Player specialization undefined";
 		}
 
-		player.getSpecialization().readSpecializationFromStream(stateFile, context);
+		player.getSpecialization().readSpecializationFromStream(stateFile);
 		context.players.addPlayer(player);
 	}
 };

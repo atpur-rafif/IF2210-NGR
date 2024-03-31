@@ -28,7 +28,10 @@ Storage<FarmItem> & ::FarmerSpecialization::getFarm() { return this->farm; };
 Storage<BarnItem> & ::BreederSpecialization::getBarn() { return this->barn; };
 
 PlayerSpecialization &Player::getSpecialization() { return *this->specialization.getRaw(); };
-void Player::specialize(PlayerSpecialization &specialization) { this->specialization = Heapify(&specialization); }
+void Player::specialize(PlayerSpecialization &specialization) {
+	this->specialization = Heapify(&specialization);
+	this->specialization->setContext(this->getContext());
+}
 
 istream &operator>>(istream &inputStream, Player &player) {
 	inputStream >> player.username;
@@ -45,8 +48,9 @@ istream &operator>>(istream &inputStream, Player &player) {
 	return inputStream;
 };
 
-void Player::readInventoryFromStream(istream &inputStream, MiscConfig &miscConfig, ItemFactory &itemFactory) {
-	auto size = miscConfig.getInventorySize();
+void Player::readInventoryFromStream(istream &inputStream) {
+	GameContext *context = &this->getContext();
+	auto size = context->miscConfig.getInventorySize();
 	this->inventory = HeapifyStorage<Item>(size.first, size.second);
 
 	int count;
@@ -54,14 +58,15 @@ void Player::readInventoryFromStream(istream &inputStream, MiscConfig &miscConfi
 	while (count--) {
 		string name;
 		inputStream >> name;
-		string code = itemFactory.getCodeByName(name);
-		Heapify<Item> item = itemFactory.createBaseItem(code);
+		string code = context->itemFactory.getCodeByName(name);
+		Heapify<Item> item = context->itemFactory.createBaseItem(code);
 		this->inventory.addItem(item);
 	}
 };
 
-void FarmerSpecialization::readSpecializationFromStream(istream &inputStream, GameContext &context) {
-	auto size = context.miscConfig.getFarmSize();
+void FarmerSpecialization::readSpecializationFromStream(istream &inputStream) {
+	GameContext *context = &this->getContext();
+	auto size = context->miscConfig.getFarmSize();
 	this->farm = Storage<FarmItem>(size.first, size.second);
 
 	int count;
@@ -72,15 +77,16 @@ void FarmerSpecialization::readSpecializationFromStream(istream &inputStream, Ga
 		inputStream >> location >> name >> age;
 
 		FarmItem item;
-		string code = context.itemFactory.getCodeByName(name);
-		context.itemFactory.createItem(code, item);
+		string code = context->itemFactory.getCodeByName(name);
+		context->itemFactory.createItem(code, item);
 		item.setAge(age);
 		this->farm.setItem(location, item);
 	}
 };
 
-void BreederSpecialization::readSpecializationFromStream(istream &inputStream, GameContext &context) {
-	auto size = context.miscConfig.getBarnSize();
+void BreederSpecialization::readSpecializationFromStream(istream &inputStream) {
+	GameContext *context = &this->getContext();
+	auto size = context->miscConfig.getBarnSize();
 	this->barn = Storage<BarnItem>(size.first, size.second);
 
 	int count;
@@ -91,14 +97,14 @@ void BreederSpecialization::readSpecializationFromStream(istream &inputStream, G
 		inputStream >> location >> name >> weight;
 
 		BarnItem item;
-		string code = context.itemFactory.getCodeByName(name);
-		context.itemFactory.createItem(code, item);
+
+		string code = context->itemFactory.getCodeByName(name);
+		context->itemFactory.createItem(code, item);
 		item.setWeight(weight);
 		this->barn.setItem(location, item);
 	}
 };
 
-void MayorSpecialization::readSpecializationFromStream(istream &inputStream, GameContext &context) {
+void MayorSpecialization::readSpecializationFromStream(istream &inputStream) {
 	(void)inputStream;
-	(void)context;
 };

@@ -12,7 +12,9 @@ private:
 	string codeFinder(function<bool(Item *)> &lambda);
 
 public:
-	// TODO: Item instance guard
+	/*
+	 * From the name of it, isn't it obvious you can only use Item instance here?
+	 * */
 	template <class T>
 	void addItem(T item) {
 		Item *base = &item;

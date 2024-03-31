@@ -4,8 +4,6 @@
 #include "GameObject.hpp"
 #include "Heapify.hpp"
 #include "Item.hpp"
-#include "ItemFactory.hpp"
-#include "MiscConfig.hpp"
 #include "Storage.hpp"
 
 class GameContext;
@@ -23,8 +21,7 @@ public:
 	virtual PlayerSpecialization *clone() const = 0;
 	virtual ~PlayerSpecialization();
 
-	// TODO: Use GameObject interface instead using GameContext parameter
-	virtual void readSpecializationFromStream(istream &inputStream, GameContext &context) = 0;
+	virtual void readSpecializationFromStream(istream &inputStream) = 0;
 };
 
 class Player : public GameObject {
@@ -51,7 +48,7 @@ public:
 	void specialize(PlayerSpecialization &specialization);
 
 	friend istream &operator>>(istream &inputStream, Player &player);
-	void readInventoryFromStream(istream &inputStream, MiscConfig &config, ItemFactory &itemFactory);
+	void readInventoryFromStream(istream &inputStream);
 };
 
 class FarmerSpecialization : public PlayerSpecialization {
@@ -64,7 +61,7 @@ public:
 	virtual ~FarmerSpecialization();
 
 	Storage<FarmItem> &getFarm();
-	virtual void readSpecializationFromStream(istream &inputStream, GameContext &context);
+	virtual void readSpecializationFromStream(istream &inputStream);
 };
 
 class BreederSpecialization : public PlayerSpecialization {
@@ -77,7 +74,7 @@ public:
 	virtual ~BreederSpecialization();
 
 	Storage<BarnItem> &getBarn();
-	virtual void readSpecializationFromStream(istream &inputStream, GameContext &context);
+	virtual void readSpecializationFromStream(istream &inputStream);
 };
 
 class MayorSpecialization : public PlayerSpecialization {
@@ -87,7 +84,7 @@ public:
 	virtual MayorSpecialization *clone() const;
 	virtual ~MayorSpecialization();
 
-	virtual void readSpecializationFromStream(istream &inputStream, GameContext &context);
+	virtual void readSpecializationFromStream(istream &inputStream);
 };
 
 #endif
