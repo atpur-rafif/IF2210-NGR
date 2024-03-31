@@ -4,7 +4,7 @@
 Player::Player() {}
 Player::~Player() {}
 
-SpecializationType Player::getType() { return this->type; }
+SpecializationType Player::getType() { return this->specializationType; }
 int Player::getWeight() { return this->weight; }
 int Player::getMoney() { return this->money; }
 string Player::getUsername() { return this->username; }
@@ -28,8 +28,25 @@ Storage<FarmItem> & ::FarmerSpecialization::getFarm() { return this->farm; };
 Storage<BarnItem> & ::BreederSpecialization::getBarn() { return this->barn; };
 
 PlayerSpecialization &Player::getSpecialization() { return *this->specialization.getRaw(); };
-void Player::specialize(PlayerSpecialization &specialization) {
-	this->specialization = Heapify(&specialization);
+void Player::specialize(SpecializationType type) {
+	PlayerSpecialization *specialization;
+	if (type == Farmer) {
+		FarmerSpecialization farmer = FarmerSpecialization();
+		specialization = &farmer;
+		this->specialization = Heapify(specialization);
+	} else if (type == Breeder) {
+		BreederSpecialization breeder = BreederSpecialization();
+		specialization = &breeder;
+		this->specialization = Heapify(specialization);
+	} else if (type == Mayor) {
+		MayorSpecialization mayor = MayorSpecialization();
+		specialization = &mayor;
+		this->specialization = Heapify(specialization);
+	} else {
+		throw "Invalid specialization";
+	}
+
+	this->specializationType = type;
 	this->specialization->setContext(this->getContext());
 }
 
@@ -38,12 +55,15 @@ istream &operator>>(istream &inputStream, Player &player) {
 
 	string type;
 	inputStream >> type;
-	if (type == "Petani") player.type = Farmer;
-	else if (type == "Peternak") player.type = Breeder;
-	else if (type == "Walikota") player.type = Mayor;
+	if (type == "Petani") player.specialize(Farmer);
+	else if (type == "Peternak") player.specialize(Breeder);
+	else if (type == "Walikota") player.specialize(Mayor);
 
 	inputStream >> player.weight;
 	inputStream >> player.money;
+
+	player.readInventoryFromStream(inputStream);
+	player.getSpecialization().readSpecializationFromStream(inputStream);
 
 	return inputStream;
 };

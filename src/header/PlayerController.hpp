@@ -5,13 +5,16 @@
 #include "Player.hpp"
 
 class PlayerController : public GameObject {
-private:
+	friend GameContext;
+
+protected:
+	PlayerController();
 	vector<Player> players;
 	vector<Player *> ordered;
-	void rearrangePosition();
 
 public:
-	void addPlayer(Player player);
+	Player &createPlayer();
+	void rearrangePosition();
 	vector<Player *> *getPlayers();
 };
 

@@ -1,5 +1,7 @@
 #include "ItemFactory.hpp"
 
+ItemFactory::ItemFactory(){};
+
 string ItemFactory::codeFinder(function<bool(Item *)> &lambda) {
 	for (const auto &i : this->repository) {
 		auto item = i.second.getRaw();
@@ -9,7 +11,9 @@ string ItemFactory::codeFinder(function<bool(Item *)> &lambda) {
 }
 
 Heapify<Item> ItemFactory::createBaseItem(string code) {
-	return Heapify(this->repository[code]);
+	Heapify<Item> item = Heapify(this->repository[code]);
+	item->setContext(this->getContext());
+	return item;
 }
 
 string ItemFactory::getCodeByName(const string name) {

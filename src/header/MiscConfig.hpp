@@ -5,6 +5,10 @@
 #include <utility>
 using namespace std;
 class MiscConfig {
+	friend class GameContext;
+
+protected:
+	MiscConfig();
 	int targetMoney;
 	int targetWeight;
 	pair<int, int> inventorySize;
@@ -12,14 +16,6 @@ class MiscConfig {
 	pair<int, int> barnSize;
 
 public:
-	MiscConfig();
-	MiscConfig(
-			int targetMoney,
-			int targetWeight,
-			pair<int, int> productSize,
-			pair<int, int> farmSize,
-			pair<int, int> barnSize
-	);
 	int getTargetMoney();
 	int getTargetWeight();
 	pair<int, int> getInventorySize();

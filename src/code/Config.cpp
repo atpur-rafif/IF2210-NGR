@@ -16,7 +16,7 @@ const string stateFilename = "state.txt";
 		while (fileStream.peek() != EOF) {                            \
 			type element;                                               \
 			fileStream >> element >> ws;                                \
-			itemFactory.addItem(element);                               \
+			itemFactory.addTemplateItem(element);                       \
 		}                                                             \
 	}
 
@@ -24,7 +24,6 @@ void Config::readConfig(
 		string dir,
 		GameContext &context
 ) {
-
 	ifstream miscFile;
 	miscFile.open(dir + "/" + miscFilename);
 	miscFile >> context.miscConfig;
@@ -39,25 +38,8 @@ void Config::readConfig(
 	int playerCount;
 	stateFile >> playerCount;
 	while (playerCount--) {
-		Player player;
+		Player &player = context.players.createPlayer();
 		stateFile >> player;
-		player.setContext(context);
-		player.readInventoryFromStream(stateFile);
-
-		if (player.getType() == Farmer) {
-			FarmerSpecialization farmer;
-			player.specialize(farmer);
-		} else if (player.getType() == Breeder) {
-			BreederSpecialization breeder;
-			player.specialize(breeder);
-		} else if (player.getType() == Mayor) {
-			MayorSpecialization mayor;
-			player.specialize(mayor);
-		} else {
-			throw "Player specialization undefined";
-		}
-
-		player.getSpecialization().readSpecializationFromStream(stateFile);
-		context.players.addPlayer(player);
 	}
+	context.players.rearrangePosition();
 };

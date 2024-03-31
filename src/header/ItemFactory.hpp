@@ -7,7 +7,10 @@
 #include <functional>
 
 class ItemFactory : public GameObject {
-private:
+	friend class GameContext;
+
+protected:
+	ItemFactory();
 	map<string, Heapify<Item>> repository;
 	string codeFinder(function<bool(Item *)> &lambda);
 
@@ -16,7 +19,7 @@ public:
 	 * From the name of it, isn't it obvious you can only use Item instance here?
 	 * */
 	template <class T>
-	void addItem(T item) {
+	void addTemplateItem(T item) {
 		Item *base = &item;
 		Heapify<Item> heap = Heapify(base);
 		this->repository[item.getCode()] = heap;

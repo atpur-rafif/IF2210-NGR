@@ -15,9 +15,12 @@ enum SpecializationType {
 };
 
 class PlayerSpecialization : public GameObject {
-private:
-public:
+	friend class Player;
+
+protected:
 	PlayerSpecialization();
+
+public:
 	virtual PlayerSpecialization *clone() const = 0;
 	virtual ~PlayerSpecialization();
 
@@ -25,9 +28,12 @@ public:
 };
 
 class Player : public GameObject {
+	friend class PlayerController;
+
 protected:
+	Player();
 	string username;
-	SpecializationType type;
+	SpecializationType specializationType;
 	int weight;
 	int money;
 	HeapifyStorage<Item> inventory;
@@ -35,7 +41,6 @@ protected:
 	Heapify<PlayerSpecialization> specialization;
 
 public:
-	Player();
 	virtual ~Player();
 
 	SpecializationType getType();
@@ -45,7 +50,7 @@ public:
 	HeapifyStorage<Item> &getInventory();
 
 	PlayerSpecialization &getSpecialization();
-	void specialize(PlayerSpecialization &specialization);
+	void specialize(SpecializationType type);
 
 	friend istream &operator>>(istream &inputStream, Player &player);
 	void readInventoryFromStream(istream &inputStream);

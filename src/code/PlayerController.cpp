@@ -1,6 +1,8 @@
 #include "PlayerController.hpp"
 #include <algorithm>
 
+PlayerController::PlayerController() {}
+
 void PlayerController::rearrangePosition() {
 	int size = this->players.size();
 	this->ordered.resize(size);
@@ -15,11 +17,12 @@ void PlayerController::rearrangePosition() {
 	});
 }
 
-void PlayerController::addPlayer(Player player) {
-	this->players.push_back(player);
-	this->players[this->players.size() - 1].setContext(this->getContext());
-	this->rearrangePosition();
-}
+Player &PlayerController::createPlayer() {
+	this->players.push_back(Player());
+	Player *player = &this->players[this->players.size() - 1];
+	player->setContext(this->getContext());
+	return *player;
+};
 
 vector<Player *> *PlayerController::getPlayers() {
 	return &(this->ordered);
