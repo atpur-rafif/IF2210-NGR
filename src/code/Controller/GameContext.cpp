@@ -1,4 +1,4 @@
-#include "GameContext.hpp"
+#include "Controller/GameContext.hpp"
 #include <cstdlib>
 
 GameContext::GameContext() {

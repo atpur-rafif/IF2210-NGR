@@ -1,8 +1,8 @@
 #ifndef PLAYER_CONTROLLER_HPP
 #define PLAYER_CONTROLLER_HPP
 
-#include "GameObject.hpp"
-#include "Player.hpp"
+#include "Model/GameObject.hpp"
+#include "Model/Player.hpp"
 
 class PlayerController : public GameObject {
 	friend GameContext;

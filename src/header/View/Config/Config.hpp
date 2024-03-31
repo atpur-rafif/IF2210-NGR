@@ -1,7 +1,7 @@
-#ifndef CLI_HPP
-#define CLI_HPP
+#ifndef CONFIG_HPP
+#define CONFIG_HPP
 
-#include "GameContext.hpp"
+#include "Controller/GameContext.hpp"
 #include <string>
 
 using namespace std;

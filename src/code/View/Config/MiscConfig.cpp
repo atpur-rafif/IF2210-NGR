@@ -1,4 +1,4 @@
-#include "MiscConfig.hpp"
+#include "View/Config/MiscConfig.hpp"
 
 MiscConfig::MiscConfig(){};
 int MiscConfig::getTargetMoney() { return this->targetMoney; };

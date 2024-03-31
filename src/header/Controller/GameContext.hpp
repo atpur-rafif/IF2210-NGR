@@ -1,9 +1,9 @@
 #ifndef GAMECONTEXT_HPP
 #define GAMECONTEXT_HPP
 
-#include "ItemFactory.hpp"
-#include "MiscConfig.hpp"
-#include "PlayerController.hpp"
+#include "Controller/ItemFactory.hpp"
+#include "Controller/PlayerController.hpp"
+#include "View/Config/MiscConfig.hpp"
 
 class GameContext {
 public:

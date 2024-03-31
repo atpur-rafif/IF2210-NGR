@@ -1,10 +1,11 @@
 #ifndef ITEM_FACTORY_HPP
 #define ITEM_FACTORY_HPP
 
-#include "GameObject.hpp"
-#include "Heapify.hpp"
-#include "Item.hpp"
+#include "Container/Heapify.hpp"
+#include "Model/GameObject.hpp"
+#include "Model/Item.hpp"
 #include <functional>
+#include <map>
 
 class ItemFactory : public GameObject {
 	friend class GameContext;

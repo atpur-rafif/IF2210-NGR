@@ -1,5 +1,9 @@
-#include "Config.hpp"
-#include "Item.hpp"
+#include "View/Config/Config.hpp"
+#include "Model/Item.hpp"
+#include "Model/Item/BarnItem.hpp"
+#include "Model/Item/BuildingItem.hpp"
+#include "Model/Item/FarmItem.hpp"
+#include "Model/Item/ProductItem.hpp"
 #include <fstream>
 
 const string miscFilename = "misc.txt";

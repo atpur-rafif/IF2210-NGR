@@ -1,5 +1,8 @@
-#include "PlayerController.hpp"
-#include "GameContext.hpp"
+#include "Controller/PlayerController.hpp"
+#include "Controller/GameContext.hpp"
+#include "Model/Player/Breeder.hpp"
+#include "Model/Player/Farmer.hpp"
+#include "Model/Player/Mayor.hpp"
 #include <algorithm>
 
 PlayerController::PlayerController() {}
