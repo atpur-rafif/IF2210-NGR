@@ -52,13 +52,20 @@ public:
 	Storage() : Storage(0, 0){};
 
 	Storage(int width, int height) : width(width), height(height) {
-		this->storage.resize(width * height);
+		this->storage.resize(this->width * this->height);
 	};
 
 	optional<T> &getItem(string coordinate) {
 		auto c = this->parseCoordinate(coordinate);
 		return this->storage[this->flat(c.first, c.second)];
 	};
+
+	void getAllItem(vector<T *> &vec) {
+		for (int i = 0; i < this->width * this->height; ++i) {
+			if (this->storage[i].has_value())
+				vec.push_back(&this->storage[i].value());
+		}
+	}
 
 	void setItem(string coordinate, T &item) {
 		auto c = this->parseCoordinate(coordinate);

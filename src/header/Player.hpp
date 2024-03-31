@@ -23,7 +23,10 @@ public:
 
 	Player();
 	virtual ~Player();
-	virtual Player *clone();
+	virtual Player *clone() = 0;
+
+	virtual int calculateTax() = 0;
+	int countInventoryWealth();
 };
 
 class Farmer : public Player {
@@ -33,6 +36,9 @@ public:
 	Farmer();
 	virtual Farmer *clone();
 	virtual ~Farmer();
+
+	virtual int calculateTax();
+	int countFarmWealth();
 };
 
 class Breeder : public Player {
@@ -42,6 +48,9 @@ public:
 	Breeder();
 	virtual Breeder *clone();
 	virtual ~Breeder();
+
+	virtual int calculateTax();
+	int countBarnWealth();
 };
 
 class Mayor : public Player {
@@ -49,6 +58,8 @@ public:
 	Mayor();
 	virtual Mayor *clone();
 	virtual ~Mayor();
+
+	virtual int calculateTax();
 };
 
 #endif
