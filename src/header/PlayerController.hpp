@@ -9,11 +9,11 @@ class PlayerController : public GameObject {
 
 protected:
 	PlayerController();
-	vector<Player> players;
+	vector<Heapify<Player>> players;
 	vector<Player *> ordered;
 
 public:
-	Player &createPlayer();
+	void addPlayer(Heapify<Player> &player);
 	void rearrangePosition();
 	vector<Player *> *getPlayers();
 };

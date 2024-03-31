@@ -2,129 +2,83 @@
 #include "GameContext.hpp"
 
 Player::Player() {}
+Farmer::Farmer() { this->type = FarmerType; }
+Breeder::Breeder() { this->type = BreederType; }
+Mayor::Mayor() { this->type = MayorType; }
+
 Player::~Player() {}
+Farmer::~Farmer() {}
+Breeder::~Breeder() {}
+Mayor::~Mayor() {}
 
-SpecializationType Player::getType() { return this->specializationType; }
-int Player::getWeight() { return this->weight; }
-int Player::getMoney() { return this->money; }
-string Player::getUsername() { return this->username; }
-HeapifyStorage<Item> &Player::getInventory() { return this->inventory; }
+Player *Player::clone() { return new Player(*this); }
+Farmer *Farmer::clone() { return new Farmer(*this); }
+Breeder *Breeder::clone() { return new Breeder(*this); }
+Mayor *Mayor::clone() { return new Mayor(*this); }
 
-PlayerSpecialization::PlayerSpecialization() {}
-FarmerSpecialization::FarmerSpecialization() {}
-BreederSpecialization::BreederSpecialization() {}
-MayorSpecialization::MayorSpecialization() {}
+istream &operator>>(istream &inputStream, Heapify<Player> &player) {
+	int weight, money;
+	string username, type;
+	inputStream >> username >> type >> weight >> money;
 
-PlayerSpecialization::~PlayerSpecialization() {}
-FarmerSpecialization::~FarmerSpecialization() {}
-BreederSpecialization::~BreederSpecialization() {}
-MayorSpecialization::~MayorSpecialization() {}
+	GameContext &context = player->getContext();
 
-FarmerSpecialization *FarmerSpecialization::clone() const { return new FarmerSpecialization(*this); }
-BreederSpecialization *BreederSpecialization::clone() const { return new BreederSpecialization(*this); }
-MayorSpecialization *MayorSpecialization::clone() const { return new MayorSpecialization(*this); }
+	Player *newPlayer;
+	if (type == "Petani") newPlayer = new Farmer();
+	else if (type == "Peternak") newPlayer = new Breeder();
+	else if (type == "Walikota") newPlayer = new Mayor();
+	else throw "Invalid player type";
 
-Storage<FarmItem> & ::FarmerSpecialization::getFarm() { return this->farm; };
-Storage<BarnItem> & ::BreederSpecialization::getBarn() { return this->barn; };
+	newPlayer->username = username;
+	newPlayer->weight = weight;
+	newPlayer->money = money;
+	auto inventorySize = context.miscConfig.getInventorySize();
+	newPlayer->inventory = HeapifyStorage<Item>(inventorySize.first, inventorySize.second);
 
-PlayerSpecialization &Player::getSpecialization() { return *this->specialization.getRaw(); };
-void Player::specialize(SpecializationType type) {
-	PlayerSpecialization *specialization;
-	if (type == Farmer) {
-		FarmerSpecialization farmer = FarmerSpecialization();
-		specialization = &farmer;
-		this->specialization = Heapify(specialization);
-	} else if (type == Breeder) {
-		BreederSpecialization breeder = BreederSpecialization();
-		specialization = &breeder;
-		this->specialization = Heapify(specialization);
-	} else if (type == Mayor) {
-		MayorSpecialization mayor = MayorSpecialization();
-		specialization = &mayor;
-		this->specialization = Heapify(specialization);
-	} else {
-		throw "Invalid specialization";
-	}
-
-	this->specializationType = type;
-	this->specialization->setContext(this->getContext());
-}
-
-istream &operator>>(istream &inputStream, Player &player) {
-	inputStream >> player.username;
-
-	string type;
-	inputStream >> type;
-	if (type == "Petani") player.specialize(Farmer);
-	else if (type == "Peternak") player.specialize(Breeder);
-	else if (type == "Walikota") player.specialize(Mayor);
-
-	inputStream >> player.weight;
-	inputStream >> player.money;
-
-	player.readInventoryFromStream(inputStream);
-	player.getSpecialization().readSpecializationFromStream(inputStream);
-
-	return inputStream;
-};
-
-void Player::readInventoryFromStream(istream &inputStream) {
-	GameContext *context = &this->getContext();
-	auto size = context->miscConfig.getInventorySize();
-	this->inventory = HeapifyStorage<Item>(size.first, size.second);
-
-	int count;
-	inputStream >> count;
-	while (count--) {
+	int inventoryCount;
+	inputStream >> inventoryCount;
+	while (inventoryCount--) {
 		string name;
 		inputStream >> name;
-		string code = context->itemFactory.getCodeByName(name);
-		Heapify<Item> item = context->itemFactory.createBaseItem(code);
-		this->inventory.addItem(item);
+		string code = context.itemFactory.getCodeByName(name);
+		Heapify<Item> item = context.itemFactory.createBaseItem(code);
+		newPlayer->inventory.addItem(item);
 	}
-};
 
-void FarmerSpecialization::readSpecializationFromStream(istream &inputStream) {
-	GameContext *context = &this->getContext();
-	auto size = context->miscConfig.getFarmSize();
-	this->farm = Storage<FarmItem>(size.first, size.second);
+	if (newPlayer->type == FarmerType) {
+		Farmer *farmer = dynamic_cast<Farmer *>(newPlayer);
 
-	int count;
-	inputStream >> count;
-	while (count--) {
-		int age;
-		string location, name;
-		inputStream >> location >> name >> age;
+		auto farmSize = context.miscConfig.getFarmSize();
+		farmer->farm = Storage<FarmItem>(farmSize.first, farmSize.second);
+		int farmCount;
+		inputStream >> farmCount;
+		while (farmCount--) {
+			int age;
+			string location, name;
+			inputStream >> location >> name >> age;
+			string code = context.itemFactory.getCodeByName(name);
+			FarmItem item;
+			context.itemFactory.createItem(code, item);
+			farmer->farm.setItem(location, item);
+		}
+	} else if (newPlayer->type == BreederType) {
+		Breeder *breeder = dynamic_cast<Breeder *>(newPlayer);
 
-		FarmItem item;
-		string code = context->itemFactory.getCodeByName(name);
-		context->itemFactory.createItem(code, item);
-		item.setAge(age);
-		this->farm.setItem(location, item);
+		auto barnSize = context.miscConfig.getBarnSize();
+		breeder->barn = Storage<BarnItem>(barnSize.first, barnSize.second);
+		int farmCount;
+		inputStream >> farmCount;
+		while (farmCount--) {
+			int age;
+			string location, name;
+			inputStream >> location >> name >> age;
+			string code = context.itemFactory.getCodeByName(name);
+			BarnItem item;
+			context.itemFactory.createItem(code, item);
+			breeder->barn.setItem(location, item);
+		}
 	}
-};
 
-void BreederSpecialization::readSpecializationFromStream(istream &inputStream) {
-	GameContext *context = &this->getContext();
-	auto size = context->miscConfig.getBarnSize();
-	this->barn = Storage<BarnItem>(size.first, size.second);
-
-	int count;
-	inputStream >> count;
-	while (count--) {
-		int weight;
-		string location, name;
-		inputStream >> location >> name >> weight;
-
-		BarnItem item;
-
-		string code = context->itemFactory.getCodeByName(name);
-		context->itemFactory.createItem(code, item);
-		item.setWeight(weight);
-		this->barn.setItem(location, item);
-	}
-};
-
-void MayorSpecialization::readSpecializationFromStream(istream &inputStream) {
-	(void)inputStream;
+	player.set(newPlayer);
+	return inputStream;
 };

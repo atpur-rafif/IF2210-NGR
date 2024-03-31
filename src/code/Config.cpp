@@ -38,8 +38,11 @@ void Config::readConfig(
 	int playerCount;
 	stateFile >> playerCount;
 	while (playerCount--) {
-		Player &player = context.players.createPlayer();
-		stateFile >> player;
+		Player player;
+		Heapify<Player> heap = Heapify(&player);
+		heap->setContext(context);
+		stateFile >> heap;
+		context.players.addPlayer(heap);
 	}
 	context.players.rearrangePosition();
 };

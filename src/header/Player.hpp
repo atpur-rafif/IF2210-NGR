@@ -2,94 +2,55 @@
 #define PLAYER_HPP
 
 #include "GameObject.hpp"
-#include "Heapify.hpp"
 #include "Item.hpp"
 #include "Storage.hpp"
 
 class GameContext;
 
-enum SpecializationType {
-	Farmer,
-	Breeder,
-	Mayor
-};
-
-class PlayerSpecialization : public GameObject {
-	friend class Player;
-
-protected:
-	PlayerSpecialization();
-
-public:
-	virtual PlayerSpecialization *clone() const = 0;
-	virtual ~PlayerSpecialization();
-
-	virtual void readSpecializationFromStream(istream &inputStream) = 0;
+enum PlayerType {
+	FarmerType,
+	BreederType,
+	MayorType
 };
 
 class Player : public GameObject {
-	friend class PlayerController;
-
-protected:
-	Player();
+public:
 	string username;
-	SpecializationType specializationType;
+	PlayerType type;
 	int weight;
 	int money;
 	HeapifyStorage<Item> inventory;
 
-	Heapify<PlayerSpecialization> specialization;
-
-public:
+	Player();
 	virtual ~Player();
+	virtual Player *clone();
 
-	SpecializationType getType();
-	int getWeight();
-	int getMoney();
-	string getUsername();
-	HeapifyStorage<Item> &getInventory();
-
-	PlayerSpecialization &getSpecialization();
-	void specialize(SpecializationType type);
-
-	friend istream &operator>>(istream &inputStream, Player &player);
-	void readInventoryFromStream(istream &inputStream);
+	friend istream &operator>>(istream &inputStream, Heapify<Player> &player);
 };
 
-class FarmerSpecialization : public PlayerSpecialization {
-private:
+class Farmer : public Player {
+public:
 	Storage<FarmItem> farm;
 
-public:
-	FarmerSpecialization();
-	virtual FarmerSpecialization *clone() const;
-	virtual ~FarmerSpecialization();
-
-	Storage<FarmItem> &getFarm();
-	virtual void readSpecializationFromStream(istream &inputStream);
+	Farmer();
+	virtual Farmer *clone();
+	virtual ~Farmer();
 };
 
-class BreederSpecialization : public PlayerSpecialization {
-private:
+class Breeder : public Player {
+public:
 	Storage<BarnItem> barn;
 
-public:
-	BreederSpecialization();
-	virtual BreederSpecialization *clone() const;
-	virtual ~BreederSpecialization();
-
-	Storage<BarnItem> &getBarn();
-	virtual void readSpecializationFromStream(istream &inputStream);
+	Breeder();
+	virtual Breeder *clone();
+	virtual ~Breeder();
 };
 
-class MayorSpecialization : public PlayerSpecialization {
-private:
+class Mayor : public Player {
 public:
-	MayorSpecialization();
-	virtual MayorSpecialization *clone() const;
-	virtual ~MayorSpecialization();
-
-	virtual void readSpecializationFromStream(istream &inputStream);
+	Mayor();
+	virtual Mayor *clone();
+	virtual ~Mayor();
 };
 
 #endif

@@ -7,21 +7,19 @@ void PlayerController::rearrangePosition() {
 	int size = this->players.size();
 	this->ordered.resize(size);
 	for (int i = 0; i < size; ++i)
-		this->ordered[i] = &this->players[i];
+		this->ordered[i] = this->players[i].getRaw();
 
-	auto begin = this->ordered.begin();
-	auto end = begin + this->ordered.size();
-
-	sort(begin, end, [](Player *a, Player *b) {
-		return a->getUsername() < b->getUsername();
-	});
+	// auto begin = this->ordered.begin();
+	// auto end = begin + this->ordered.size();
+	//
+	// sort(begin, end, [](Player *a, Player *b) {
+	// 	return a->getUsername() < b->getUsername();
+	// });
 }
 
-Player &PlayerController::createPlayer() {
-	this->players.push_back(Player());
-	Player *player = &this->players[this->players.size() - 1];
-	player->setContext(this->getContext());
-	return *player;
+void PlayerController::addPlayer(Heapify<Player> &player) {
+	this->players.push_back(player);
+	this->rearrangePosition();
 };
 
 vector<Player *> *PlayerController::getPlayers() {

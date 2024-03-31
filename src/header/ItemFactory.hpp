@@ -12,7 +12,7 @@ class ItemFactory : public GameObject {
 protected:
 	ItemFactory();
 	map<string, Heapify<Item>> repository;
-	string codeFinder(function<bool(Item *)> &lambda);
+	string codeFinder(function<bool(Item *)> &lambda) const;
 
 public:
 	/*
@@ -26,17 +26,17 @@ public:
 	}
 
 	template <class T>
-	void createItem(string code, T &result) {
-		Item *base = this->repository[code].getRaw();
+	void createItem(string code, T &result) const {
+		Item *base = this->repository.at(code).getRaw();
 		Item *clone = base->clone();
 		T *ptr = dynamic_cast<T *>(clone);
 		result = *ptr;
 		result.setContext(this->getContext());
 	}
 
-	Heapify<Item> createBaseItem(string code);
+	Heapify<Item> createBaseItem(string code) const;
 
-	string getCodeByName(const string name);
+	string getCodeByName(const string name) const;
 };
 
 #endif

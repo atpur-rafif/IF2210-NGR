@@ -8,8 +8,8 @@ private:
 	GameContext *context;
 
 public:
-	GameContext &getContext();
-	virtual void setContext(GameContext &context);
+	GameContext &getContext() const;
+	void setContext(GameContext &context);
 };
 
 #endif
