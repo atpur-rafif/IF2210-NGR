@@ -9,6 +9,10 @@ PlayerController::PlayerController() {
 	this->currentPlayerIndex = 0;
 }
 
+void PlayerController::nextPlayer() {
+	this->currentPlayerIndex = (this->currentPlayerIndex + 1) % this->players.size();
+}
+
 Player &PlayerController::getCurrentPlayer() {
 	return *this->ordered.at(this->currentPlayerIndex);
 };
@@ -53,7 +57,7 @@ Heapify<Player> PlayerController::readPlayerFromStream(istream &inputStream) {
 	newPlayer->weight = weight;
 	newPlayer->money = money;
 	auto inventorySize = context.miscConfig.getInventorySize();
-	newPlayer->inventory = HeapifyStorage<Item>(inventorySize.first, inventorySize.second);
+	newPlayer->inventory = Storage<Heapify<Item>>(inventorySize.first, inventorySize.second);
 
 	int inventoryCount;
 	inputStream >> inventoryCount;

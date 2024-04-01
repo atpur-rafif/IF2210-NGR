@@ -21,5 +21,6 @@ void CLI::start() {
 		Player &current = this->context.players.getCurrentPlayer();
 		PlayerView &view = this->getView(current.type);
 		view.start(current);
+		this->context.players.nextPlayer();
 	}
 }

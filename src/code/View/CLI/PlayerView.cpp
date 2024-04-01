@@ -7,6 +7,7 @@ PlayerView::~PlayerView(){};
 
 void PlayerView::start(Player &player) {
 	while (true) {
+		cout << player.username << "> ";
 		string command;
 		cin >> command;
 		if (command == "NEXT") return;
@@ -33,5 +34,16 @@ void PlayerView::runPlayerCommand(Player &player, string command) {
 }
 
 void PlayerView::printInventory(Player &player) {
-	player.inventory.print();
+	auto &inventory = player.inventory;
+	auto size = inventory.getSize();
+	for (int y = 0; y < size.first; ++y) {
+		cout << "| ";
+		for (int x = 0; x < size.second; ++x) {
+			auto result = inventory.getItem(x, y);
+			if (result.has_value()) cout << result.value()->getCode();
+			else cout << "   ";
+			cout << " | ";
+		}
+		cout << endl;
+	}
 };

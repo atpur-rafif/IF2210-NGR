@@ -14,6 +14,7 @@ protected:
 	int currentPlayerIndex;
 
 public:
+	void nextPlayer();
 	Player &getCurrentPlayer();
 	void addPlayer(Heapify<Player> &player);
 	void rearrangePosition();

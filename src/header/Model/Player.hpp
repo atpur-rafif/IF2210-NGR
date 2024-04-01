@@ -17,7 +17,7 @@ public:
 	PlayerType type;
 	int weight;
 	int money;
-	HeapifyStorage<Item> inventory;
+	Storage<Heapify<Item>> inventory;
 
 	Player();
 	virtual ~Player();

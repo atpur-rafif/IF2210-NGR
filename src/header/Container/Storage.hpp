@@ -57,9 +57,13 @@ public:
 		this->storage.resize(this->width * this->height);
 	};
 
+	optional<T> &getItem(int x, int y) {
+		return this->storage[this->flat(x, y)];
+	};
+
 	optional<T> &getItem(string coordinate) {
 		auto c = this->parseCoordinate(coordinate);
-		return this->storage[this->flat(c.first, c.second)];
+		return this->getItem(c.first, c.second);
 	};
 
 	void getAllItem(vector<T *> &vec) {
@@ -89,42 +93,6 @@ public:
 
 	pair<int, int> getSize() {
 		return {this->width, this->height};
-	}
-
-	void print() {
-		for (int y = 0; y < this->height; ++y) {
-			cout << "| ";
-			for (int x = 0; x < this->width; ++x) {
-				int i = this->flat(x, y);
-				auto &val = this->storage[i];
-				if (!val.has_value()) cout << "   ";
-				else cout << val->getCode();
-				cout << " | ";
-			}
-			cout << endl;
-		}
-	}
-};
-
-// TODO: This is temporary solution, will be refactored
-template <class T>
-class HeapifyStorage : public Storage<Heapify<T>> {
-public:
-	HeapifyStorage() : HeapifyStorage(0, 0){};
-	HeapifyStorage(int width, int height) : Storage<Heapify<T>>(width, height){};
-
-	void print() {
-		for (int y = 0; y < this->height; ++y) {
-			cout << "| ";
-			for (int x = 0; x < this->width; ++x) {
-				int i = this->flat(x, y);
-				auto val = this->storage[i];
-				if (!val.has_value()) cout << "   ";
-				else cout << val.value()->getCode();
-				cout << " | ";
-			}
-			cout << endl;
-		}
 	}
 };
 
