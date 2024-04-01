@@ -1,5 +1,6 @@
 #include "View/CLI/PlayerView.hpp"
 #include "Exception/PlayerViewException.hpp"
+#include "Model/Item//ProductItem.hpp"
 #include <iostream>
 using namespace std;
 
@@ -30,7 +31,21 @@ void PlayerView::start(Player &player) {
 
 void PlayerView::runPlayerCommand(Player &player, string command) {
 	if (command == "CETAK_PENYIMPANAN") this->printInventory(player);
-	else throw CommandNotFoundPlayerViewException();
+	else if (command == "MAKAN") {
+		this->printInventory(player);
+
+		string location;
+		ProductItem *product;
+		while (true) {
+			location = this->promptItemFromInventory(player, product);
+			ProductItemType type = product->getProductItemType();
+			if (type == AnimalProduct || type == FruitProduct) break;
+			cout << "Player can't eat this item" << endl;
+		}
+
+		player.weight += product->getAddedWeight();
+		player.inventory.clearItem(location);
+	} else throw CommandNotFoundPlayerViewException();
 }
 
 void PlayerView::printInventory(Player &player) {

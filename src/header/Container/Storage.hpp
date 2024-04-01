@@ -1,8 +1,6 @@
 #ifndef STORAGE_HPP
 #define STORAGE_HPP
 
-#include "Container/Heapify.hpp"
-#include <iostream>
 #include <optional>
 #include <string>
 #include <vector>
@@ -57,14 +55,25 @@ public:
 		this->storage.resize(this->width * this->height);
 	};
 
+	// TODO: Use exception instead optional
 	optional<T> &getItem(int x, int y) {
 		return this->storage[this->flat(x, y)];
 	};
 
 	optional<T> &getItem(string coordinate) {
-		auto c = this->parseCoordinate(coordinate);
-		return this->getItem(c.first, c.second);
+		auto position = this->parseCoordinate(coordinate);
+		return this->getItem(position.first, position.second);
 	};
+
+	void clearItem(string coordinate) {
+		auto position = this->parseCoordinate(coordinate);
+		this->clearItem(position.first, position.second);
+	}
+
+	void clearItem(int x, int y) {
+		int i = this->flat(x, y);
+		this->storage[i].reset();
+	}
 
 	void getAllItem(vector<T *> &vec) {
 		for (int i = 0; i < this->width * this->height; ++i) {
@@ -73,10 +82,14 @@ public:
 		}
 	}
 
-	void setItem(string coordinate, T &item) {
-		auto c = this->parseCoordinate(coordinate);
-		int i = this->flat(c.first, c.second);
+	void setItem(int x, int y, T &item) {
+		int i = this->flat(x, y);
 		this->storage[i] = item;
+	};
+
+	void setItem(string coordinate, T &item) {
+		auto position = this->parseCoordinate(coordinate);
+		this->setItem(position.first, position.second, item);
 	};
 
 	void addItem(T item) {

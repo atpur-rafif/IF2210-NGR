@@ -1,6 +1,7 @@
 #ifndef MODEL_PLAYER_HPP
 #define MODEL_PLAYER_HPP
 
+#include "Container/Heapify.hpp"
 #include "Container/Storage.hpp"
 #include "Model/GameObject.hpp"
 #include "Model/Item.hpp"

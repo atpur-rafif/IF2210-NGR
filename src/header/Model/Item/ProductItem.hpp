@@ -4,9 +4,9 @@
 #include "Model/Item.hpp"
 
 enum ProductItemType {
-	MaterialPlant,
-	FruitPlant,
-	Animal
+	MaterialProduct,
+	FruitProduct,
+	AnimalProduct
 };
 
 class ProductItem : public Item {
@@ -22,6 +22,7 @@ public:
 	virtual ~ProductItem();
 
 	ProductItemType getProductItemType();
+	int getAddedWeight();
 };
 
 #endif
