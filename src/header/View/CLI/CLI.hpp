@@ -1,26 +1,19 @@
-#ifndef CLI_HPP
-#define CLI_HPP
+#ifndef VIEW_CLI_HPP
+#define VIEW_CLI_HPP
 
 #include "Controller/GameContext.hpp"
+#include "Model/Player.hpp"
+#include "View/CLI/PlayerView.hpp"
 
 class CLI {
 private:
 	GameContext context;
+	map<PlayerType, Heapify<PlayerView>> view;
 
 public:
 	CLI();
-
 	void start();
-
-	void configPrompt();
-	void statePrompt();
-
-	void turnPrompt();
-
-	void playerTurnCommand(string command);
-	void farmerTurnCommand(string command);
-	void breederTurnCommand(string command);
-	void mayorTurnCommand(string command);
+	PlayerView &getView(PlayerType type);
 };
 
 #endif

@@ -11,8 +11,10 @@ protected:
 	PlayerController();
 	vector<Heapify<Player>> players;
 	vector<Player *> ordered;
+	int currentPlayerIndex;
 
 public:
+	Player &getCurrentPlayer();
 	void addPlayer(Heapify<Player> &player);
 	void rearrangePosition();
 	vector<Player *> *getPlayers();

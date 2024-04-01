@@ -1,5 +1,5 @@
-#ifndef CONFIG_HPP
-#define CONFIG_HPP
+#ifndef VIEW_CONFIG_HPP
+#define VIEW_CONFIG_HPP
 
 #include "Controller/GameContext.hpp"
 #include <string>

@@ -1,5 +1,5 @@
-#ifndef MISCCONFIG_HPP
-#define MISCCONFIG_HPP
+#ifndef VIEW_MISCCONFIG_HPP
+#define VIEW_MISCCONFIG_HPP
 
 #include <iostream>
 #include <utility>

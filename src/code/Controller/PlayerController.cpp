@@ -5,7 +5,13 @@
 #include "Model/Player/Mayor.hpp"
 #include <algorithm>
 
-PlayerController::PlayerController() {}
+PlayerController::PlayerController() {
+	this->currentPlayerIndex = 0;
+}
+
+Player &PlayerController::getCurrentPlayer() {
+	return *this->ordered.at(this->currentPlayerIndex);
+};
 
 void PlayerController::rearrangePosition() {
 	int size = this->players.size();
@@ -13,12 +19,12 @@ void PlayerController::rearrangePosition() {
 	for (int i = 0; i < size; ++i)
 		this->ordered[i] = this->players[i].getRaw();
 
-	// auto begin = this->ordered.begin();
-	// auto end = begin + this->ordered.size();
-	//
-	// sort(begin, end, [](Player *a, Player *b) {
-	// 	return a->getUsername() < b->getUsername();
-	// });
+	auto begin = this->ordered.begin();
+	auto end = begin + this->ordered.size();
+
+	sort(begin, end, [](Player *a, Player *b) {
+		return a->username < b->username;
+	});
 }
 
 void PlayerController::addPlayer(Heapify<Player> &player) {

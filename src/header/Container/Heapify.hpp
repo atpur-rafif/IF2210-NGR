@@ -12,6 +12,10 @@ class Heapify {
 public:
 	Heapify() : Heapify(NULL) {}
 
+	Heapify(T value) {
+		this->set(&value);
+	}
+
 	Heapify(T *value) {
 		this->set(value);
 	}
@@ -25,6 +29,13 @@ public:
 		return *this;
 	}
 
+	template <class U>
+	Heapify &operator=(const Heapify<U> &from) {
+		T *ptr = from.getRaw();
+		this->set(ptr);
+		return *this;
+	}
+
 	~Heapify() {
 		if (this->pointer != NULL) delete this->pointer;
 	}
@@ -35,6 +46,10 @@ public:
 
 	T *getRaw() const {
 		return this->pointer;
+	}
+
+	T &get() const {
+		return *this->pointer;
 	}
 
 	void set(T *value) {
