@@ -16,4 +16,9 @@ public:
 	const char *what() const noexcept override;
 };
 
+class ViewNotImplementedPlayerViewException : public PlayerViewException {
+public:
+	const char *what() const noexcept override;
+};
+
 #endif

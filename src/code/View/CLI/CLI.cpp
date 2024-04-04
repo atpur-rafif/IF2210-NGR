@@ -1,4 +1,5 @@
 #include "View/CLI/CLI.hpp"
+#include "Exception/PlayerViewException.hpp"
 #include "View/CLI/Player/BreederView.hpp"
 #include "View/CLI/Player/FarmerView.hpp"
 #include "View/CLI/Player/MayorView.hpp"
@@ -11,6 +12,8 @@ CLI::CLI() {
 };
 
 PlayerView &CLI::getView(PlayerType type) {
+	if (this->view.find(type) == this->view.end())
+		throw ViewNotImplementedPlayerViewException();
 	return this->view.at(type).get();
 };
 

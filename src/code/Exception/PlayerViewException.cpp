@@ -7,3 +7,7 @@ const char *CommandNotFoundPlayerViewException::what() const noexcept {
 const char *UserCancelledPlayerViewException::what() const noexcept {
 	return "Command cancelled";
 }
+
+const char *ViewNotImplementedPlayerViewException ::what() const noexcept {
+	return "View not implemented";
+}
