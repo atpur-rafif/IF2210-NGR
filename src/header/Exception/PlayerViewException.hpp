@@ -8,16 +8,12 @@ class PlayerViewException : public exception {};
 
 class CommandNotFoundPlayerViewException : public PlayerViewException {
 public:
-	const char *what() const noexcept override {
-		return "Command not found";
-	}
+	const char *what() const noexcept override;
 };
 
 class UserCancelledPlayerViewException : public PlayerViewException {
 public:
-	const char *what() const noexcept override {
-		return "Command cancelled";
-	}
+	const char *what() const noexcept override;
 };
 
 #endif
