@@ -1,6 +1,7 @@
 #ifndef STORAGE_HPP
 #define STORAGE_HPP
 
+#include "Exception/StorageException.hpp"
 #include <optional>
 #include <string>
 #include <vector>
@@ -43,7 +44,7 @@ protected:
 			) y += ch;
 		}
 
-		if (x.length() == 0 || y.length() == 0) throw "Invalid coordinate";
+		if (x.length() == 0 || y.length() == 0) throw InvalidCoordinateStorageException();
 
 		return {stringToInt(x), stoi(y) - 1};
 	}
@@ -55,7 +56,6 @@ public:
 		this->storage.resize(this->width * this->height);
 	};
 
-	// TODO: Use exception instead optional
 	optional<T> &getItem(int x, int y) {
 		return this->storage[this->flat(x, y)];
 	};

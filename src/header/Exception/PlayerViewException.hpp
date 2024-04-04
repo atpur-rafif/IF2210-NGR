@@ -1,10 +1,10 @@
 #ifndef EXCEPTION_PLAYERVIEWEXCEPTION_HPP
 #define EXCEPTION_PLAYERVIEWEXCEPTION_HPP
 
-#include <exception>
+#include "Exception/GameException.hpp"
 using namespace std;
 
-class PlayerViewException : public exception {};
+class PlayerViewException : public GameException {};
 
 class CommandNotFoundPlayerViewException : public PlayerViewException {
 public:

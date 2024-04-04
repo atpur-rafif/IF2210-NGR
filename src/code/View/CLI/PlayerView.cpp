@@ -1,4 +1,5 @@
 #include "View/CLI/PlayerView.hpp"
+#include "Exception/GameException.hpp"
 #include "Exception/PlayerViewException.hpp"
 #include "Model/Item//ProductItem.hpp"
 #include <iostream>
@@ -23,7 +24,7 @@ void PlayerView::start(Player &player) {
 			}
 			this->runSpecializedPlayerCommand(player, command);
 			continue;
-		} catch (const PlayerViewException &err) {
+		} catch (const GameException &err) {
 			cout << err.what() << endl;
 		}
 	}
