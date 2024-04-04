@@ -46,6 +46,9 @@ void PlayerView::runPlayerCommand(Player &player, string command) {
 
 		player.weight += product->getAddedWeight();
 		player.inventory.clearItem(location);
+	} else if (command == "STATUS") {
+		cout << "Money: " << player.money << endl;
+		cout << "Weight: " << player.weight << endl;
 	} else throw CommandNotFoundPlayerViewException();
 }
 

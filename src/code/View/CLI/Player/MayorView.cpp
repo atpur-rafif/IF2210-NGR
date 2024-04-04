@@ -15,6 +15,7 @@ void MayorView::runSpecializedPlayerCommand(Player &player, string command) {
 			if (income->type == MayorType) continue;
 			int tax = income->calculateTax();
 			income->money -= tax;
+			player.money += tax;
 			cout << income->username << " " << tax << endl;
 		}
 	} else throw CommandNotFoundPlayerViewException();
