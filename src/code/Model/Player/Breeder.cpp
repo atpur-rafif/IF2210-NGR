@@ -20,5 +20,5 @@ int Breeder::calculateTax() {
 	int wealth = this->money + this->countInventoryWealth() + this->countBarnWealth();
 	int taxed = wealth - BreederUntaxed;
 	int bracket = getTaxBracket(taxed);
-	return round((taxed * bracket) / 100.0);
+	return max((int)round((taxed * bracket) / 100.0), 0);
 }

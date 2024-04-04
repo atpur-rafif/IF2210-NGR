@@ -33,6 +33,7 @@ void PlayerController::rearrangePosition() {
 
 void PlayerController::addPlayer(Heapify<Player> &player) {
 	this->players.push_back(player);
+	this->players[this->players.size() - 1]->setContext(this->getContext());
 	this->rearrangePosition();
 };
 

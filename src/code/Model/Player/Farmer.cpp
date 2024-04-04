@@ -1,4 +1,5 @@
 #include "Model/Player/Farmer.hpp"
+#include <algorithm>
 #include <cmath>
 
 Farmer::Farmer() { this->type = FarmerType; }
@@ -20,5 +21,5 @@ int Farmer::calculateTax() {
 	int wealth = this->money + this->countInventoryWealth() + this->countFarmWealth();
 	int taxed = wealth - FarmerUntaxed;
 	int bracket = Player::getTaxBracket(taxed);
-	return round((taxed * bracket) / 100.0);
+	return max((int)round((taxed * bracket) / 100.0), 0);
 }
