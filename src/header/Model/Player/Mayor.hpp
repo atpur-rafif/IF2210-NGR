@@ -10,6 +10,7 @@ public:
 	virtual ~Mayor();
 
 	virtual int calculateTax();
+	void collectTax();
 };
 
 #endif
