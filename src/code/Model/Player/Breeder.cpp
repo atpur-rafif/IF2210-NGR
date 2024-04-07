@@ -24,6 +24,7 @@ int Breeder::calculateTax() {
 	return max((int)round((taxed * bracket) / 100.0), 0);
 }
 
+
 void Breeder::placeAnimal(){
 	//CETAK_INVENTORY
 	cout << "Pilih hewan dari inventory"; 
@@ -36,7 +37,7 @@ void Breeder::placeAnimal(){
 	cout << "Pilih petak tanah: "; 
 	string slotPlace; 
 	cin >> slotPlace;
-	
+	this->barn.setItem(slotPlace, this->inventory.getItem(slot));
 }
 
 void Breeder::giveFood(string& coorBarnItem, string& coorFoodItem){

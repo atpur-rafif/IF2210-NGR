@@ -4,6 +4,16 @@
         "optional": "cpp",
         "format": "cpp",
         "iosfwd": "cpp",
-        "cmath": "cpp"
-    }
+        "cmath": "cpp",
+        "array": "cpp",
+        "*.tcc": "cpp",
+        "memory": "cpp",
+        "istream": "cpp",
+        "functional": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp",
+        "variant": "cpp",
+        "locale": "cpp"
+    },
+    "C_Cpp.default.compilerPath": "C:\\msys64\\mingw64\\bin\\g++.exe"
 }
