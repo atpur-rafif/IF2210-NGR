@@ -5,6 +5,7 @@
 #include <optional>
 #include <string>
 #include <vector>
+#include <map>
 using namespace std;
 
 /*
@@ -107,6 +108,22 @@ public:
 	pair<int, int> getSize() {
 		return {this->width, this->height};
 	}
+
+
+	// I added this to count the frequency of each item
+	map<string,int> getItemFreq() {
+		vector<Heapify<Item>> vec;
+		map<string,int> result;
+		for (int i = 0; i < this->width * this->height; ++i) {
+			if (this->storage[i].has_value())
+				vec.push_back(this->storage[i].value());
+		}
+		for (auto const & item : vec){
+			    ++result[item.get().getName()];
+			}
+		return result;
+    }
+
 };
 
 #endif
