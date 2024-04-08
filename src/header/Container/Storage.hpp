@@ -109,10 +109,8 @@ public:
 		return {this->width, this->height};
 	}
 
-
-	// I added this to count the frequency of each item
 	map<string,int> getItemFreq() {
-		vector<Heapify<Item>> vec;
+		vector<T> vec;
 		map<string,int> result;
 		for (int i = 0; i < this->width * this->height; ++i) {
 			if (this->storage[i].has_value())
@@ -123,7 +121,7 @@ public:
 			}
 		return result;
     }
-
+	
 };
 
 #endif
