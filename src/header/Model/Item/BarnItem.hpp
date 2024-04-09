@@ -28,4 +28,5 @@ public:
 	void setWeight(int weight);
 };
 
+
 #endif

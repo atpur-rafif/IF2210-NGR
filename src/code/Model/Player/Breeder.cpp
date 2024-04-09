@@ -25,118 +25,67 @@ int Breeder::calculateTax() {
 }
 
 
-void Breeder::placeAnimal(){
-	//CETAK_INVENTORY
-	cout << "Pilih hewan dari inventory"; 
-	//item dari inventory;	
-	string slot; 
-	cout << "Slot: "; 
-	cin >> slot; 
-
-	//animal untuk di place petak tanah
-	cout << "Pilih petak tanah: "; 
-	string slotPlace; 
-	cin >> slotPlace;
-	this->barn.setItem(slotPlace, this->inventory.getItem(slot));
+void Breeder::placeAnimal(string& locInventory, string& locField){
+    auto itemOptional = this->inventory.getItem(locInventory);
+	if(itemOptional.has_value()){
+		Item* item = (itemOptional.value().getRaw());
+		if(item->getType() != Barn){
+			throw; 
+		}
+		BarnItem* newAnimal = dynamic_cast<BarnItem* >(item);
+        if(newAnimal == NULL){
+            throw;
+        }
+		this->barn.setItem(locField, *newAnimal);
+	}
 }
 
-void Breeder::giveFood(string& coorBarnItem, string& coorFoodItem){
-	optional<BarnItem> tempBarn = this->barn.getItem(coorBarnItem);
-	optional<Heapify<Item>> tempFood = this->inventory.getItem(coorFoodItem); 
-	bool finish = false;
-	BarnItem* currAnimal; 
-	if(tempBarn.has_value()){
-		currAnimal = &tempBarn.value();	
-	}
-	else{
-		throw "Fieldsnya kosong euy";
-	}
+void Breeder::giveFood(string& locInventory, string& locField) {
+    try {
+        BarnItem* currAnimal = nullptr;
+        optional<BarnItem>& tempBarn = this->barn.getItem(locField);
 
-	Item* food; 
-	if(tempFood.has_value()){
-		food = tempFood->getRaw(); 
-		if(food->getType() != Barn || food->getType() != Farm){
-			throw "Bukan sebuah pangan hewan";
-		}
-	}
+        if (!tempBarn.has_value()){
+            throw runtime_error("Fields are empty");
+        }
+		
+        currAnimal = &tempBarn.value();
 
-	if(currAnimal->getBarnItemType() == Herbivore){
-		if(food->getType() == Farm){
-			this->inventory.clearItem(coorFoodItem);
-			finish = true;
-		}
-		else{
-			throw "Salah woey dia herbivora";
-		}
-	}
-	if(currAnimal->getBarnItemType() == Carnivore){
-		if(food->getType() == Barn){
-			this->inventory.clearItem(coorFoodItem);
-			finish = true;
-		}
-		else{
-			throw "Salah woey dia karnivora";
-		}
-	}
-	if(currAnimal->getBarnItemType() == Omnivore){
-		if(food->getType() == Barn || food->getType() == Farm){
-			this->inventory.clearItem(coorFoodItem);
-			finish = true;
-		}
-		else{
-			throw "Salah makanan dia omnivora";
-		}
-	}
+        auto tempFood = this->inventory.getItem(locInventory);
+        ProductItem* itemFood = dynamic_cast<ProductItem*>(tempFood->getRaw());
 
-	if(finish){
-		currAnimal->setWeight(currAnimal->getWeight() + 10);
-	}
-	else{
-		throw "Gagal memberi makananan"; 
-	}
+        if (!itemFood) {
+            throw runtime_error("Invalid food type");
+        }
+
+        if (itemFood->getProductItemType() == MaterialProduct) {
+            throw runtime_error("This is not food");
+        }
+
+        if (currAnimal->getBarnItemType() == Herbivore) {
+            if (itemFood->getProductItemType() != AnimalProduct) {
+                throw runtime_error("Herbivores eat animal products");
+            }
+        } else if (currAnimal->getBarnItemType() == Carnivore) {
+            if (itemFood->getProductItemType() != FruitProduct) {
+                throw runtime_error("Carnivores eat fruit products");
+            }
+        }
+
+        this->inventory.clearItem(locInventory);
+        currAnimal->setWeight(currAnimal->getWeight() + 10);
+
+    } catch (const exception& ex) {
+        cout << "Error: " << ex.what() << endl;
+    }
 }
 
 void Breeder::harvestAnimal(string& coordinate){
-	optional<BarnItem> tempAnimal = this->barn.getItem(coordinate);
-
-	BarnItem* currAnimal; 
-	bool isFinished = false;
-	if(tempAnimal.has_value()){
-		currAnimal = &tempAnimal.value(); 
-	}
-	else{
-		throw "ini field kosong bjir";
-	}
-
-	if(currAnimal->getWeight() != currAnimal->getWeightToHarvest()){
-		throw "Belum waktunya panen bosque"; 
-	}
-
-
-	if(currAnimal->getCode() == "COW"){ //COW 
-
-	}
-	else if(currAnimal->getCode() == "SHP"){ //SHEEP
-
-	}
-	else if (currAnimal->getCode() == "HRS"){ //HORSE
-
-	}
-	else if(currAnimal->getCode() == "RBT"){ //RABBIT
-
-	}
-	else if(currAnimal->getCode() == "SNK"){ //SNAKE
-
-	}
-	else if(currAnimal->getCode() == "CHK"){ //CHICKEN
-
-	}
-	else if(currAnimal->getCode() == "DCK"){ //DUCK
-
-	}
-	else{
-		throw "Kode salah";
-	}
-	
-	
+	optional<BarnItem> harvestedAnimal = this->barn.getItem(coordinate);
+	auto itemFactory = this->getContext().itemFactory;
+	string code = itemFactory.getProductResult(harvestedAnimal); 
+	ProductItem animal_product; 
+	itemFactory.createItem(code, animal_product); 
+	this->inventory.addItem(animal_product); 
+	this->barn.clearItem(coordinate);
 }

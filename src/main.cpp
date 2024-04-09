@@ -1,7 +1,8 @@
-#include "greeter.hpp"
-#include <iostream>
+#include "View/CLI/CLI.hpp"
 
-using namespace std;
-int main() {
-	greet("world");
+int main(){
+    CLI c;
+    c.start();
+
+    return 0;
 }

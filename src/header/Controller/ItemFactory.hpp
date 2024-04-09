@@ -4,6 +4,7 @@
 #include "Container/Heapify.hpp"
 #include "Model/GameObject.hpp"
 #include "Model/Item.hpp"
+#include "Model/Item/ProductItem.hpp"
 #include <functional>
 #include <map>
 
@@ -37,6 +38,18 @@ public:
 
 	Heapify<Item> createBaseItem(string code) const;
 	string getCodeByName(const string name) const;
-};
 
+	template<class T>
+	string getProductResult(T item) {
+		for (const auto &repo_el:this->repository){
+			auto tempRepoItem = repo_el.second;
+			ProductItem* product = dynamic_cast<ProductItem*>(tempRepoItem.getRaw());
+			if (product != nullptr){
+				if (product->origin == item.getName()){
+					return repo_el.first;
+				}
+			}
+		}
+	}
+};
 #endif

@@ -13,7 +13,9 @@
         "tuple": "cpp",
         "utility": "cpp",
         "variant": "cpp",
-        "locale": "cpp"
+        "locale": "cpp",
+        "iomanip": "cpp",
+        "stdexcept": "cpp"
     },
     "C_Cpp.default.compilerPath": "C:\\msys64\\mingw64\\bin\\g++.exe"
 }
