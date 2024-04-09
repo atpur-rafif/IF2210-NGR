@@ -4,7 +4,7 @@
 #include "Container/Heapify.hpp"
 #include "Model/GameObject.hpp"
 #include "Model/Item.hpp"
-#include "Exception/ControllerException.hpp"
+#include "Exception/DowncastException.hpp"
 #include <functional>
 #include <map>
 
@@ -37,7 +37,7 @@ public:
 			result.setContext(this->getContext());
 		}
 		else{
-			throw MismatchObjectTypeException();
+			throw InvalidDowncastException();
 		}
 		
 	}
