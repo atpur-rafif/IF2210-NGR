@@ -2,6 +2,7 @@
 #define MODEL_PLAYER_MAYOR_HPP
 
 #include "Model/Player.hpp"
+#include <map>
 
 class Mayor : public Player {
 public:
@@ -11,6 +12,14 @@ public:
 
 	virtual int calculateTax();
 	void collectTax();
+
+	void buildBuilding(string);
+	
+	void addPlayer();
+
+
+
 };
+
 
 #endif
