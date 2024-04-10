@@ -105,6 +105,19 @@ public:
 		}
 	}
 
+	void removeItem(string name) {
+		for (int y = 0; y < this->height; ++y) {
+			for (int x = 0; x < this->width; ++x) {
+				int i = this->flat(x, y);
+				if (this->storage[i].has_value()) {
+					if(this->storage[i].value()->getName()==name){
+					this->storage[i].reset();
+					return;}
+				}
+			}
+		}
+	}
+
 	pair<int, int> getSize() {
 		return {this->width, this->height};
 	}
