@@ -7,7 +7,8 @@ Mayor::Mayor() { this->type = MayorType; }
 Mayor::~Mayor() {}
 Mayor *Mayor::clone() { return new Mayor(*this); }
 
-void Mayor::collectTax() {
+map<string, int> Mayor::collectTax() {
+	map<string, int> result;
 	auto &players = *this->getContext().players.getPlayers();
 	int size = players.size();
 	for (int i = 0; i < size; ++i) {
@@ -16,8 +17,9 @@ void Mayor::collectTax() {
 		int tax = income->calculateTax();
 		income->money -= tax;
 		this->money += tax;
-		cout << income->username << " " << tax << endl;
+		result[income->username] = tax;
 	}
+	return result;
 }
 
 int Mayor::calculateTax() {
