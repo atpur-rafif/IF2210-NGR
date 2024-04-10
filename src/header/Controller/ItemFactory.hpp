@@ -4,7 +4,7 @@
 #include "Container/Heapify.hpp"
 #include "Model/GameObject.hpp"
 #include "Model/Item.hpp"
-#include "Model/Item/ProductItem.hpp"
+#include "Exception/DowncastException.hpp"
 #include <functional>
 #include <map>
 
@@ -31,9 +31,15 @@ public:
 	void createItem(string code, T &result) const {
 		Item *base = this->repository.at(code).getRaw();
 		Item *clone = base->clone();
-		T *ptr = dynamic_cast<T *>(clone);
-		result = *ptr;
-		result.setContext(this->getContext());
+		if (clone->getType()==result.getType()){
+			T *ptr = dynamic_cast<T *>(clone);
+			result = *ptr;
+			result.setContext(this->getContext());
+		}
+		else{
+			throw InvalidDowncastException();
+		}
+		
 	}
 
 	Heapify<Item> createBaseItem(string code) const;
