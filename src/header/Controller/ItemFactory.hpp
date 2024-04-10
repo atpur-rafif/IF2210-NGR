@@ -45,7 +45,7 @@ public:
 			auto tempRepoItem = repo_el.second;
 			ProductItem* product = dynamic_cast<ProductItem*>(tempRepoItem.getRaw());
 			if (product != nullptr){
-				if (product->origin == item.getName()){
+				if (product->getOrigin() == item.getName()){
 					return repo_el.first;
 				}
 			}

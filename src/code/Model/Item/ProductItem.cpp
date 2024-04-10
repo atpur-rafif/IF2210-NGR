@@ -9,6 +9,9 @@ ProductItemType ProductItem::getProductItemType() { return this->productItemType
 int ProductItem::getAddedWeight() {
 	return this->addedWeight;
 };
+string ProductItem::getOrigin(){
+	return this->origin; 
+}
 
 void ProductItem::readAttributeFromStream(istream &inputStream) {
 	string type;

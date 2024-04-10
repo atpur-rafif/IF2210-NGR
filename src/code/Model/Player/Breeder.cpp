@@ -85,7 +85,8 @@ void Breeder::harvestAnimal(string& coordinate){
 	auto itemFactory = this->getContext().itemFactory;
 	string code = itemFactory.getProductResult(harvestedAnimal); 
 	ProductItem animal_product; 
+    Heapify<Item> base_product = itemFactory.createBaseItem(code);
 	itemFactory.createItem(code, animal_product); 
-	this->inventory.addItem(animal_product); 
+	this->inventory.addItem(base_product); 
 	this->barn.clearItem(coordinate);
 }
