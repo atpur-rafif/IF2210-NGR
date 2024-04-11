@@ -41,6 +41,36 @@ vector<Player *> *PlayerController::getPlayers() {
 	return &(this->ordered);
 }
 
+Heapify<Player> PlayerController::createPlayerFromParam(int &weight,int &money,string &username,string &type){
+	GameContext &context = this->getContext();
+	for(const auto& element : *context.players.getPlayers()){
+		if(element->username==username) throw "Username already exist";
+	}
+	Player *newPlayer;
+	if (type == "petani") newPlayer = new Farmer();
+	else if (type == "peternak") newPlayer = new Breeder();
+	else throw "Invalid player type";
+
+	newPlayer->username = username;
+	newPlayer->weight = weight;
+	newPlayer->money = money;
+	auto inventorySize = context.miscConfig.getInventorySize();
+	newPlayer->inventory = Storage<Heapify<Item>>(inventorySize.first, inventorySize.second);
+	if (newPlayer->type == FarmerType){
+		Farmer *farmer = dynamic_cast<Farmer *>(newPlayer);
+		auto farmSize = context.miscConfig.getFarmSize();
+		farmer->farm = Storage<FarmItem>(farmSize.first, farmSize.second);
+	}
+	else if (newPlayer->type == BreederType) {
+		Breeder *breeder = dynamic_cast<Breeder *>(newPlayer);
+		auto barnSize = context.miscConfig.getBarnSize();
+		breeder->barn = Storage<BarnItem>(barnSize.first, barnSize.second);
+	}
+	Heapify<Player> heap = Heapify(newPlayer);
+	delete newPlayer;
+	return heap;
+}
+
 Heapify<Player> PlayerController::readPlayerFromStream(istream &inputStream) {
 	int weight, money;
 	string username, type;
