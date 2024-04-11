@@ -63,7 +63,7 @@ void MayorView::runSpecializedPlayerCommand(Player &player, string command) {
 	}
 	else if (command == "TAMBAH_PEMAIN"){
 		try{
-			mayor.isEnoughMoney(50);
+			mayor.isEnoughMoney();
 			string username;
 			string type;
 			cout << "Masukkan jenis pemain: ";

@@ -3,6 +3,8 @@
 #include "Controller/GameContext.hpp"
 #include "Exception/PlayerException.hpp"
 
+#define MINIMUM_MONEY 50
+
 Mayor::Mayor() { this->type = MayorType; }
 Mayor::~Mayor() {}
 Mayor *Mayor::clone() { return new Mayor(*this); }
@@ -86,6 +88,6 @@ void Mayor::addPlayer(string username,string type){
 	this->getContext().players.addPlayer(player);
 }
 
-void Mayor::isEnoughMoney(int money){
-	if(this->money<money) throw NotEnoughResourceException();
+void Mayor::isEnoughMoney(){
+	if(this->money<MINIMUM_MONEY) throw NotEnoughResourceException();
 }

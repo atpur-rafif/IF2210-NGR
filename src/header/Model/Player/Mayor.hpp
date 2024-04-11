@@ -16,7 +16,7 @@ public:
 
 	void buildBuilding(string);
 	void addPlayer(string name,string type);
-	void isEnoughMoney(int money);
+	void isEnoughMoney();
 
 
 
