@@ -16,7 +16,7 @@ void MayorView::runSpecializedPlayerCommand(Player &player, string command) {
 		vector<pair<Player*,int>> pajakTerpungut = mayor.collectTax();
 		int i = 0; 
 		int sum = 0;
-		cout << "Cringe cringe cringe..." << endl;
+		cout << "Cring cring cring..." << endl;
 		cout << "Pajak sudah dipungut!" << endl;
 		cout << "Berikut adalah detil dari pemungutan pajak:" << endl;
 		for(const auto& pair : pajakTerpungut){
