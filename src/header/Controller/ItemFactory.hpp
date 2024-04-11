@@ -44,6 +44,7 @@ public:
 
 	Heapify<Item> createBaseItem(string code) const;
 	string getCodeByName(const string name) const;
+	map<string, Heapify<Item>> getRepository();
 };
 
 #endif
