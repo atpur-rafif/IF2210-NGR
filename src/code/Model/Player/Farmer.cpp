@@ -28,11 +28,18 @@ int Farmer::calculateTax() {
 }
 
 void Farmer::plant(string &invLocation, string &fieldLocation) {
-	optional<Heapify<Item>>& inv_item = this->inventory.getItem(invLocation);
+	auto inv_item = this->inventory.getItem(invLocation);
 	Item *item = inv_item.value().getRaw();
 	FarmItem *selected_plant = dynamic_cast<FarmItem* >(item);
-	this->farm.setItem(fieldLocation, *selected_plant);
-	this->inventory.clearItem(invLocation);
+	if (selected_plant == NULL)
+	{
+		throw;
+	}
+	else 
+	{
+		this->farm.setItem(fieldLocation, *selected_plant);
+		this->inventory.clearItem(invLocation);
+	}
 }
 
 void Farmer::harvestPlant(string& coordinate) {
