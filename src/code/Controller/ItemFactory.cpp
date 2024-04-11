@@ -22,3 +22,7 @@ string ItemFactory::getCodeByName(const string name) const {
 	};
 	return this->codeFinder(fn);
 }
+
+map<string, Heapify<Item>> ItemFactory::getRepository(){
+	return this->repository;
+}
