@@ -21,6 +21,11 @@ NotEnoughResourceException::NotEnoughResourceException(map<string,int> &remainin
     transform(message.begin(),message.end(),message.begin(),::tolower);
 }
 
+NotEnoughResourceException::NotEnoughResourceException(){
+    this->message = "Uang tidak cukup";
+}
+
 const char *NotEnoughResourceException::what() const noexcept {
     return this->message.c_str();
 }
+

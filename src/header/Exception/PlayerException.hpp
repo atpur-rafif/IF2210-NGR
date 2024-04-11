@@ -13,6 +13,7 @@ private:
     string message;
 public:
     NotEnoughResourceException(map<string,int> &remainingResource, int &remainingMoney);
+    NotEnoughResourceException(void);
 	const char *what() const noexcept;
 };
 
