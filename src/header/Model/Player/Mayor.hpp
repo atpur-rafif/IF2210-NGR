@@ -11,11 +11,12 @@ public:
 	virtual ~Mayor();
 
 	virtual int calculateTax();
-	void collectTax();
+	map<string,int> collectTax();
+	map<string, map<string,int>> getRecipe();
 
 	void buildBuilding(string);
-	
-	void addPlayer();
+	void addPlayer(string name,string type);
+	void isEnoughMoney(int money);
 
 
 

@@ -25,14 +25,30 @@ map<string, int> Mayor::collectTax() {
 int Mayor::calculateTax() {
 	return 0;
 }
+map<string,map<string,int>> Mayor::getRecipe(){
+	map<string,map<string,int>> recipe;
+	for (const auto& pair : this->getContext().itemFactory.getRepository()) {
+		if(pair.second.get().getType()==3){
+			Item* base = &pair.second.get();
+			BuildingItem* derived = dynamic_cast<BuildingItem*>(base);
+			auto ingredients = derived->getIngredients();
+			for (auto it = ingredients->begin(); it != ingredients->end(); ++it) {
+				recipe[pair.second.get().getName()][it->first] = it->second;
+			}
+			recipe[pair.second.get().getName()]["GULDEN"] = derived->getPrice();
+		}
+	}
+	return recipe;
+} 
 
 void Mayor::buildBuilding(string recipe){
 	map<string, int> inventoryFreq = this->inventory.getItemFreq();
 	map<string, int> remainingIngredient;
+	string code = this->getContext().itemFactory.getCodeByName(recipe);
 	bool enoughResource = true;
 	BuildingItem build;
 	int remainingMoney;
-	this->getContext().itemFactory.createItem(recipe,build);
+	this->getContext().itemFactory.createItem(code,build);
 	remainingMoney  = build.getPrice()-this->money;
 	for(auto it=build.getIngredients()->cbegin();it!=build.getIngredients()->cend(); ++it){
 		if(it->second - inventoryFreq[it->first]>0){
@@ -55,6 +71,15 @@ void Mayor::buildBuilding(string recipe){
 }
 
 
-void Mayor::addPlayer(){
+void Mayor::addPlayer(string username,string type){
+	transform(type.begin(),type.end(),type.begin(),::tolower);
+	int weight = 0;
+	int money = 50;
+	Heapify<Player> player = this->getContext().players.createPlayerFromParam(weight,money,username,type);
+	this->money -= 50;
+	this->getContext().players.addPlayer(player);
+}
 
+void Mayor::isEnoughMoney(int money){
+	if(this->money<money) throw NotEnoughResourceException();
 }
