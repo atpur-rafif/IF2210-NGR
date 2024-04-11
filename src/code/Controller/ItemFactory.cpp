@@ -1,4 +1,5 @@
 #include "Controller/ItemFactory.hpp"
+#include "Exception/ItemFactoryException.hpp"
 
 ItemFactory::ItemFactory(){};
 
@@ -7,7 +8,7 @@ string ItemFactory::codeFinder(function<bool(Item *)> &lambda) const {
 		auto item = i.second.getRaw();
 		if (lambda(item)) return item->getCode();
 	}
-	throw "Item not found";
+	throw ItemNotFoundException();
 }
 
 Heapify<Item> ItemFactory::createBaseItem(string code) const {
