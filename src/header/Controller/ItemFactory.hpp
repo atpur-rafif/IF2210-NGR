@@ -5,6 +5,7 @@
 #include "Model/GameObject.hpp"
 #include "Model/Item.hpp"
 #include "Model/Item/ProductItem.hpp"
+#include "Exception/DowncastException.hpp"
 #include <functional>
 #include <map>
 
@@ -37,7 +38,7 @@ public:
 			result.setContext(this->getContext());
 		}
 		else{
-			throw;
+			throw InvalidDowncastException();
 		}
 	}
 
@@ -49,7 +50,8 @@ public:
 		for (const auto &repo_el:this->repository)
 		{
 			auto tempRepoItem = repo_el.second;
-        	ProductItem* product = dynamic_cast<ProductItem*>(tempRepoItem.getRaw());
+        	
+      * product = dynamic_cast<ProductItem*>(tempRepoItem.getRaw());
 			if (product != nullptr)
 			{
 				if (product->getOrigin() == item->getName())
