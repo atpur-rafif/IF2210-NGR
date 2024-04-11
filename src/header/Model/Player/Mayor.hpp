@@ -11,7 +11,7 @@ public:
 	virtual ~Mayor();
 
 	virtual int calculateTax();
-	map<string,int> collectTax();
+	vector<pair<Player*,int>> collectTax();
 	map<string, map<string,int>> getRecipe();
 
 	void buildBuilding(string);

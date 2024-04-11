@@ -7,8 +7,9 @@ Mayor::Mayor() { this->type = MayorType; }
 Mayor::~Mayor() {}
 Mayor *Mayor::clone() { return new Mayor(*this); }
 
-map<string, int> Mayor::collectTax() {
-	map<string, int> result;
+vector<pair<Player*, int>> Mayor::collectTax() {
+	vector<pair<Player*,int>> result;
+	pair<Player*, int> inserter;
 	auto &players = *this->getContext().players.getPlayers();
 	int size = players.size();
 	for (int i = 0; i < size; ++i) {
@@ -17,8 +18,13 @@ map<string, int> Mayor::collectTax() {
 		int tax = income->calculateTax();
 		income->money -= tax;
 		this->money += tax;
-		result[income->username] = tax;
+		inserter.first = income;
+		inserter.second = tax;
+		result.push_back(inserter);
 	}
+	sort(result.begin(),result.end(),[this](const pair<Player*, int>& elOne,const pair<Player*, int>& elTwo){
+		return elTwo.second < elOne.second;
+	});
 	return result;
 }
 

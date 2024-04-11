@@ -12,7 +12,19 @@ MayorView *MayorView::clone() { return new MayorView(*this); }
 void MayorView::runSpecializedPlayerCommand(Player &player, string command) {
 	Mayor &mayor = *(dynamic_cast<Mayor *>(&player));
 	if (command == "PUNGUT_PAJAK"){
-		mayor.collectTax();
+		vector<string> role{"Petani","Peternak"};
+		vector<pair<Player*,int>> pajakTerpungut = mayor.collectTax();
+		int i = 0; 
+		int sum = 0;
+		cout << "Cringe cringe cringe..." << endl;
+		cout << "Pajak sudah dipungut!" << endl;
+		cout << "Berikut adalah detil dari pemungutan pajak:" << endl;
+		for(const auto& pair : pajakTerpungut){
+			cout << ++i << ". " << pair.first->username << " - " << role[pair.first->type] << ": " << pair.second << " gulden" << endl;
+			sum += pair.second;
+			}
+		cout << "Negara mendapatkan pemasukan sebesar " << sum << " gulden." << endl;
+		cout << "Gunakan dengan baik dan jangan dikorupsi ya!" << endl;
 		}
 	else if (command == "BANGUN") {
 		string buildingName;
