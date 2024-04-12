@@ -132,7 +132,7 @@ public:
 				vec.push_back(this->storage[i].value());
 		}
 		for (auto const & item : vec){
-			    ++result[item.get().getName()];
+			    ++result[item.get()->getName()];
 			}
 		return result;
     }

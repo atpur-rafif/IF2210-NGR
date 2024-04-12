@@ -14,7 +14,7 @@ void MayorView::runSpecializedPlayerCommand(Player &player, string command) {
 	map<string,map<string,int>> recipe;
 	mayor.getRecipe(recipe);
 	if (command == "PUNGUT_PAJAK"){
-		vector<pair<Player*,int>> pajakTerpungut = mayor.collectTax();
+		vector<pair<shared_ptr<Player>,int>> pajakTerpungut = mayor.collectTax();
 		int i = 0; 
 		int sum = 0;
 		cout << "Cring cring cring..." << endl;

@@ -10,9 +10,9 @@ Mayor::Mayor() { this->type = MayorType; }
 Mayor::~Mayor() {}
 Mayor *Mayor::clone() { return new Mayor(*this); }
 
-vector<pair<Player*, int>> Mayor::collectTax() {
-	vector<pair<Player*,int>> result;
-	pair<Player*, int> inserter;
+vector<pair<shared_ptr<Player>, int>> Mayor::collectTax() {
+	vector<pair<shared_ptr<Player>,int>> result;
+	pair<shared_ptr<Player>, int> inserter;
 	auto players = this->getContext().players.getPlayers();
 	int size = players.size();
 	for (int i = 0; i < size; ++i) {
@@ -25,7 +25,7 @@ vector<pair<Player*, int>> Mayor::collectTax() {
 		inserter.second = tax;
 		result.push_back(inserter);
 	}
-	sort(result.begin(),result.end(),[this](const pair<Player*, int>& elOne,const pair<Player*, int>& elTwo){
+	sort(result.begin(),result.end(),[this](const pair<shared_ptr<Player>, int>& elOne,const pair<shared_ptr<Player>, int>& elTwo){
 		return elTwo.second < elOne.second;
 	});
 	return result;
@@ -37,14 +37,14 @@ int Mayor::calculateTax() {
 
 void Mayor::getRecipe(map<string,map<string,int>> &recipe){
 	for (const auto& pair : this->getContext().itemFactory.getRepository()) {
-		if(pair.second.get().getType()==Building){
-			Item* base = &pair.second.get();
+		if(pair.second.get()->getType()==Building){
+			Item* base = pair.second.get();
 			BuildingItem* derived = dynamic_cast<BuildingItem*>(base);
 			auto ingredients = derived->getIngredients();
 			for (auto it = ingredients->begin(); it != ingredients->end(); ++it) {
-				recipe[pair.second.get().getName()][it->first] = it->second;
+				recipe[pair.second.get()->getName()][it->first] = it->second;
 			}
-			recipe[pair.second.get().getName()]["GULDEN"] = derived->getPrice();
+			recipe[pair.second.get()->getName()]["GULDEN"] = derived->getPrice();
 		}
 	}
 } 
@@ -73,7 +73,8 @@ void Mayor::buildBuilding(string recipe){
 				this->inventory.removeItem(it->first);
 			}
 		}
-		this->inventory.addItem(&build);
+		shared_ptr<Item> buildPtr = make_shared<BuildingItem>(build);
+		this->inventory.addItem(buildPtr);
 		this->money -= build.getPrice();
 	}
 }

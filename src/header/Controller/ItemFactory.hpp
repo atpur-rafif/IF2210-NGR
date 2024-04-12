@@ -41,7 +41,7 @@ public:
 
 	shared_ptr<Item> createBaseItem(string code) const;
 	string getCodeByName(const string name) const;
-	map<string, Heapify<Item>> getRepository();
+	map<string, shared_ptr<Item>> getRepository();
 };
 
 #endif

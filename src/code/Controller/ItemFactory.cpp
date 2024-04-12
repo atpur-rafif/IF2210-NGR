@@ -24,6 +24,6 @@ string ItemFactory::getCodeByName(const string name) const {
 	return this->codeFinder(fn);
 }
 
-map<string, Heapify<Item>> ItemFactory::getRepository(){
+map<string, shared_ptr<Item>> ItemFactory::getRepository(){
 	return this->repository;
 }
