@@ -55,29 +55,10 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 	else if(command == "PANEN"){
 		string choose; 
 		string total; 
-		vector<string> availableField; 
+		vector<pair<int, string>> listNumber;
 
 		cout << "========================PETERNAKAN==============================\n";
-		detail(breeder, availableField); 
-		cout << "Nomor hewan yang ingin dipanen: "; 
-		cin >> choose; 
-		
-		cout << "Berapa petak yang ingin dipanen: "; 
-		cin >> total; 
-		int totalField = availableField.size();
-		if(int(stoi(total)) >= totalField){
-			throw "LMAO"; 
-		}
-		string petak;	
-		cout << "Pilih petak yang ingin dipanen: " << endl; 
-		for(int i = 0; i < int(stoi(total));i++){
-			cout << "Petak ke-" << i + 1 <<": "; 
-			cin >>	petak; 
-			if(std::find(availableField.begin(), availableField.end(), petak) == availableField.end()){
-				throw InvalidHarvestException();
-			}
-			breeder.harvestAnimal(petak); 
-		}
+		detail(breeder); 
 	}
 	else {
 		throw CommandNotFoundPlayerViewException(); 
@@ -101,23 +82,18 @@ void BreederView::printBarn(Breeder& breeder){
 	}
 }
 
-void BreederView::detail(Breeder& breeder, vector<string>& available){
+void BreederView::detail(Breeder& breeder){
     pair<int, int> farm_size = breeder.getContext().miscConfig.getFarmSize();
     vector<pair<string, int>> list_item = {{"COW", 0}, {"SHP", 0}, {"RBT", 0}, {"HRS", 0}, {"SNK", 0}, {"CHK", 0}, {"DCK", 0}};
-	vector<pair<int, string>> list_item_numbered; 
-    vector<pair<string, string>> list_detail;
-	vector<string> availableField;
-    
+	vector<pair<string, string>> list_item_grid; 
     auto& barnInventory = breeder.barn;
 
     for(int y = 0; y < farm_size.first; y++){
         cout << "| ";
         for(int x = 0; x < farm_size.second; x++) {
             auto item = barnInventory.getItem(x, y);
-
             if(item.has_value() && item->getWeight() >= item->getWeightToHarvest()) {
-                list_detail.push_back({intToCoordinate(x, y), item->getCode()});
-				availableField.push_back(intToCoordinate(x, y));
+				list_item_grid.push_back({intToCoordinate(x, y), item->getCode()});
                 for(int i = 0; i < 7; ++i) {
                     if(item->getCode() == list_item[i].first) {
                         list_item[i].second++;
@@ -135,36 +111,75 @@ void BreederView::detail(Breeder& breeder, vector<string>& available){
             cout << "  |  ";
         }
         cout << endl;
-		sort(list_item.begin(), list_item.end(), [](const pair<string, int>& a, const pair<string, int>& b) {
+		std::sort(list_item.begin(), list_item.end(), [](const pair<string, int>& a, const pair<string, int>& b) {
         	return a.second > b.second; 
     	});
-		for(const string &item : availableField){
-			available.push_back(item);
+    }
+	//validasi kalo ada yang bisa dipanen
+	bool canHarvest = false; 
+	for(size_t i = 0; i < list_item.size(); i++){
+		if(list_item[i].second > 0){
+			canHarvest = true;
 		}
-		int idx = 1;
-		for(size_t i = 0; i < list_item.size() ; i++){
-			list_item_numbered.push_back({idx++, list_item[i].first});
+	}
+
+	//print semua gridnya 
+	for(size_t i = 0; i < list_item_grid.size(); i++){
+		cout << "- " << list_item_grid[i].first << ": " << list_item_grid[i].second << endl;
+	}
+
+	if(canHarvest){
+		int i = 1;
+		cout << "Pilih hewan siap panen yang kamu miliki: " << endl; 
+		vector<pair<int, pair<string, int>>> pick_list; 
+		for(pair<string, int> item : list_item){
+			if(item.second > 0){
+				cout << i << ". " << item.first << "(" << item.second << " petak siap dipanen)" << endl;
+				pick_list.push_back({i++, item}); 
+			}
 		}
-    }
 
-    map<string, string> item_names = {
-        {"COW", "Cow"},
-        {"SHP", "Sheep"},
-        {"HRS", "Horse"},
-        {"RBT", "Rabbit"},
-        {"SNK", "Snake"},
-        {"CHK", "Chicken"},
-        {"DCK", "Duck"}
-    };
+		int no_hewan = 0; 
+		while(true){
+			cout << "Nomor hewan yang ingin dipanen: "; 
+			cin >> no_hewan; 
+			int size = pick_list.size();
+			if(no_hewan > 0 &&  no_hewan <= size){
+				break;
+			}
+			else{
+				cout << "Periksa kembali nomor yang dipilih" << endl;
+			}
+		}
+		int amount = 0; 
+		while(true){
+			cout << "Berapa petak yang ingin dipanen: "; 
+			cin >> amount; 
+			if(amount <= pick_list.at(no_hewan - 1).second.second && amount >= 0){
+				break;
+			}
+			else{
+				cout << "Jumlah hewan yang dapat dipanen lebih sedikit daripada yang ingin anda panen!" << endl;
+			}
 
-    for(const auto& detail : list_detail) {
-        cout << "- " << detail.first << ": " << item_names[detail.second] << endl;
-    }
+		}
+		for (int j = 0; j < amount; j++)
+		{
+			string plot_input;
+			cout << "Petak ke-" << j << ": ";
+			cin >> plot_input;
+			while (pick_list.at(no_hewan-1).second.first != breeder.barn.getItem(plot_input)->getCode())
+			{
+				cout << "Beda Hewan bang, pilih yang betul" << endl;
+				cout << "Petak ke-" << j << ": ";
+				cin >> plot_input;
+			}
+			breeder.harvestAnimal(plot_input);
+		}
 
-    for(size_t i = 0; i < availableField.size(); ++i) {
-        if(list_item[i].second > 0){
-            cout << i + 1 << ". " << list_item_numbered[i].second << " (" << list_item[i].second << " petak siap dipanen)" << endl;
-        }
-    }
+
+	}else{
+		cout << "Hewan masih belum bisa dipanen" << endl; 
+	}
+
 }
-

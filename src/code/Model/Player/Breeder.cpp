@@ -78,11 +78,11 @@ void Breeder::giveFood(string& locInventory, string& locField) {
 }
 
 void Breeder::harvestAnimal(string& coordinate){
-    cout << coordinate;
 	optional<BarnItem> harvestedAnimal = this->barn.getItem(coordinate);
 	string code; 
 	if(harvestedAnimal.has_value()){
 		code = this->getContext().itemFactory.getProductResult(harvestedAnimal.value().getName()); 
+        cout << code << endl;
         if(code.empty()){
             throw InvalidBarnProductNotFoundException();
         }
@@ -92,5 +92,7 @@ void Breeder::harvestAnimal(string& coordinate){
 	}
 	ProductItem animal_product; 
 	this->getContext().itemFactory.createItem(code, animal_product); 
+    shared_ptr<Item> newItem = make_shared<ProductItem>(animal_product); 
+    this->inventory.addItem(newItem);
 	this->barn.clearItem(coordinate);
 }
