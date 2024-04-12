@@ -1,7 +1,6 @@
 #ifndef MODEL_PLAYER_HPP
 #define MODEL_PLAYER_HPP
 
-#include "Container/Heapify.hpp"
 #include "Container/Storage.hpp"
 #include "Model/GameObject.hpp"
 #include "Model/Item.hpp"
@@ -18,7 +17,7 @@ public:
 	PlayerType type;
 	int weight;
 	int money;
-	Storage<Heapify<Item>> inventory;
+	Storage<shared_ptr<Item>> inventory;
 
 	Player();
 	virtual ~Player();

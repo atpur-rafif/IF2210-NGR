@@ -75,11 +75,13 @@ public:
 		this->storage[i].reset();
 	}
 
-	void getAllItem(vector<T *> &vec) {
+	vector<T *> getAllItem() {
+		vector<T *> items;
 		for (int i = 0; i < this->width * this->height; ++i) {
 			if (this->storage[i].has_value())
-				vec.push_back(&this->storage[i].value());
+				items.push_back(&this->storage[i].value());
 		}
+		return items;
 	}
 
 	void setItem(int x, int y, T &item) {
