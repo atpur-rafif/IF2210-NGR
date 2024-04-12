@@ -57,9 +57,13 @@ public:
 	
 	static string intToString(int value) {
     string result = "";
-    while (value > 0) {
+    while (value >= 0) {
         result = char((value % 26) + 'A') + result;
         value /= 26;
+		if(value == 0){
+			break;
+		}
+		value--;
     }
     return result;
 	}

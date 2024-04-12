@@ -1,5 +1,6 @@
 #include "View/CLI/Player/BreederView.hpp"
 #include "Exception/PlayerViewException.hpp"
+#include <algorithm>
 
 
 BreederView::~BreederView(){};
@@ -102,15 +103,15 @@ void BreederView::printBarn(Breeder& breeder){
 
 void BreederView::detail(Breeder& breeder, vector<string>& available){
     pair<int, int> farm_size = breeder.getContext().miscConfig.getFarmSize();
-    const vector<string> item_codes = {"COW", "SHP", "HRS", "RBT", "SNK", "CHK", "DCK"};
     vector<pair<string, int>> list_item = {{"COW", 0}, {"SHP", 0}, {"RBT", 0}, {"HRS", 0}, {"SNK", 0}, {"CHK", 0}, {"DCK", 0}};
+	vector<pair<int, string>> list_item_numbered; 
     vector<pair<string, string>> list_detail;
 	vector<string> availableField;
     
     auto& barnInventory = breeder.barn;
 
     for(int y = 0; y < farm_size.first; y++){
-        cout << " | ";
+        cout << "| ";
         for(int x = 0; x < farm_size.second; x++) {
             auto item = barnInventory.getItem(x, y);
 
@@ -118,7 +119,7 @@ void BreederView::detail(Breeder& breeder, vector<string>& available){
                 list_detail.push_back({intToCoordinate(x, y), item->getCode()});
 				availableField.push_back(intToCoordinate(x, y));
                 for(int i = 0; i < 7; ++i) {
-                    if(item->getCode() == item_codes[i]) {
+                    if(item->getCode() == list_item[i].first) {
                         list_item[i].second++;
                         break;
                     }
@@ -129,17 +130,23 @@ void BreederView::detail(Breeder& breeder, vector<string>& available){
                 //TODO: kasih kode merah
                 cout << item->getCode(); 
             } else {
-                cout << " ";
+                cout << "   ";
             }
-            cout << "| ";
+            cout << "  |  ";
         }
         cout << endl;
+		sort(list_item.begin(), list_item.end(), [](const pair<string, int>& a, const pair<string, int>& b) {
+        	return a.second > b.second; 
+    	});
 		for(const string &item : availableField){
 			available.push_back(item);
 		}
+		int idx = 1;
+		for(size_t i = 0; i < list_item.size() ; i++){
+			list_item_numbered.push_back({idx++, list_item[i].first});
+		}
     }
 
-    // Map item codes to their corresponding names
     map<string, string> item_names = {
         {"COW", "Cow"},
         {"SHP", "Sheep"},
@@ -154,9 +161,9 @@ void BreederView::detail(Breeder& breeder, vector<string>& available){
         cout << "- " << detail.first << ": " << item_names[detail.second] << endl;
     }
 
-    for(size_t i = 0; i < item_codes.size(); ++i) {
-        if(list_item[i].second > 0) {
-            cout << i + 1 << ". " << item_names[item_codes[i]] << " (" << list_item[i].second << " petak siap dipanen)" << endl;
+    for(size_t i = 0; i < availableField.size(); ++i) {
+        if(list_item[i].second > 0){
+            cout << i + 1 << ". " << list_item_numbered[i].second << " (" << list_item[i].second << " petak siap dipanen)" << endl;
         }
     }
 }
