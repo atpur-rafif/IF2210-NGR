@@ -3,6 +3,9 @@
 
 #include "Model/Item/FarmItem.hpp"
 #include "Model/Player.hpp"
+#include "Controller/ItemFactory.hpp"
+#include "Model/GameObject.hpp"
+#include "Controller/GameContext.hpp"
 
 class Farmer : public Player {
 public:
@@ -14,6 +17,9 @@ public:
 
 	virtual int calculateTax();
 	int countFarmWealth();
+	void plant(string &invLocation, string &fieldLocation);
+	void harvestPlant(string &coordinate);
+	void printFieldDetail();
 };
 
 #endif

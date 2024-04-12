@@ -20,3 +20,7 @@ void ProductItem::readAttributeFromStream(istream &inputStream) {
 	inputStream >> this->origin;
 	inputStream >> this->addedWeight;
 }
+
+string ProductItem::getOrigin() {
+	return this->origin;
+}
