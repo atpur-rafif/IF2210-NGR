@@ -48,6 +48,10 @@ Heapify<Player> PlayerController::readPlayerFromStream(istream &inputStream) {
 	inputStream >> username >> type >> weight >> money;
 	GameContext &context = this->getContext();
 
+	for(const auto& element : *context.players.getPlayers()){
+		if(element->username==username) throw "Username already exist";
+	}
+
 	Player *newPlayer;
 	if (type == "Petani") newPlayer = new Farmer();
 	else if (type == "Peternak") newPlayer = new Breeder();
