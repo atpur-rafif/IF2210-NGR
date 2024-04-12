@@ -21,7 +21,7 @@ void MayorView::runSpecializedPlayerCommand(Player &player, string command) {
 		cout << "Pajak sudah dipungut!" << endl;
 		cout << "Berikut adalah detil dari pemungutan pajak:" << endl;
 		for(const auto& pair : pajakTerpungut){
-			cout << ++i << ". " << pair.first->username << " - " << pair.first->playerTypeToString(pair.first->type) << ": " << pair.second << " gulden" << endl;
+			cout << ++i << ". " << pair.first->username << " - " << Player::playerTypeToString(pair.first->type) << ": " << pair.second << " gulden" << endl;
 			sum += pair.second;
 			}
 		cout << "Negara mendapatkan pemasukan sebesar " << sum << " gulden." << endl;
