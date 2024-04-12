@@ -3,10 +3,18 @@
 #include "Model/Player/Breeder.hpp"
 #include "Model/Player/Farmer.hpp"
 #include "Model/Player/Mayor.hpp"
+#include <string>
 #include <algorithm>
 
 PlayerController::PlayerController() {
 	this->currentPlayerIndex = 0;
+}
+
+string PlayerController::toLower(string textInput){
+	string text = "";
+	text += textInput;
+	transform(text.begin(),text.end(),text.begin(),::tolower);
+	return text; 
 }
 
 void PlayerController::nextPlayer() {
@@ -21,7 +29,7 @@ void PlayerController::rearrangePosition() {
 	auto begin = this->players.begin();
 	auto end = begin + this->players.size();
 	sort(begin, end, [](shared_ptr<Player> a, shared_ptr<Player> b) {
-		return a->username < b->username;
+			return a->username < b->username|| PlayerController::toLower(a->username) < PlayerController::toLower(b->username);
 	});
 }
 
