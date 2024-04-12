@@ -2,6 +2,7 @@
 #define SHOP_ITEM_HPP
 
 #include "PlayerView.hpp"
+#include "Exception/ShopException.hpp"
 #include <iostream>
 #include <map>
 #include <string>
@@ -9,7 +10,12 @@ using namespace std;
 
 class Shop : public PlayerView {
 public:
-    map<string, int> shopInventory{// Plant
+    /*
+    * Map item's code to the amount of that item
+    * -1 to indicate infinite amount of that item
+    **/
+    map<string, int> shopInventory{
+                                   // Plant
                                    {"TEK", -1}, {"SDT", -1}, {"ALT", -1}, {"IRN", -1}, {"APL", -1}, {"ORG", -1}, {"BNT", -1}, {"GAV", -1},
 
                                    // Animal
@@ -18,7 +24,11 @@ public:
                                    // Product
                                    {"TAW", 0}, {"SAW", 0}, {"ALW", 0}, {"IRW", 0}, {"APP", 0}, {"ORP", 0}, {"BNP", 0}, {"GAP", 0}, {"COM", 0}, {"SHM", 0}, {"HRM", 0}, {"RBM", 0}, {"SNM", 0}, {"CHM", 0}, {"DCM", 0}, {"CHE", 0}, {"DCE", 0},
 
-                                   // Building Recipe
+                                   /*
+                                   * Building
+                                   * Walikota Cannot buy this
+                                   * Petani and Peternak banned Cannot sell this
+                                   **/
                                    {"SMH", 0}, {"MDH", 0}, {"LRH", 0}, {"HTL", 0}
 								   };
 
@@ -28,7 +38,7 @@ public:
 	template <class T>
 	void playerBuyItem(Player &player);
 
-    void printInventory(map<string, int> &m);
+    void printInventory(const map<string, int> &m);
 };
 
 #endif

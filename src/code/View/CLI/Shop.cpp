@@ -19,12 +19,16 @@ void Shop::playerSellItem(Player &player) {
             cout << "Tidak ada item pada lokasi ini!\n";
         }
 
-        T *casted = dynamic_cast<T *>(rawItem->getRaw());
+        T *casted = dynamic_cast<T *>(rawItem);
         if (casted == NULL) {
             cout << "Invalid item type\n";
         };
 
         ProductItem *product = casted;
+        if ((product->getType() == 3) && (player.type == 0 || player.type == 1)) {
+            throw 
+        }
+
         if (shopInventory[product->getCode()] != -1)
             shopInventory[product->getCode()]++;
         
@@ -38,9 +42,8 @@ void Shop::playerSellItem(Player &player) {
 
 template <class T>
 void Shop::playerBuyItem(Player &player) {
-    vector<Heapify<Item>> vec;
-    player.inventory.getAllItem(&vec)
-    this->printInventory();
+    vector<shared_ptr<Item> *> vec = player.inventory.getAllItem();
+    this->printInventory(shopInventory);
     pair<int, int> size = player.inventory.getSize();
     cout << "\nUang Anda : " << player.money <<
     "\nSlot penyimpanan tersedia : " << (size.first * size.second) - vec.size() <<
@@ -56,7 +59,7 @@ void Shop::playerBuyItem(Player &player) {
 
 }
 
-void Shop::printInventory(map<string, int> &m) {
+void Shop::printInventory(const map<string, int> &m) {
     cout << "Selamat datang di toko!!\nBerikut merupakan hal yang dapat Anda Beli\n";
     int i = 0;
     for(const auto& [key, value] : m) {
