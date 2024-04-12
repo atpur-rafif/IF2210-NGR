@@ -2,6 +2,7 @@
 #include "Model/Item/BuildingItem.hpp"
 #include "Controller/GameContext.hpp"
 #include "Exception/PlayerException.hpp"
+#include <sstream>
 
 #define MINIMUM_MONEY 50
 
@@ -80,10 +81,16 @@ void Mayor::buildBuilding(string recipe){
 
 
 void Mayor::addPlayer(string username,string type){
-	transform(type.begin(),type.end(),type.begin(),::tolower);
-	int weight = 0;
-	int money = 50;
-	Heapify<Player> player = this->getContext().players.createPlayerFromParam(weight,money,username,type);
+	transform(next(type.begin()),type.end(),next(type.begin()),::tolower);
+	transform(type.begin(),next(type.begin()),type.begin(),::toupper);
+	if(type=="Walikota") throw "Invalid player type";
+	string weight = "0";
+	string money = "50";
+	string inventoryCount = "0";
+	string specialInventoryCount = "0";
+	string inserter = username + " " + type + " " + weight + " " + money + " " + inventoryCount + " " + specialInventoryCount;
+	istringstream inputStream(inserter);
+	Heapify<Player> player = this->getContext().players.readPlayerFromStream(inputStream);
 	this->money -= 50;
 	this->getContext().players.addPlayer(player);
 }
