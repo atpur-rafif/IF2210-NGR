@@ -16,6 +16,7 @@ int Breeder::countBarnWealth(){
 	return barnWealth;
 }
 
+
 const int BreederUntaxed = 11;
 int Breeder::calculateTax() {
 	int wealth = this->money + this->countInventoryWealth() + this->countBarnWealth();
@@ -84,7 +85,7 @@ void Breeder::harvestAnimal(string& coordinate){
 	optional<BarnItem> harvestedAnimal = this->barn.getItem(coordinate);
 	string code; 
 	if(harvestedAnimal.has_value()){
-		code = this->getContext().itemFactory.getBarnProductResult(harvestedAnimal.value()); 
+		code = this->getContext().itemFactory.getProductResult(harvestedAnimal.value().getName()); 
         if(code.empty()){
             throw InvalidBarnProductNotFoundException();
         }

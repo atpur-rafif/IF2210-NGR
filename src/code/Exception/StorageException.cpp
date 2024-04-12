@@ -1,5 +1,9 @@
 #include "Exception/StorageException.hpp"
 
+const char *InvalidItemNotFoundException::what() const noexcept{
+	return "Item not found";
+}
+
 const char *InvalidCoordinateStorageException::what() const noexcept {
 	return "Invalid coordinate";
 }
@@ -30,4 +34,8 @@ const char *InvalidFoodCarnivores::what() const noexcept{
 
 const char *InvalidBarnProductNotFoundException::what() const noexcept{
 	return "Product not found";
+}
+
+const char *InvalidHarvestException::what() const noexcept{
+	return "Petak tidak bisa dipanen";
 }

@@ -2,6 +2,7 @@
 #define MODEL_ITEM_BARNITEM_HPP
 
 #include "Model/Item.hpp"
+#include "Controller/GameContext.hpp"
 
 enum BarnItemType {
 	Herbivore,

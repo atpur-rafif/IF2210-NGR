@@ -6,6 +6,10 @@ using namespace std;
 
 class StorageException : public GameException {};
 
+class InvalidItemNotFoundException : public StorageException{
+public: 
+	const char *what() const noexcept override;
+};
 class InvalidCoordinateStorageException : public StorageException {
 public:
 	const char *what() const noexcept override;
@@ -42,6 +46,11 @@ public:
 };
 
 class InvalidBarnProductNotFoundException : public StorageException{
+public: 
+	const char *what() const noexcept override; 
+};
+
+class InvalidHarvestException : public StorageException {
 public: 
 	const char *what() const noexcept override; 
 };

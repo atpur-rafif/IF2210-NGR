@@ -6,6 +6,7 @@ BarnItem *BarnItem::clone() const { return new BarnItem(*this); }
 
 BarnItemType BarnItem::getBarnItemType() { return this->barnItemType; }
 
+int BarnItem::getWeightToHarvest() {return this->getContext().miscConfig.getTargetWeight();}
 int BarnItem::getWeight() { return this->currentWeight; }
 void BarnItem::setWeight(int weight) { this->currentWeight = weight; }
 

@@ -55,16 +55,13 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 		if(int(stoi(total)) >= totalField){
 			throw; 
 		}
-
-
 		string petak;	
 		cout << "Pilih petak yang ingin dipanen: " << endl; 
 		for(int i = 0; i < int(stoi(total));i++){
 			cout << "Petak ke-" << i + 1 <<": "; 
 			cin >>	petak; 
 			if(std::find(availableField.begin(), availableField.end(), petak) == availableField.end()){
-				//Petak tidak ada 
-				throw; 
+				throw InvalidHarvestException();
 			}
 			breeder.harvestAnimal(petak); 
 		}
@@ -78,7 +75,7 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 void BreederView::detail(Breeder& breeder, vector<string>& available){
     pair<int, int> farm_size = breeder.getContext().miscConfig.getFarmSize();
     const vector<string> item_codes = {"COW", "SHP", "HRS", "RBT", "SNK", "CHK", "DCK"};
-    vector<pair<string, int>> list_item(item_codes.size(), {0, 0});
+    vector<pair<string, int>> list_item = {{"COW", 0}, {"SHP", 0}, {"HRS", 0}, {"SNK", 0}, {"CHK", 0}, {"DCK", 0}};
     vector<pair<string, string>> list_detail;
 	vector<string> availableField;
     
@@ -108,7 +105,9 @@ void BreederView::detail(Breeder& breeder, vector<string>& available){
             cout << "| ";
         }
         cout << endl;
-		available = availableField;
+		for(const string &item : availableField){
+			available.push_back(item);
+		}
     }
 
     // Map item codes to their corresponding names

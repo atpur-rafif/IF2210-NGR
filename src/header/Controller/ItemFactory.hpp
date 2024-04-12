@@ -5,8 +5,8 @@
 #include "Model/GameObject.hpp"
 #include "Model/Item.hpp"
 #include "Model/Item/ProductItem.hpp"
-#include "Model/Item/BarnItem.hpp"
 #include "Exception/DowncastException.hpp"
+#include "Exception/StorageException.hpp"
 #include <functional>
 #include <map>
 
@@ -47,12 +47,12 @@ public:
 	Heapify<Item> createBaseItem(string code) const;
 	string getCodeByName(const string name) const;
 
-	string getBarnProductResult(BarnItem item) {
+	string getProductResult(string Code) {
 		for (const auto &repo_el:this->repository){
 			auto tempRepoItem = repo_el.second;
 			ProductItem* product = dynamic_cast<ProductItem*>(tempRepoItem.getRaw());
 			if (product != nullptr){
-				if (product->getOrigin() == item.getName()){
+				if (product->getOrigin() == Code){
 					return repo_el.first;
 				}
 			}

@@ -52,7 +52,7 @@ Heapify<Player> PlayerController::readPlayerFromStream(istream &inputStream) {
 	if (type == "Petani") newPlayer = new Farmer();
 	else if (type == "Peternak") newPlayer = new Breeder();
 	else if (type == "Walikota") newPlayer = new Mayor();
-	else throw "Invalid player type";
+	else cout << "Invalid player type";
 
 	newPlayer->username = username;
 	newPlayer->weight = weight;
