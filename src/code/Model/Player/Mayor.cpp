@@ -93,6 +93,7 @@ void Mayor::addPlayer(string username,string type){
 	shared_ptr<Player> player = this->getContext().players.readPlayerFromStream(inputStream);
 	this->money -= 50;
 	this->getContext().players.addPlayer(player);
+	if(this->username>username) this->getContext().players.nextPlayer();
 }
 
 void Mayor::isEnoughMoney(){
