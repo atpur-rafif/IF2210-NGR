@@ -26,6 +26,7 @@ public:
 	//function build by me
 	void placeAnimal(string&, string&); 
 	void giveFood(string&, string&);
+	void giveFoodChecker(string&);
 	void harvestAnimal(string&);
 };
 

@@ -41,6 +41,7 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 			//Ini perintah kasih makannya
 			this->printBarn(breeder);
 			loc = this->promptFieldFromBarn(breeder, "Pilih petak yang ingin diberi makan: ", false); 
+			breeder.giveFoodChecker(loc);
 			this->printInventory(player); 
 			locFood = this->promptItemFromInventory(player, foodItem);
 			try{

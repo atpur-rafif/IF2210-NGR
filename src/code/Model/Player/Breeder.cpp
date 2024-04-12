@@ -39,6 +39,51 @@ void Breeder::placeAnimal(string& locInventory, string& locField){
     this->inventory.clearItem(locInventory);
 }
 
+void Breeder::giveFoodChecker(string& locField){
+   BarnItem* currAnimal = nullptr;
+    auto tempBarn = this->barn.getItem(locField);
+
+    if(!tempBarn.has_value()){
+        throw InvalidBarnEmpty();
+    }
+    
+    currAnimal = &tempBarn.value();
+    vector<ProductItem*> foodchecker; 
+    vector<shared_ptr<Item>* > repo = this->inventory.getAllItem();
+    for(auto& itemPtr: repo){
+        shared_ptr<Item> rawPtr = *itemPtr;
+        if(auto productItemPtr = dynamic_cast<ProductItem*>(rawPtr.get())){
+            foodchecker.push_back(productItemPtr);
+        }
+    }
+
+    bool isFound = false; 
+    if(currAnimal->getBarnItemType() == Carnivore){
+        for(const auto& item : foodchecker){
+            if(item->getProductItemType() == AnimalProduct){
+                isFound = true;
+            }
+        }
+    }
+    else if(currAnimal->getBarnItemType() == Herbivore){
+        for(const auto& item : foodchecker){
+            if(item->getProductItemType() == FruitProduct){
+                isFound = true;
+            }
+        }
+        
+    }
+    else if(currAnimal->getBarnItemType() == Omnivore){
+        for(const auto& item : foodchecker){
+            if(item->getProductItemType() == AnimalProduct || item->getProductItemType() == FruitProduct){
+                isFound = true;
+            }
+        }
+    } 
+    if(!isFound){
+        throw InvalidFoodNotFoundException();
+    }
+}
 void Breeder::giveFood(string& locInventory, string& locField) {
     BarnItem* currAnimal = nullptr;
     auto tempBarn = this->barn.getItem(locField);
@@ -48,6 +93,7 @@ void Breeder::giveFood(string& locInventory, string& locField) {
     }
     
     currAnimal = &tempBarn.value();
+
     auto optionalItem = this->inventory.getItem(locInventory);
     if(!optionalItem.has_value()){
         throw InvalidItemNotFoundException();
@@ -72,9 +118,8 @@ void Breeder::giveFood(string& locInventory, string& locField) {
             throw InvalidFoodCarnivores();
         }
     }
-
     this->inventory.clearItem(locInventory);
-    currAnimal->setWeight(currAnimal->getWeight() + 10);
+    currAnimal->setWeight(currAnimal->getWeight() + itemFood->getAddedWeight());
 }
 
 void Breeder::harvestAnimal(string& coordinate){
@@ -82,7 +127,6 @@ void Breeder::harvestAnimal(string& coordinate){
 	string code; 
 	if(harvestedAnimal.has_value()){
 		code = this->getContext().itemFactory.getProductResult(harvestedAnimal.value().getName()); 
-        cout << code << endl;
         if(code.empty()){
             throw InvalidBarnProductNotFoundException();
         }

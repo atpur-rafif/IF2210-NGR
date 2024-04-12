@@ -10,6 +10,11 @@ class InvalidItemNotFoundException : public StorageException{
 public: 
 	const char *what() const noexcept override;
 };
+
+class InvalidFoodNotFoundException : public StorageException{
+	const char *what() const noexcept override; 
+};
+
 class InvalidCoordinateStorageException : public StorageException {
 public:
 	const char *what() const noexcept override;
