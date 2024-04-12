@@ -69,7 +69,9 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 			breeder.harvestAnimal(petak); 
 		}
 	}
-	else throw CommandNotFoundPlayerViewException(); 
+	else {
+		throw CommandNotFoundPlayerViewException(); 
+	}
 
 }
 

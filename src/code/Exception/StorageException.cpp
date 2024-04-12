@@ -28,3 +28,6 @@ const char *InvalidFoodCarnivores::what() const noexcept{
 	return "Herbivores eat animal product";
 }
 
+const char *InvalidBarnProductNotFoundException::what() const noexcept{
+	return "Product not found";
+}

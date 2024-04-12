@@ -82,17 +82,17 @@ void Breeder::giveFood(string& locInventory, string& locField) {
 
 void Breeder::harvestAnimal(string& coordinate){
 	optional<BarnItem> harvestedAnimal = this->barn.getItem(coordinate);
-	auto itemFactory = this->getContext().itemFactory;
 	string code; 
 	if(harvestedAnimal.has_value()){
-		code = itemFactory.getProductResult(harvestedAnimal); 
+		code = this->getContext().itemFactory.getBarnProductResult(harvestedAnimal.value()); 
+        if(code.empty()){
+            throw InvalidBarnProductNotFoundException();
+        }
 	}
 	else{
-		throw;
+		throw InvalidBarnEmpty();
 	}
 	ProductItem animal_product; 
-    Heapify<Item> base_product = itemFactory.createBaseItem(code);
-	itemFactory.createItem(code, animal_product); 
-	this->inventory.addItem(base_product); 
+	this->getContext().itemFactory.createItem(code, animal_product); 
 	this->barn.clearItem(coordinate);
 }

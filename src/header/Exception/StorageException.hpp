@@ -41,4 +41,9 @@ public:
 	const char *what() const noexcept override; 
 };
 
+class InvalidBarnProductNotFoundException : public StorageException{
+public: 
+	const char *what() const noexcept override; 
+};
+
 #endif
