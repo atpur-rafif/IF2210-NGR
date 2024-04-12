@@ -20,7 +20,6 @@ public:
 	void rearrangePosition();
 	vector<Player *> *getPlayers();
 	Heapify<Player> readPlayerFromStream(istream &inputStream);
-	Heapify<Player> createPlayerFromParam(int &weight,int &money,string &username,string &stype);
 };
 
 #endif
