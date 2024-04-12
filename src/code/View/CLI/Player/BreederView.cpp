@@ -1,6 +1,7 @@
 #include "View/CLI/Player/BreederView.hpp"
 #include "Exception/PlayerViewException.hpp"
 
+
 BreederView::~BreederView(){};
 BreederView *BreederView::clone() { return new BreederView(*this); }
 void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
@@ -53,7 +54,7 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 		cin >> total; 
 		int totalField = availableField.size();
 		if(int(stoi(total)) >= totalField){
-			throw; 
+			throw "LMAO"; 
 		}
 		string petak;	
 		cout << "Pilih petak yang ingin dipanen: " << endl; 
@@ -75,7 +76,7 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 void BreederView::detail(Breeder& breeder, vector<string>& available){
     pair<int, int> farm_size = breeder.getContext().miscConfig.getFarmSize();
     const vector<string> item_codes = {"COW", "SHP", "HRS", "RBT", "SNK", "CHK", "DCK"};
-    vector<pair<string, int>> list_item = {{"COW", 0}, {"SHP", 0}, {"HRS", 0}, {"SNK", 0}, {"CHK", 0}, {"DCK", 0}};
+    vector<pair<string, int>> list_item = {{"COW", 0}, {"SHP", 0}, {"RBT", 0}, {"HRS", 0}, {"SNK", 0}, {"CHK", 0}, {"DCK", 0}};
     vector<pair<string, string>> list_detail;
 	vector<string> availableField;
     
@@ -85,10 +86,11 @@ void BreederView::detail(Breeder& breeder, vector<string>& available){
         cout << " | ";
         for(int x = 0; x < farm_size.second; x++) {
             auto item = barnInventory.getItem(x, y);
+
             if(item.has_value() && item->getWeight() >= item->getWeightToHarvest()) {
                 list_detail.push_back({intToCoordinate(x, y), item->getCode()});
 				availableField.push_back(intToCoordinate(x, y));
-                for(size_t i = 0; i < item_codes.size(); ++i) {
+                for(int i = 0; i < 7; ++i) {
                     if(item->getCode() == item_codes[i]) {
                         list_item[i].second++;
                         break;
@@ -126,7 +128,7 @@ void BreederView::detail(Breeder& breeder, vector<string>& available){
     }
 
     for(size_t i = 0; i < item_codes.size(); ++i) {
-        if(list_item[i].second != 0) {
+        if(list_item[i].second > 0) {
             cout << i + 1 << ". " << item_names[item_codes[i]] << " (" << list_item[i].second << " petak siap dipanen)" << endl;
         }
     }
