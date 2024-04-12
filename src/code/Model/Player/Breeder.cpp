@@ -5,15 +5,11 @@ Breeder::Breeder() { this->type = BreederType; }
 Breeder::~Breeder() {}
 Breeder *Breeder::clone() { return new Breeder(*this); }
 
-int Breeder::countBarnWealth(){
-	vector<BarnItem *> barnItems;
-	this->barn.getAllItem(barnItems);
-
-	int barnWealth = 0;
-	for (const auto &itemPtr : barnItems){
-		barnWealth += itemPtr->getPrice();
-	}
-	return barnWealth;
+int Breeder::countBarnWealth() {
+	int wealth = 0;
+	for (auto &itemPtr : this->barn.getAllItem())
+		wealth += itemPtr->getPrice();
+	return wealth;
 }
 
 
@@ -28,60 +24,61 @@ int Breeder::calculateTax() {
 
 void Breeder::placeAnimal(string& locInventory, string& locField){
     auto itemOptional = this->inventory.getItem(locInventory);
-	if(itemOptional.has_value()){
-		Item* item = (itemOptional.value().getRaw());
-		if(item->getType() != Barn){
-			throw InvalidTypeValueException(); 
-		}
-		BarnItem* newAnimal = dynamic_cast<BarnItem* >(item);
-        if(newAnimal == NULL){
-            throw InvalidDowncastException();
-        }
-		this->barn.setItem(locField, *newAnimal);
-	}
+    if(!itemOptional.has_value()){
+        throw InvalidItemNotFoundException();
+    }
+    shared_ptr<Item> item = itemOptional.value();
+    if(item->getType() != Barn){
+        throw InvalidTypeValueException(); 
+    }
+    BarnItem* newAnimal = dynamic_cast<BarnItem*>(item.get());
+    if(newAnimal == NULL){
+        throw InvalidDowncastException();
+    }
+    this->barn.setItem(locField, *newAnimal);
+    this->inventory.clearItem(locInventory);
 }
 
 void Breeder::giveFood(string& locInventory, string& locField) {
-    try {
-        BarnItem* currAnimal = nullptr;
-        optional<BarnItem>& tempBarn = this->barn.getItem(locField);
+    BarnItem* currAnimal = nullptr;
+    auto tempBarn = this->barn.getItem(locField);
 
-        if (!tempBarn.has_value()){
-            throw InvalidBarnEmpty();
-        }
-		
-        currAnimal = &tempBarn.value();
-
-        auto tempFood = this->inventory.getItem(locInventory);
-        ProductItem* itemFood = dynamic_cast<ProductItem*>(tempFood->getRaw());
-
-        if (!itemFood) {
-            throw InvalidTypeException();
-        }
-
-        if (itemFood->getProductItemType() == MaterialProduct) {
-            throw InvalidNotFoodException();
-        }
-
-        if (currAnimal->getBarnItemType() == Herbivore) {
-            if (itemFood->getProductItemType() != FruitProduct) {
-                throw InvalidFoodHerbivores();
-            }
-        } else if (currAnimal->getBarnItemType() == Carnivore) {
-            if (itemFood->getProductItemType() != AnimalProduct) {
-                throw InvalidFoodCarnivores();
-            }
-        }
-
-        this->inventory.clearItem(locInventory);
-        currAnimal->setWeight(currAnimal->getWeight() + 10);
-
-    } catch (const exception& ex) {
-        cout << "Error: " << ex.what() << endl;
+    if(!tempBarn.has_value()){
+        throw InvalidBarnEmpty();
     }
+    
+    currAnimal = &tempBarn.value();
+    auto optionalItem = this->inventory.getItem(locInventory);
+    if(!optionalItem.has_value()){
+        throw InvalidItemNotFoundException();
+    }
+    shared_ptr<Item> itemFoodTemp = optionalItem.value();
+    ProductItem* itemFood = dynamic_cast<ProductItem*>(itemFoodTemp.get());
+
+    if (!itemFood) {
+        throw InvalidTypeException();
+    }
+
+    if (itemFood->getProductItemType() == MaterialProduct) {
+        throw InvalidNotFoodException();
+    }
+
+    if (currAnimal->getBarnItemType() == Herbivore) {
+        if (itemFood->getProductItemType() != FruitProduct) {
+            throw InvalidFoodHerbivores();
+        }
+    } else if (currAnimal->getBarnItemType() == Carnivore) {
+        if (itemFood->getProductItemType() != AnimalProduct) {
+            throw InvalidFoodCarnivores();
+        }
+    }
+
+    this->inventory.clearItem(locInventory);
+    currAnimal->setWeight(currAnimal->getWeight() + 10);
 }
 
 void Breeder::harvestAnimal(string& coordinate){
+    cout << coordinate;
 	optional<BarnItem> harvestedAnimal = this->barn.getItem(coordinate);
 	string code; 
 	if(harvestedAnimal.has_value()){

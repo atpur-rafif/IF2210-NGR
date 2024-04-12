@@ -9,17 +9,16 @@ class PlayerController : public GameObject {
 
 protected:
 	PlayerController();
-	vector<Heapify<Player>> players;
-	vector<Player *> ordered;
+	vector<shared_ptr<Player>> players;
 	int currentPlayerIndex;
 
 public:
 	void nextPlayer();
-	Player &getCurrentPlayer();
-	void addPlayer(Heapify<Player> &player);
+	shared_ptr<Player> getCurrentPlayer();
+	void addPlayer(shared_ptr<Player> player);
 	void rearrangePosition();
-	vector<Player *> *getPlayers();
-	Heapify<Player> readPlayerFromStream(istream &inputStream);
+	vector<shared_ptr<Player>> getPlayers();
+	shared_ptr<Player> readPlayerFromStream(istream &inputStream);
 };
 
 #endif

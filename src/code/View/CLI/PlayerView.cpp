@@ -36,7 +36,7 @@ void PlayerView::runPlayerCommand(Player &player, string command) {
 		this->printInventory(player);
 
 		string location;
-		ProductItem *product;
+		shared_ptr<ProductItem> product;
 		while (true) {
 			location = this->promptItemFromInventory(player, product);
 			ProductItemType type = product->getProductItemType();

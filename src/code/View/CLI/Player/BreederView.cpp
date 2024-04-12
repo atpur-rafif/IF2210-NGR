@@ -10,15 +10,15 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 		
 		string location; 
 		string locationAnimal;
-		BarnItem *barnItem; 
+		shared_ptr<BarnItem> barnItem; 
 		while(true){
 			this->printInventory(player); 
 			location = this->promptItemFromInventory(player, barnItem); 
 			this->printBarn(breeder);
-			locationAnimal = this->promptFieldFromBarn(breeder);
+			locationAnimal = this->promptFieldFromBarn(breeder, "Pilih petak yang ingin ditinggali: ", true);
 			try
 			{
-				breeder.placeAnimal(locationAnimal, location);
+				breeder.placeAnimal(location, locationAnimal);
 				break;
 			}
 			catch(const std::exception& e)
@@ -29,16 +29,27 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 		}
 
 	}
+	else if (command == "BARN"){
+		printBarn(breeder);
+	}
 	else if (command == "KASIH_MAKAN"){
-		string loc; 
-		string locFood; 
-		ProductItem *foodItem; 	
-		//Ini perintah kasih makannya
-		this->printBarn(breeder);
-		loc = this->promptFieldFromBarn(breeder); 
-		this->printInventory(player); 
-		locFood = this->promptItemFromInventory(player, foodItem);
-		breeder.giveFood(locFood, loc);
+		while(true){
+			string loc; 
+			string locFood; 
+			shared_ptr<ProductItem> foodItem; 	
+			//Ini perintah kasih makannya
+			this->printBarn(breeder);
+			loc = this->promptFieldFromBarn(breeder, "Pilih petak yang ingin diberi makan: ", false); 
+			this->printInventory(player); 
+			locFood = this->promptItemFromInventory(player, foodItem);
+			try{
+				breeder.giveFood(locFood, loc);
+				break;
+			}
+			catch(const exception& e){
+				cerr << e.what() << "\n";
+			}
+		}
 	}
 	else if(command == "PANEN"){
 		string choose; 
@@ -71,6 +82,22 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 		throw CommandNotFoundPlayerViewException(); 
 	}
 
+}
+
+void BreederView::printBarn(Breeder& breeder){
+	auto &barnInventory = breeder.barn; 
+	auto size = barnInventory.getSize();
+	for(int y = 0; y < size.first; y++){
+		cout << "| "; 
+		for(int x = 0; x < size.second; x++){
+			auto result = barnInventory.getItem(x, y);
+			if(result.has_value()) 
+				cout << result->getCode();
+			else cout << "   ";
+			cout << " | ";
+		}
+		cout << endl;
+	}
 }
 
 void BreederView::detail(Breeder& breeder, vector<string>& available){
@@ -134,19 +161,3 @@ void BreederView::detail(Breeder& breeder, vector<string>& available){
     }
 }
 
-
-void BreederView::printBarn(Breeder& breeder){
-	auto &barnInventory = breeder.barn; 
-	auto size = barnInventory.getSize();
-	for(int y = 0; y < size.first; y++){
-		cout << "| "; 
-		for(int x = 0; x < size.second; x++){
-			auto result = barnInventory.getItem(x, y);
-			if(result.has_value()) 
-				cout << result->getCode();
-			else cout << " ";
-			cout << " | ";
-		}
-		cout << endl;
-	}
-}

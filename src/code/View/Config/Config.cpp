@@ -42,7 +42,7 @@ void Config::readConfig(
 	int playerCount;
 	stateFile >> playerCount;
 	while (playerCount--) {
-		Heapify<Player> player = context.players.readPlayerFromStream(stateFile);
+		shared_ptr<Player> player = context.players.readPlayerFromStream(stateFile);
 		context.players.addPlayer(player);
 	}
 	context.players.rearrangePosition();
