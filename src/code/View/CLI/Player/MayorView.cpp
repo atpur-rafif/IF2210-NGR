@@ -14,7 +14,6 @@ void MayorView::runSpecializedPlayerCommand(Player &player, string command) {
 	map<string,map<string,int>> recipe;
 	mayor.getRecipe(recipe);
 	if (command == "PUNGUT_PAJAK"){
-		vector<string> role{"Petani","Peternak"};
 		vector<pair<Player*,int>> pajakTerpungut = mayor.collectTax();
 		int i = 0; 
 		int sum = 0;
@@ -22,7 +21,7 @@ void MayorView::runSpecializedPlayerCommand(Player &player, string command) {
 		cout << "Pajak sudah dipungut!" << endl;
 		cout << "Berikut adalah detil dari pemungutan pajak:" << endl;
 		for(const auto& pair : pajakTerpungut){
-			cout << ++i << ". " << pair.first->username << " - " << role[pair.first->type] << ": " << pair.second << " gulden" << endl;
+			cout << ++i << ". " << pair.first->username << " - " << pair.first->playerTypeToString(pair.first->type) << ": " << pair.second << " gulden" << endl;
 			sum += pair.second;
 			}
 		cout << "Negara mendapatkan pemasukan sebesar " << sum << " gulden." << endl;
