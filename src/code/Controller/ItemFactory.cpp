@@ -7,7 +7,7 @@ string ItemFactory::codeFinder(function<bool(shared_ptr<Item>)> &lambda) const {
 		auto item = i.second;
 		if (lambda(item)) return item->getCode();
 	}
-	throw "Item not found";
+	throw InvalidItemNotFoundException();
 }
 
 shared_ptr<Item> ItemFactory::createBaseItem(string code) const {

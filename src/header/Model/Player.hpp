@@ -4,6 +4,7 @@
 #include "Container/Storage.hpp"
 #include "Model/GameObject.hpp"
 #include "Model/Item.hpp"
+#include <memory>
 
 enum PlayerType {
 	FarmerType,

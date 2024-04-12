@@ -4,6 +4,9 @@
 #include "Exception/DowncastException.hpp"
 #include "Model/GameObject.hpp"
 #include "Model/Item.hpp"
+#include "Model/Item/ProductItem.hpp"
+#include "Exception/DowncastException.hpp"
+#include "Exception/StorageException.hpp"
 #include <functional>
 #include <map>
 #include <memory>
@@ -41,6 +44,18 @@ public:
 
 	shared_ptr<Item> createBaseItem(string code) const;
 	string getCodeByName(const string name) const;
+	
+	string getProductResult(string Code) {
+		for (const auto &repo_el:this->repository){
+			auto tempRepoItem = repo_el.second;
+			ProductItem* product = dynamic_cast<ProductItem*>(&*tempRepoItem);
+			if (product != nullptr){
+				if (product->getOrigin() == Code){
+					return repo_el.first;
+				}
+			}
+		}
+		return "";
+	}
 };
-
 #endif
