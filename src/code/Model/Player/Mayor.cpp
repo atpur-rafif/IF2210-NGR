@@ -13,7 +13,7 @@ Mayor *Mayor::clone() { return new Mayor(*this); }
 vector<pair<Player*, int>> Mayor::collectTax() {
 	vector<pair<Player*,int>> result;
 	pair<Player*, int> inserter;
-	auto &players = *this->getContext().players.getPlayers();
+	auto players = this->getContext().players.getPlayers();
 	int size = players.size();
 	for (int i = 0; i < size; ++i) {
 		auto &income = players[i];
@@ -89,7 +89,7 @@ void Mayor::addPlayer(string username,string type){
 	string specialInventoryCount = "0";
 	string inserter = username + " " + type + " " + weight + " " + money + " " + inventoryCount + " " + specialInventoryCount;
 	istringstream inputStream(inserter);
-	Heapify<Player> player = this->getContext().players.readPlayerFromStream(inputStream);
+	shared_ptr<Player> player = this->getContext().players.readPlayerFromStream(inputStream);
 	this->money -= 50;
 	this->getContext().players.addPlayer(player);
 }

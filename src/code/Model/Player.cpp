@@ -17,8 +17,7 @@ string Player::playerTypeToString(int type){
 }
 
 int Player::countInventoryWealth() {
-	vector<Heapify<Item> *> items;
-	this->inventory.getAllItem(items);
+	vector<shared_ptr<Item> *> items = this->inventory.getAllItem();
 
 	int wealth = 0;
 	for (const auto &itemPtr : items)
