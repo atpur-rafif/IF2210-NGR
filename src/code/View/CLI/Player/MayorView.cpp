@@ -11,6 +11,8 @@ MayorView *MayorView::clone() { return new MayorView(*this); }
 
 void MayorView::runSpecializedPlayerCommand(Player &player, string command) {
 	Mayor &mayor = *(dynamic_cast<Mayor *>(&player));
+	map<string,map<string,int>> recipe;
+	mayor.getRecipe(recipe);
 	if (command == "PUNGUT_PAJAK"){
 		vector<string> role{"Petani","Peternak"};
 		vector<pair<Player*,int>> pajakTerpungut = mayor.collectTax();
@@ -28,7 +30,6 @@ void MayorView::runSpecializedPlayerCommand(Player &player, string command) {
 		}
 	else if (command == "BANGUN") {
 		string buildingName;
-		map<string,map<string,int>> recipe = mayor.getRecipe();
 		int i = 1;
 		for(auto it=recipe.cbegin(); it!=recipe.cend();++it){
 			cout << i++ << ". " << it->first << " (";

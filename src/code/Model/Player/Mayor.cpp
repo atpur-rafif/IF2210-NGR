@@ -34,10 +34,10 @@ vector<pair<Player*, int>> Mayor::collectTax() {
 int Mayor::calculateTax() {
 	return 0;
 }
-map<string,map<string,int>> Mayor::getRecipe(){
-	map<string,map<string,int>> recipe;
+
+void Mayor::getRecipe(map<string,map<string,int>> &recipe){
 	for (const auto& pair : this->getContext().itemFactory.getRepository()) {
-		if(pair.second.get().getType()==3){
+		if(pair.second.get().getType()==Building){
 			Item* base = &pair.second.get();
 			BuildingItem* derived = dynamic_cast<BuildingItem*>(base);
 			auto ingredients = derived->getIngredients();
@@ -47,7 +47,6 @@ map<string,map<string,int>> Mayor::getRecipe(){
 			recipe[pair.second.get().getName()]["GULDEN"] = derived->getPrice();
 		}
 	}
-	return recipe;
 } 
 
 void Mayor::buildBuilding(string recipe){

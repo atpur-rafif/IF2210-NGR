@@ -12,7 +12,7 @@ public:
 
 	virtual int calculateTax();
 	vector<pair<Player*,int>> collectTax();
-	map<string, map<string,int>> getRecipe();
+	void getRecipe(map<string,map<string,int>> &recipe);
 
 	void buildBuilding(string);
 	void addPlayer(string name,string type);
