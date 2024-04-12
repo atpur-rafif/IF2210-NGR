@@ -30,11 +30,11 @@ void Breeder::placeAnimal(string& locInventory, string& locField){
 	if(itemOptional.has_value()){
 		Item* item = (itemOptional.value().getRaw());
 		if(item->getType() != Barn){
-			throw; 
+			throw InvalidTypeValueException(); 
 		}
 		BarnItem* newAnimal = dynamic_cast<BarnItem* >(item);
         if(newAnimal == NULL){
-            throw;
+            throw InvalidDowncastException();
         }
 		this->barn.setItem(locField, *newAnimal);
 	}
@@ -46,7 +46,7 @@ void Breeder::giveFood(string& locInventory, string& locField) {
         optional<BarnItem>& tempBarn = this->barn.getItem(locField);
 
         if (!tempBarn.has_value()){
-            throw runtime_error("Fields are empty");
+            throw InvalidBarnEmpty();
         }
 		
         currAnimal = &tempBarn.value();
@@ -55,20 +55,20 @@ void Breeder::giveFood(string& locInventory, string& locField) {
         ProductItem* itemFood = dynamic_cast<ProductItem*>(tempFood->getRaw());
 
         if (!itemFood) {
-            throw runtime_error("Invalid food type");
+            throw InvalidTypeException();
         }
 
         if (itemFood->getProductItemType() == MaterialProduct) {
-            throw runtime_error("This is not food");
+            throw InvalidNotFoodException();
         }
 
         if (currAnimal->getBarnItemType() == Herbivore) {
-            if (itemFood->getProductItemType() != AnimalProduct) {
-                throw runtime_error("Herbivores eat animal products");
+            if (itemFood->getProductItemType() != FruitProduct) {
+                throw InvalidFoodHerbivores();
             }
         } else if (currAnimal->getBarnItemType() == Carnivore) {
-            if (itemFood->getProductItemType() != FruitProduct) {
-                throw runtime_error("Carnivores eat fruit products");
+            if (itemFood->getProductItemType() != AnimalProduct) {
+                throw InvalidFoodCarnivores();
             }
         }
 
@@ -83,7 +83,13 @@ void Breeder::giveFood(string& locInventory, string& locField) {
 void Breeder::harvestAnimal(string& coordinate){
 	optional<BarnItem> harvestedAnimal = this->barn.getItem(coordinate);
 	auto itemFactory = this->getContext().itemFactory;
-	string code = itemFactory.getProductResult(harvestedAnimal); 
+	string code; 
+	if(harvestedAnimal.has_value()){
+		code = itemFactory.getProductResult(harvestedAnimal); 
+	}
+	else{
+		throw;
+	}
 	ProductItem animal_product; 
     Heapify<Item> base_product = itemFactory.createBaseItem(code);
 	itemFactory.createItem(code, animal_product); 

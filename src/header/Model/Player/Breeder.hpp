@@ -6,6 +6,8 @@
 #include "Controller/ItemFactory.hpp"
 #include "Controller/GameContext.hpp"
 #include "Model/Player.hpp"
+#include "Exception/StorageException.hpp"
+#include "Exception/DowncastException.hpp"
 
 class ProductItem;
 

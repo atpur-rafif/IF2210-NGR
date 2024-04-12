@@ -11,4 +11,34 @@ public:
 	const char *what() const noexcept override;
 };
 
+class InvalidTypeValueException : public StorageException{
+public: 
+	const char *what() const noexcept override;
+};
+
+class InvalidBarnEmpty : public StorageException {
+public: 
+	const char *what() const noexcept override;
+};
+
+class InvalidTypeException : public StorageException {
+public: 
+	const char *what() const noexcept override; 
+};
+
+class InvalidNotFoodException : public StorageException {
+public:
+	const char *what() const noexcept override; 
+};
+
+class InvalidFoodHerbivores : public StorageException {
+public: 
+	const char *what() const noexcept override; 
+};
+
+class InvalidFoodCarnivores : public StorageException{
+public: 
+	const char *what() const noexcept override; 
+};
+
 #endif
