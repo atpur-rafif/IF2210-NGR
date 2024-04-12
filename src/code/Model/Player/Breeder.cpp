@@ -6,11 +6,8 @@ Breeder::~Breeder() {}
 Breeder *Breeder::clone() { return new Breeder(*this); }
 
 int Breeder::countBarnWealth() {
-	vector<BarnItem *> items;
-	this->barn.getAllItem(items);
-
 	int wealth = 0;
-	for (const auto &itemPtr : items)
+	for (auto &itemPtr : this->barn.getAllItem())
 		wealth += itemPtr->getPrice();
 	return wealth;
 }

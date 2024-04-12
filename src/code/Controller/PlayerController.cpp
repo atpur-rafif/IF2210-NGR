@@ -13,35 +13,29 @@ void PlayerController::nextPlayer() {
 	this->currentPlayerIndex = (this->currentPlayerIndex + 1) % this->players.size();
 }
 
-Player &PlayerController::getCurrentPlayer() {
-	return *this->ordered.at(this->currentPlayerIndex);
+shared_ptr<Player> PlayerController::getCurrentPlayer() {
+	return this->players.at(this->currentPlayerIndex);
 };
 
 void PlayerController::rearrangePosition() {
-	int size = this->players.size();
-	this->ordered.resize(size);
-	for (int i = 0; i < size; ++i)
-		this->ordered[i] = this->players[i].getRaw();
-
-	auto begin = this->ordered.begin();
-	auto end = begin + this->ordered.size();
-
-	sort(begin, end, [](Player *a, Player *b) {
+	auto begin = this->players.begin();
+	auto end = begin + this->players.size();
+	sort(begin, end, [](shared_ptr<Player> a, shared_ptr<Player> b) {
 		return a->username < b->username;
 	});
 }
 
-void PlayerController::addPlayer(Heapify<Player> &player) {
+void PlayerController::addPlayer(shared_ptr<Player> player) {
 	this->players.push_back(player);
-	this->players[this->players.size() - 1]->setContext(this->getContext());
+	player->setContext(this->getContext());
 	this->rearrangePosition();
 };
 
-vector<Player *> *PlayerController::getPlayers() {
-	return &(this->ordered);
+vector<shared_ptr<Player>> PlayerController::getPlayers() {
+	return this->players;
 }
 
-Heapify<Player> PlayerController::readPlayerFromStream(istream &inputStream) {
+shared_ptr<Player> PlayerController::readPlayerFromStream(istream &inputStream) {
 	int weight, money;
 	string username, type;
 	inputStream >> username >> type >> weight >> money;
@@ -58,7 +52,7 @@ Heapify<Player> PlayerController::readPlayerFromStream(istream &inputStream) {
 	newPlayer->weight = weight;
 	newPlayer->money = money;
 	auto inventorySize = context.miscConfig.getInventorySize();
-	newPlayer->inventory = Storage<Heapify<Item>>(inventorySize.first, inventorySize.second);
+	newPlayer->inventory = Storage<shared_ptr<Item>>(inventorySize.first, inventorySize.second);
 
 	int inventoryCount;
 	inputStream >> inventoryCount;
@@ -66,7 +60,7 @@ Heapify<Player> PlayerController::readPlayerFromStream(istream &inputStream) {
 		string name;
 		inputStream >> name;
 		string code = context.itemFactory.getCodeByName(name);
-		Heapify<Item> item = context.itemFactory.createBaseItem(code);
+		shared_ptr<Item> item = context.itemFactory.createBaseItem(code);
 		newPlayer->inventory.addItem(item);
 	}
 
@@ -104,8 +98,6 @@ Heapify<Player> PlayerController::readPlayerFromStream(istream &inputStream) {
 		}
 	}
 
-	Heapify<Player> heap = Heapify(newPlayer);
-	delete newPlayer;
-
-	return heap;
+	shared_ptr<Player> ptr{newPlayer};
+	return ptr;
 };

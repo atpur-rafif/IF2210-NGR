@@ -2,22 +2,22 @@
 
 ItemFactory::ItemFactory(){};
 
-string ItemFactory::codeFinder(function<bool(Item *)> &lambda) const {
+string ItemFactory::codeFinder(function<bool(shared_ptr<Item>)> &lambda) const {
 	for (const auto &i : this->repository) {
-		auto item = i.second.getRaw();
+		auto item = i.second;
 		if (lambda(item)) return item->getCode();
 	}
 	throw "Item not found";
 }
 
-Heapify<Item> ItemFactory::createBaseItem(string code) const {
-	Heapify<Item> item = Heapify(this->repository.at(code));
+shared_ptr<Item> ItemFactory::createBaseItem(string code) const {
+	shared_ptr<Item> item{this->repository.at(code)->clone()};
 	item->setContext(this->getContext());
 	return item;
 }
 
 string ItemFactory::getCodeByName(const string name) const {
-	function<bool(Item *)> fn = [name](Item *item) {
+	function<bool(shared_ptr<Item>)> fn = [name](shared_ptr<Item> item) {
 		return item->getName() == name;
 	};
 	return this->codeFinder(fn);

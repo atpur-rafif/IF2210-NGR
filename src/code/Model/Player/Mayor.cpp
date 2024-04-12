@@ -6,7 +6,7 @@ Mayor::~Mayor() {}
 Mayor *Mayor::clone() { return new Mayor(*this); }
 
 void Mayor::collectTax() {
-	auto &players = *this->getContext().players.getPlayers();
+	auto players = this->getContext().players.getPlayers();
 	int size = players.size();
 	for (int i = 0; i < size; ++i) {
 		auto &income = players[i];

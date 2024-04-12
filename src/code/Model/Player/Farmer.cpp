@@ -7,11 +7,8 @@ Farmer::~Farmer() {}
 Farmer *Farmer::clone() { return new Farmer(*this); }
 
 int Farmer::countFarmWealth() {
-	vector<FarmItem *> items;
-	this->farm.getAllItem(items);
-
 	int wealth = 0;
-	for (const auto &itemPtr : items)
+	for (auto &itemPtr : this->farm.getAllItem())
 		wealth += itemPtr->getPrice();
 	return wealth;
 }
