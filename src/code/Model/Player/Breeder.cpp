@@ -84,6 +84,7 @@ void Breeder::giveFoodChecker(string& locField){
         throw InvalidFoodNotFoundException();
     }
 }
+
 void Breeder::giveFood(string& locInventory, string& locField) {
     BarnItem* currAnimal = nullptr;
     auto tempBarn = this->barn.getItem(locField);
@@ -123,12 +124,23 @@ void Breeder::giveFood(string& locInventory, string& locField) {
 }
 
 void Breeder::harvestAnimal(string& coordinate){
+    pair<string, string> special = {"DCK", "CHK"};
+    bool isSpecial = false;
 	optional<BarnItem> harvestedAnimal = this->barn.getItem(coordinate);
 	string code; 
+    string code2;
 	if(harvestedAnimal.has_value()){
-		code = this->getContext().itemFactory.getProductResult(harvestedAnimal.value().getName()); 
+		code = this->getContext().itemFactory.getProductResult(harvestedAnimal.value().getName(), ""); 
         if(code.empty()){
             throw InvalidBarnProductNotFoundException();
+        }
+
+        if(harvestedAnimal.value().getCode() == special.first || harvestedAnimal.value().getCode() == special.second){
+            isSpecial = true;
+            code2 = this->getContext().itemFactory.getProductResult(harvestedAnimal.value().getName(), code); 
+            if(code2.empty()){
+                throw InvalidBarnProductNotFoundException();
+            }
         }
 	}
 	else{
@@ -139,4 +151,11 @@ void Breeder::harvestAnimal(string& coordinate){
     shared_ptr<Item> newItem = make_shared<ProductItem>(animal_product); 
     this->inventory.addItem(newItem);
 	this->barn.clearItem(coordinate);
+    if(isSpecial){
+        ProductItem animal_product2;
+        this->getContext().itemFactory.createItem(code2, animal_product2); 
+        shared_ptr<Item> newItem2 = make_shared<ProductItem>(animal_product2); 
+        this->inventory.addItem(newItem2);
+	    this->barn.clearItem(coordinate);
+    }
 }
