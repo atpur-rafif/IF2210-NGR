@@ -46,7 +46,7 @@ void Breeder::giveFoodChecker(string& locField){
     auto tempBarn = this->barn.getItem(locField);
 
     if(!tempBarn.has_value()){
-        throw InvalidBarnEmpty();
+        throw InvalidFieldEmptyException();
     }
     
     currAnimal = &tempBarn.value();
@@ -92,7 +92,7 @@ void Breeder::giveFood(string& locInventory, string& locField) {
     auto tempBarn = this->barn.getItem(locField);
 
     if(!tempBarn.has_value()){
-        throw InvalidBarnEmpty();
+        throw InvalidFieldEmptyException();
     }
     
     currAnimal = &tempBarn.value();
@@ -105,7 +105,7 @@ void Breeder::giveFood(string& locInventory, string& locField) {
     ProductItem* itemFood = dynamic_cast<ProductItem*>(itemFoodTemp.get());
 
     if (!itemFood) {
-        throw InvalidTypeException();
+        throw InvalidNotFoodException();
     }
 
     if (itemFood->getProductItemType() == MaterialProduct) {
@@ -153,7 +153,7 @@ void Breeder::harvestAnimal(string& coordinate){
         }
 	}
 	else{
-		throw InvalidBarnEmpty();
+		throw InvalidFieldEmptyException();
 	}
 	ProductItem animal_product; 
 	this->getContext().itemFactory.createItem(code, animal_product); 

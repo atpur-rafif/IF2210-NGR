@@ -68,10 +68,6 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 
 }
 
-/** ISSUE: 
- *  ada yang dia cuman satu tapi kecetak dua, misal di A1 ada DCK (kenyataannya begitu), tapi pas dicetak somehov muncul 
- * 	beberapa kali di F2 (misalnya) dia muncul DCK juga.
-*/
 void BreederView::printBarn(Breeder& breeder){
 	auto &barnInventory = breeder.barn; 
 	pair<int, int> size = {barnInventory.getWidth(), barnInventory.getHeight()};
@@ -226,9 +222,7 @@ void BreederView::detail(Breeder& breeder){
 			cout << "Input tidak Valid, Keluar dari perintah PANEN secara paksa"; 
 		}
 
-
 	}else{
-		cout << "Hewan masih belum bisa dipanen" << endl; 
+		throw InvalidHarvestException();
 	}
-
 }
