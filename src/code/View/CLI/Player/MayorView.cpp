@@ -61,6 +61,7 @@ void MayorView::runSpecializedPlayerCommand(Player &player, string command) {
 		catch(const NotEnoughResourceException& e){
 			cout << "Kamu tidak punya sumber daya yang cukup! Masih memerlukan " << e.what() << "!" << endl;
 		}
+
 	}
 	else if (command == "TAMBAH_PEMAIN"){
 		try{
@@ -76,10 +77,13 @@ void MayorView::runSpecializedPlayerCommand(Player &player, string command) {
 			cout << "Selamat datang " << username << " di kota ini!" << endl;
 		}
 		catch(const InvalidPlayerTypeException& e){
-			cout << "Jenis pemain tidak valid" << endl;
+			cout << "Jenis pemain tidak valid!" << endl;
 		}
 		catch(const NotEnoughResourceException& e){
 			cout << "Uang tidak cukup!" << endl;
+		}
+		catch(const UsernameAlreadyExist& e){
+			cout << "Sudah ada pemain dengan nama tersebut!" << endl;
 		}
 	}
 	else throw CommandNotFoundPlayerViewException();
