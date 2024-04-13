@@ -1,20 +1,16 @@
 #include "Model/Player/Farmer.hpp"
-#include "../header/Model/Item/ProductItem.hpp"
 #include <algorithm>
 #include <cmath>
 #include <optional>
-using namespace std;
+#include <memory>
 
 Farmer::Farmer() { this->type = FarmerType; }
 Farmer::~Farmer() {}
 Farmer *Farmer::clone() { return new Farmer(*this); }
 
 int Farmer::countFarmWealth() {
-	vector<FarmItem *> items;
-	this->farm.getAllItem(items);
-
 	int wealth = 0;
-	for (const auto &itemPtr : items)
+	for (auto &itemPtr : this->farm.getAllItem())
 		wealth += itemPtr->getPrice();
 	return wealth;
 }
@@ -24,35 +20,53 @@ int Farmer::calculateTax() {
 	int wealth = this->money + this->countInventoryWealth() + this->countFarmWealth();
 	int taxed = wealth - FarmerUntaxed;
 	int bracket = Player::getTaxBracket(taxed);
-	return max((int)round((taxed * bracket) / 100.0), 0);
+	int tax = max((int)round((taxed * bracket) / 100.0), 0);
+	if(this->money<tax) tax = this->money;
+	return tax;
 }
 
 void Farmer::plant(string &invLocation, string &fieldLocation) {
 	auto inv_item = this->inventory.getItem(invLocation);
-	Item *item = inv_item.value().getRaw();
-	FarmItem *selected_plant = dynamic_cast<FarmItem* >(item);
+	if (!inv_item.has_value())
+	{
+		throw InvalidItemNotFoundException();
+	}
+	shared_ptr<Item> item = inv_item.value();
+	if (item->getType() != Farm)
+	{
+		throw InvalidTypeValueException();
+	}
+	FarmItem *selected_plant = dynamic_cast<FarmItem* >(item.get());
 	if (selected_plant == NULL)
 	{
-		throw;
+		throw InvalidDowncastException();
 	}
-	else 
-	{
-		this->farm.setItem(fieldLocation, *selected_plant);
-		this->inventory.clearItem(invLocation);
-	}
+	selected_plant->setAge(0);
+	this->farm.setItem(fieldLocation, *selected_plant);
+	this->inventory.clearItem(invLocation);
 }
 
 void Farmer::harvestPlant(string& coordinate) {
 	optional<FarmItem> harvested_item = this->farm.getItem(coordinate);
-	auto *itemFactory = &this->getContext().itemFactory; 
-	string code = itemFactory->getProductResult(harvested_item);
-	ProductItem *harvest_product;
-	Heapify<Item> base_product = itemFactory->createBaseItem(code);
-	itemFactory->createItem(code, harvest_product);
-	this->inventory.addItem(base_product);
+	string code;
+	if (harvested_item.has_value())
+	{
+		code = this->getContext().itemFactory.getProductResult(harvested_item.value().getName(), "");
+	}
+	if (code.empty())
+	{
+		throw InvalidFarmProductNotFoundException();
+	}
+	ProductItem harvest_product;
+	this->getContext().itemFactory.createItem(code, harvest_product);
+	shared_ptr<Item> addedItem = make_shared<ProductItem>(harvest_product);
+	this->inventory.addItem(addedItem);
 	this->farm.clearItem(coordinate);
 }
 
-
-
-
+void Farmer::plantsGrow() {
+	for (FarmItem *plant : this->farm.getAllItem())
+	{
+		plant->setAge(plant->getAge() + 1);
+	}
+}

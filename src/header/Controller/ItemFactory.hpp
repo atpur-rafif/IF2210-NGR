@@ -1,21 +1,23 @@
 #ifndef ITEM_FACTORY_HPP
 #define ITEM_FACTORY_HPP
 
-#include "Container/Heapify.hpp"
+#include "Exception/DowncastException.hpp"
 #include "Model/GameObject.hpp"
 #include "Model/Item.hpp"
 #include "Model/Item/ProductItem.hpp"
 #include "Exception/DowncastException.hpp"
+#include "Exception/StorageException.hpp"
 #include <functional>
 #include <map>
+#include <memory>
 
 class ItemFactory : public GameObject {
 	friend class GameContext;
 
 protected:
 	ItemFactory();
-	map<string, Heapify<Item>> repository;
-	string codeFinder(function<bool(Item *)> &lambda) const;
+	map<string, shared_ptr<Item>> repository;
+	string codeFinder(function<bool(shared_ptr<Item>)> &lambda) const;
 
 public:
 	/*
@@ -23,45 +25,39 @@ public:
 	 * */
 	template <class T>
 	void addTemplateItem(T item) {
-		Item *base = &item;
-		Heapify<Item> heap = Heapify(base);
-		this->repository[item.getCode()] = heap;
+		shared_ptr<Item> ptr{item.clone()};
+		this->repository[item.getCode()] = ptr;
 	}
 
 	template <class T>
 	void createItem(string code, T &result) const {
-		Item *base = this->repository.at(code).getRaw();
-		Item *clone = base->clone();
-		if (clone->getType()==result.getType()){
-			T *ptr = dynamic_cast<T *>(clone);
+		auto base = this->repository.at(code);
+		shared_ptr<Item> clone{base->clone()};
+		if (clone->getType() == result.getType()) {
+			shared_ptr<T> ptr = dynamic_pointer_cast<T>(clone);
 			result = *ptr;
 			result.setContext(this->getContext());
-		}
-		else{
+		} else {
 			throw InvalidDowncastException();
 		}
 	}
 
-	Heapify<Item> createBaseItem(string code) const;
+	shared_ptr<Item> createBaseItem(string code) const;
 	string getCodeByName(const string name) const;
-
-	template<class T>
-	string getProductResult(T item) {
-		for (const auto &repo_el:this->repository)
-		{
+	
+	string getProductResult(string Code, string obtainedProduct) {
+		for (const auto &repo_el:this->repository){
 			auto tempRepoItem = repo_el.second;
-        	
-      * product = dynamic_cast<ProductItem*>(tempRepoItem.getRaw());
-			if (product != nullptr)
-			{
-				if (product->getOrigin() == item->getName())
-				{
+			ProductItem* product = dynamic_cast<ProductItem*>(&*tempRepoItem);
+			if (product != nullptr){
+				if (product->getOrigin() == Code && repo_el.first != obtainedProduct){
 					return repo_el.first;
 				}
 			}
 		}
-		return NULL;
+		return "";
 	}
+	map<string, shared_ptr<Item>> getRepository();
 };
 
 #endif

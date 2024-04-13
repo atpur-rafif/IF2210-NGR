@@ -4,6 +4,8 @@
 #include "Exception/PlayerViewException.hpp"
 #include "Exception/StorageException.hpp"
 #include "Model/Player.hpp"
+#include "Controller/GameContext.hpp"
+#include "Model/Player/Farmer.hpp"
 #include <exception>
 
 class PlayerView {
@@ -17,7 +19,7 @@ public:
 	void eat(Player &player);
 
 	template <class T>
-	string promptItemFromInventory(Player &player, T *&item) {
+	string promptItemFromInventory(Player &player, shared_ptr<T> &item) {
 		while (true) {
 			cout << "Location: ";
 			string location;
@@ -33,7 +35,7 @@ public:
 					continue;
 				}
 
-				T *casted = dynamic_cast<T *>(rawItem->getRaw());
+				shared_ptr<T> casted = dynamic_pointer_cast<T>(rawItem.value());
 				if (casted == NULL) {
 					cout << "Invalid item type" << endl;
 					continue;

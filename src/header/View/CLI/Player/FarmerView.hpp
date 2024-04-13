@@ -2,7 +2,9 @@
 #define VIEW_CLI_PLAYER_FARMER_VIEW_HPP
 
 #include "View/CLI/PlayerView.hpp"
-#include "../../header/Model/Player/Farmer.hpp"
+#include "Model/Player/Farmer.hpp"
+#include "Container/Storage.hpp"
+#include "Color/pcolor.hpp"
 
 class FarmerView : public PlayerView {
 public:
@@ -26,13 +28,16 @@ public:
 					cout << "Petak sudah terisi" << endl;
 					continue;
 				}
-				return location;
+				else
+				{
+					return location;
+				}
+
 			} catch (const exception &err) {
 				cout << err.what() << endl;
 			}
 		}
 	}
 };
-
 
 #endif

@@ -1,12 +1,6 @@
 #include "Model/Item/ProductItem.hpp"
 
 ProductItem::ProductItem() { this->type = Product; }
-ProductItem::ProductItem(string origin, int weight, ProductItemType itemType) {
-	this->type = Product;
-	this->origin = origin;
-	this->addedWeight = weight;
-	this->productItemType = itemType;
-}
 ProductItem::~ProductItem() {}
 ProductItem *ProductItem::clone() const { return new ProductItem(*this); }
 
@@ -15,6 +9,9 @@ ProductItemType ProductItem::getProductItemType() { return this->productItemType
 int ProductItem::getAddedWeight() {
 	return this->addedWeight;
 };
+string ProductItem::getOrigin(){
+	return this->origin; 
+}
 
 void ProductItem::readAttributeFromStream(istream &inputStream) {
 	string type;
@@ -25,8 +22,4 @@ void ProductItem::readAttributeFromStream(istream &inputStream) {
 
 	inputStream >> this->origin;
 	inputStream >> this->addedWeight;
-}
-
-string ProductItem::getOrigin() {
-	return this->origin;
 }

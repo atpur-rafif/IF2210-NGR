@@ -1,36 +1,54 @@
 #include "View/CLI/Player/FarmerView.hpp"
 #include "Exception/PlayerViewException.hpp"
+#include <limits>
+#include <algorithm>
 
 FarmerView::~FarmerView(){};
 FarmerView *FarmerView::clone() { return new FarmerView(*this); }
+
 
 void FarmerView::runSpecializedPlayerCommand(Player &player, string command) {
 	Farmer &farmer = *(dynamic_cast<Farmer *>(&player));
 	if (command == "TANAM") {
 		this->plantHelper(farmer);
-	} else throw CommandNotFoundPlayerViewException();
-	if (command == "PANEN") {
+	} 
+	else if (command == "PANEN") {
 		this->harvestHelper(farmer);
+	} 
+	else if (command == "CETAK_LADANG") {
+		this->printFarm(farmer);
+	} 
+	else 
+	{
+		throw CommandNotFoundPlayerViewException();
 	}
-	
 }
 
 void FarmerView::printFarm(Farmer &farmer) {
+	cout << "================[ Ladang ]=================" << endl;
 	auto &farmInventory = farmer.farm;
-	auto size = farmInventory.getSize();
-	for (int i = 0; i < size.first; i++)
+	pair<int, int> size = {farmInventory.getWidth(), farmInventory.getHeight()};
+	for (int i = 0; i < size.second; i++)
 	{
 		cout << "| ";
-		for (int j = 0; j < size.second; j++)
+		for (int j = 0; j < size.first; j++)
 		{
-			auto result = farmInventory.getItem(i,j);
+			auto result = farmInventory.getItem(j,i);
 			if (result.has_value())
 			{
-				cout << result->getCode();
+				if (result->getAge() >= result->getDurationToHarvest())
+				{
+					print_green(result->getCode());
+					
+				}
+				else
+				{
+					print_red(result->getCode());
+				}
 			}
 			else
 			{
-				cout << " ";
+				cout << "   ";
 			}
 			cout << " | ";
 		}
@@ -39,20 +57,30 @@ void FarmerView::printFarm(Farmer &farmer) {
 }
 
 void FarmerView::plantHelper(Farmer &farmer) {
-	cout << "Pilih tanaman dari penyimpanan" << endl;
-	this->printInventory(farmer);
-	FarmItem *farmItem;
-	string inv_location = this->promptItemFromInventory(farmer, farmItem);
-	this->printFarm(farmer);
-	string plant_location = this->promptFieldFromFarm(farmer);
-	farmer.plant(inv_location, plant_location);
+	while (true)
+	{
+		cout << "Pilih tanaman dari penyimpanan" << endl;
+		this->printInventory(farmer);
+		shared_ptr<FarmItem> farmItem;
+		string inv_location = this->promptItemFromInventory(farmer, farmItem);
+		this->printFarm(farmer);
+		string plant_location = this->promptFieldFromFarm(farmer);
+		try
+		{
+			farmer.plant(inv_location, plant_location);
+			break;
+		}
+		catch(const std::exception& e)
+		{
+			std::cerr << e.what() << '\n';
+		}
+	}
+	
 }
 
 void FarmerView::harvestHelper(Farmer &farmer) {
 	this->printFarm(farmer);
-	pair<int,int> field_size = farmer.farm.getSize();
-	vector<FarmItem* > field_item;
-	farmer.farm.getAllItem(field_item);
+	vector<FarmItem* > field_item = farmer.farm.getAllItem();
 	vector<pair<string, int>> list_item;
 	list_item.push_back({"TEK", 0});
 	list_item.push_back({"SDT", 0});
@@ -104,42 +132,42 @@ void FarmerView::harvestHelper(Farmer &farmer) {
 	bool can_harvest = false;
 	if (list_item[0].second != 0)
 	{
-		cout << "- TEK: Teak Tree";
+		cout << "- TEK: Teak Tree" << endl;
 		can_harvest = true;
 	}
 	if (list_item[1].second != 0)
 	{
-		cout << "- SDT: Sandalwood Tree";
+		cout << "- SDT: Sandalwood Tree" << endl;
 		can_harvest = true;
 	}
 	if (list_item[2].second != 0)
 	{
-		cout << "- ALT: Aloe Tree";
+		cout << "- ALT: Aloe Tree" << endl;
 		can_harvest = true;
 	}
 	if (list_item[3].second != 0)
 	{
-		cout << "- IRN: Ironwood Tree";
+		cout << "- IRN: Ironwood Tree" << endl;
 		can_harvest = true;
 	}
 	if (list_item[4].second != 0)
 	{
-		cout << "- APL: Apple Tree";
+		cout << "- APL: Apple Tree" << endl;
 		can_harvest = true;
 	}
 	if (list_item[5].second != 0)
 	{
-		cout << "- ORG: Orange Tree";
+		cout << "- ORG: Orange Tree" << endl;
 		can_harvest = true;
 	}
 	if (list_item[6].second != 0)
 	{
-		cout << "- BNT: Banana Tree";
+		cout << "- BNT: Banana Tree" << endl;
 		can_harvest = true;
 	}
 	if (list_item[7].second != 0)
 	{
-		cout << "- GAV: Guava Tree";
+		cout << "- GAV: Guava Tree" << endl;
 		can_harvest = true;
 	}
 	if (can_harvest)
@@ -151,7 +179,7 @@ void FarmerView::harvestHelper(Farmer &farmer) {
 		{
 			if (item.second != 0)
 			{
-				cout << i << ". " << item.first << "(" << item.second << "petak siap panen)" << endl;
+				cout << i << ". " << item.first << " (" << item.second << " petak siap panen)" << endl;
 				pick_list.push_back({i,item});
 				i++;
 			}	
@@ -159,9 +187,15 @@ void FarmerView::harvestHelper(Farmer &farmer) {
 		int no_tanaman = 0;
 		while (true)
 		{
-			cout << "Nomor tanaman yang ingin dipanen: " << endl;
+			cout << "Nomor tanaman yang ingin dipanen: ";
 			cin >> no_tanaman;
-			if (no_tanaman > 0 && no_tanaman <= pick_list.size())
+			if (cin.fail()) {
+				cout << "Pastikan input telah sesuai!" << endl;
+				cin.clear(); 
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+				continue;
+        	}
+			if (no_tanaman > 0 && no_tanaman <= (int)pick_list.size())
 			{
 				break;
 			}
@@ -173,8 +207,14 @@ void FarmerView::harvestHelper(Farmer &farmer) {
 		int amount = 0;
 		while (true)
 		{
-			cout << "Berapa petak yang ingin dipanen: " << endl;
+			cout << "Berapa petak yang ingin dipanen: ";
 			cin >> amount;
+			if (cin.fail()) {
+				cout << "Pastikan input telah sesuai!" << endl;
+				cin.clear(); 
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+				continue;
+        	}
 			if (amount <= pick_list.at(no_tanaman-1).second.second && amount >= 0)
 			{
 				break;
@@ -187,7 +227,14 @@ void FarmerView::harvestHelper(Farmer &farmer) {
 		for (int j = 0; j < amount; j++)
 		{
 			string plot_input;
+			cout << "Petak ke-" << j+1 << ": ";
 			cin >> plot_input;
+			if (cin.fail()) {
+				cout << "Pastikan input telah sesuai!" << endl;
+				cin.clear(); 
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+				continue;
+        	}
 			while (pick_list.at(no_tanaman-1).second.first != farmer.farm.getItem(plot_input)->getCode())
 			{
 				cout << "Beda tanaman bang, pilih yang betul" << endl;
@@ -195,13 +242,9 @@ void FarmerView::harvestHelper(Farmer &farmer) {
 			}
 			farmer.harvestPlant(plot_input);
 		}
-		
-		
 	}
 	else
 	{
 		cout << "Tanamannya masih belum bisa dipanen bos!" << endl;
 	}
 }
-
-

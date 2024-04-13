@@ -18,13 +18,12 @@ private:
 
 public:
 	ProductItem();
-	ProductItem(string origin, int weight, ProductItemType itemType);
 	virtual ProductItem *clone() const;
 	virtual ~ProductItem();
 
 	ProductItemType getProductItemType();
 	int getAddedWeight();
-	string getOrigin();
+	string getOrigin(); 
 };
 
 #endif

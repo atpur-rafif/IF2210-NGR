@@ -12,7 +12,19 @@ void PlayerView::start(Player &player) {
 		cout << player.username << "> ";
 		string command;
 		cin >> command;
-		if (command == "NEXT") return;
+		if (command == "NEXT") 
+		{
+			auto list_player = player.getContext().players.getPlayers();
+			int size = list_player.size();
+			for (int i = 0; i < size; ++i) {
+				auto farmer_player = list_player.at(i).get();
+				if (farmer_player->type == FarmerType) {
+					Farmer &farmer = *(dynamic_cast<Farmer *>(farmer_player));
+					farmer.plantsGrow();
+				}
+			}
+			return;
+		}
 
 		try {
 			try {
@@ -36,7 +48,7 @@ void PlayerView::runPlayerCommand(Player &player, string command) {
 		this->printInventory(player);
 
 		string location;
-		ProductItem *product;
+		shared_ptr<ProductItem> product;
 		while (true) {
 			location = this->promptItemFromInventory(player, product);
 			ProductItemType type = product->getProductItemType();
@@ -54,10 +66,11 @@ void PlayerView::runPlayerCommand(Player &player, string command) {
 
 void PlayerView::printInventory(Player &player) {
 	auto &inventory = player.inventory;
-	auto size = inventory.getSize();
-	for (int y = 0; y < size.first; ++y) {
+	auto width = inventory.getWidth();
+	auto height = inventory.getHeight();
+	for (int y = 0; y < height; ++y) {
 		cout << "| ";
-		for (int x = 0; x < size.second; ++x) {
+		for (int x = 0; x < width; ++x) {
 			auto result = inventory.getItem(x, y);
 			if (result.has_value()) cout << result.value()->getCode();
 			else cout << "   ";
