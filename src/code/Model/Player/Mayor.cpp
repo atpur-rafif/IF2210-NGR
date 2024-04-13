@@ -26,7 +26,12 @@ vector<pair<shared_ptr<Player>, int>> Mayor::collectTax() {
 		result.push_back(inserter);
 	}
 	sort(result.begin(),result.end(),[this](const pair<shared_ptr<Player>, int>& elOne,const pair<shared_ptr<Player>, int>& elTwo){
-		return elTwo.second < elOne.second;
+		if(elTwo.second!=elOne.second){
+			return elTwo.second < elOne.second; 
+		}
+		else{
+			return (elTwo.first.get()->username > elOne.first.get()->username || PlayerController::toLower(elTwo.first.get()->username) > PlayerController::toLower(elOne.first.get()->username));
+		}
 	});
 	return result;
 }
