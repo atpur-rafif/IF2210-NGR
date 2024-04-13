@@ -87,7 +87,7 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 
 void BreederView::printBarn(Breeder& breeder){
 	auto &barnInventory = breeder.barn; 
-	auto size = barnInventory.getSize();
+	pair<int, int> size = {barnInventory.getWidth(), barnInventory.getHeight()};
 	for(int y = 0; y < size.first; y++){
 		cout << "| "; 
 		for(int x = 0; x < size.second; x++){
