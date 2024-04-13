@@ -4,6 +4,10 @@ const char *InvalidItemNotFoundException::what() const noexcept{
 	return "Item not found";
 }
 
+const char *InvalidFoodNotFoundException::what() const noexcept{
+	return "Food for this animal isn't exists in inventory";
+}
+
 const char *InvalidCoordinateStorageException::what() const noexcept {
 	return "Invalid coordinate";
 }
