@@ -3,6 +3,7 @@
 #include "Model/Player/Breeder.hpp"
 #include "Model/Player/Farmer.hpp"
 #include "Model/Player/Mayor.hpp"
+#include "Exception/PlayerControllerException.hpp"
 #include <string>
 #include <algorithm>
 
@@ -50,14 +51,14 @@ shared_ptr<Player> PlayerController::readPlayerFromStream(istream &inputStream) 
 	GameContext &context = this->getContext();
 
 	for(const auto& element : context.players.getPlayers()){
-		if(element->username==username) throw "Username already exist";
+		if(element->username==username) throw UsernameAlreadyExist();
 	}
 
 	Player *newPlayer;
 	if (type == "Petani") newPlayer = new Farmer();
 	else if (type == "Peternak") newPlayer = new Breeder();
 	else if (type == "Walikota") newPlayer = new Mayor();
-	else throw "Invalid player type";
+	else throw InvalidPlayerTypeException();
 
 	newPlayer->username = username;
 	newPlayer->weight = weight;
