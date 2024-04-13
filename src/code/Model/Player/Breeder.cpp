@@ -5,15 +5,11 @@ Breeder::Breeder() { this->type = BreederType; }
 Breeder::~Breeder() {}
 Breeder *Breeder::clone() { return new Breeder(*this); }
 
-int Breeder::countBarnWealth(){
-	vector<BarnItem *> barnItems;
-	this->barn.getAllItem(barnItems);
-
-	int barnWealth = 0;
-	for (const auto &itemPtr : barnItems){
-		barnWealth += itemPtr->getPrice();
-	}
-	return barnWealth;
+int Breeder::countBarnWealth() {
+	int wealth = 0;
+	for (auto &itemPtr : this->barn.getAllItem())
+		wealth += itemPtr->getPrice();
+	return wealth;
 }
 
 
@@ -28,57 +24,102 @@ int Breeder::calculateTax() {
 
 void Breeder::placeAnimal(string& locInventory, string& locField){
     auto itemOptional = this->inventory.getItem(locInventory);
-	if(itemOptional.has_value()){
-		Item* item = (itemOptional.value().getRaw());
-		if(item->getType() != Barn){
-			throw InvalidTypeValueException(); 
-		}
-		BarnItem* newAnimal = dynamic_cast<BarnItem* >(item);
-        if(newAnimal == NULL){
-            throw InvalidDowncastException();
-        }
-		this->barn.setItem(locField, *newAnimal);
-	}
+    if(!itemOptional.has_value()){
+        throw InvalidItemNotFoundException();
+    }
+    shared_ptr<Item> item = itemOptional.value();
+    if(item->getType() != Barn){
+        throw InvalidTypeValueException(); 
+    }
+    BarnItem* newAnimal = dynamic_cast<BarnItem*>(item.get());
+    if(newAnimal == NULL){
+        throw InvalidDowncastException();
+    }
+    this->barn.setItem(locField, *newAnimal);
+    this->inventory.clearItem(locInventory);
 }
 
-void Breeder::giveFood(string& locInventory, string& locField) {
-    try {
-        BarnItem* currAnimal = nullptr;
-        optional<BarnItem>& tempBarn = this->barn.getItem(locField);
+void Breeder::giveFoodChecker(string& locField){
+   BarnItem* currAnimal = nullptr;
+    auto tempBarn = this->barn.getItem(locField);
 
-        if (!tempBarn.has_value()){
-            throw InvalidBarnEmpty();
-        }
-		
-        currAnimal = &tempBarn.value();
-
-        auto tempFood = this->inventory.getItem(locInventory);
-        ProductItem* itemFood = dynamic_cast<ProductItem*>(tempFood->getRaw());
-
-        if (!itemFood) {
-            throw InvalidTypeException();
-        }
-
-        if (itemFood->getProductItemType() == MaterialProduct) {
-            throw InvalidNotFoodException();
-        }
-
-        if (currAnimal->getBarnItemType() == Herbivore) {
-            if (itemFood->getProductItemType() != FruitProduct) {
-                throw InvalidFoodHerbivores();
-            }
-        } else if (currAnimal->getBarnItemType() == Carnivore) {
-            if (itemFood->getProductItemType() != AnimalProduct) {
-                throw InvalidFoodCarnivores();
-            }
-        }
-
-        this->inventory.clearItem(locInventory);
-        currAnimal->setWeight(currAnimal->getWeight() + 10);
-
-    } catch (const exception& ex) {
-        cout << "Error: " << ex.what() << endl;
+    if(!tempBarn.has_value()){
+        throw InvalidBarnEmpty();
     }
+    
+    currAnimal = &tempBarn.value();
+    vector<ProductItem*> foodchecker; 
+    vector<shared_ptr<Item>* > repo = this->inventory.getAllItem();
+    for(auto& itemPtr: repo){
+        shared_ptr<Item> rawPtr = *itemPtr;
+        if(auto productItemPtr = dynamic_cast<ProductItem*>(rawPtr.get())){
+            foodchecker.push_back(productItemPtr);
+        }
+    }
+
+    bool isFound = false; 
+    if(currAnimal->getBarnItemType() == Carnivore){
+        for(const auto& item : foodchecker){
+            if(item->getProductItemType() == AnimalProduct){
+                isFound = true;
+            }
+        }
+    }
+    else if(currAnimal->getBarnItemType() == Herbivore){
+        for(const auto& item : foodchecker){
+            if(item->getProductItemType() == FruitProduct){
+                isFound = true;
+            }
+        }
+        
+    }
+    else if(currAnimal->getBarnItemType() == Omnivore){
+        for(const auto& item : foodchecker){
+            if(item->getProductItemType() == AnimalProduct || item->getProductItemType() == FruitProduct){
+                isFound = true;
+            }
+        }
+    } 
+    if(!isFound){
+        throw InvalidFoodNotFoundException();
+    }
+}
+void Breeder::giveFood(string& locInventory, string& locField) {
+    BarnItem* currAnimal = nullptr;
+    auto tempBarn = this->barn.getItem(locField);
+
+    if(!tempBarn.has_value()){
+        throw InvalidBarnEmpty();
+    }
+    
+    currAnimal = &tempBarn.value();
+
+    auto optionalItem = this->inventory.getItem(locInventory);
+    if(!optionalItem.has_value()){
+        throw InvalidItemNotFoundException();
+    }
+    shared_ptr<Item> itemFoodTemp = optionalItem.value();
+    ProductItem* itemFood = dynamic_cast<ProductItem*>(itemFoodTemp.get());
+
+    if (!itemFood) {
+        throw InvalidTypeException();
+    }
+
+    if (itemFood->getProductItemType() == MaterialProduct) {
+        throw InvalidNotFoodException();
+    }
+
+    if (currAnimal->getBarnItemType() == Herbivore) {
+        if (itemFood->getProductItemType() != FruitProduct) {
+            throw InvalidFoodHerbivores();
+        }
+    } else if (currAnimal->getBarnItemType() == Carnivore) {
+        if (itemFood->getProductItemType() != AnimalProduct) {
+            throw InvalidFoodCarnivores();
+        }
+    }
+    this->inventory.clearItem(locInventory);
+    currAnimal->setWeight(currAnimal->getWeight() + itemFood->getAddedWeight());
 }
 
 void Breeder::harvestAnimal(string& coordinate){
@@ -95,5 +136,7 @@ void Breeder::harvestAnimal(string& coordinate){
 	}
 	ProductItem animal_product; 
 	this->getContext().itemFactory.createItem(code, animal_product); 
+    shared_ptr<Item> newItem = make_shared<ProductItem>(animal_product); 
+    this->inventory.addItem(newItem);
 	this->barn.clearItem(coordinate);
 }
