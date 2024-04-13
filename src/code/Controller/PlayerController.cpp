@@ -80,7 +80,7 @@ shared_ptr<Player> PlayerController::readPlayerFromStream(istream &inputStream) 
 		Farmer *farmer = dynamic_cast<Farmer *>(newPlayer);
 
 		auto farmSize = context.miscConfig.getFarmSize();
-		farmer->farm = Storage<FarmItem>(farmSize.first, farmSize.second);
+		farmer->farm = Storage<FarmItem>(farmSize.second, farmSize.first);
 		int farmCount;
 		inputStream >> farmCount;
 		while (farmCount--) {
@@ -90,22 +90,24 @@ shared_ptr<Player> PlayerController::readPlayerFromStream(istream &inputStream) 
 			string code = context.itemFactory.getCodeByName(name);
 			FarmItem item;
 			context.itemFactory.createItem(code, item);
+			item.setAge(age);
 			farmer->farm.setItem(location, item);
 		}
 	} else if (newPlayer->type == BreederType) {
 		Breeder *breeder = dynamic_cast<Breeder *>(newPlayer);
 
 		auto barnSize = context.miscConfig.getBarnSize();
-		breeder->barn = Storage<BarnItem>(barnSize.first, barnSize.second);
+		breeder->barn = Storage<BarnItem>(barnSize.second, barnSize.first);
 		int farmCount;
 		inputStream >> farmCount;
 		while (farmCount--) {
-			int age;
+			int weight;
 			string location, name;
-			inputStream >> location >> name >> age;
+			inputStream >> location >> name >> weight;
 			string code = context.itemFactory.getCodeByName(name);
 			BarnItem item;
 			context.itemFactory.createItem(code, item);
+			item.setWeight(weight);
 			breeder->barn.setItem(location, item);
 		}
 	}
