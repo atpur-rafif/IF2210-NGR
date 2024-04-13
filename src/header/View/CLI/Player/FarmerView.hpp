@@ -31,6 +31,7 @@ public:
 				{
 					return location;
 				}
+
 			} catch (const exception &err) {
 				cout << err.what() << endl;
 			}
