@@ -22,6 +22,6 @@ We only provide 8 colors. Feel free to modify/add colors if you want to.
 
 using namespace std; 
 
-void print_red(string& c);
-void print_green(string& c);
-void print_blue(string& c);
+void print_red(string c);
+void print_green(string c);
+void print_blue(string c);

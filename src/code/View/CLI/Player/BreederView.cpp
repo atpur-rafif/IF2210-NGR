@@ -59,7 +59,7 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 		string total; 
 		vector<pair<int, string>> listNumber;
 
-		cout << "=======================PETERNAKAN=========================\n";
+		cout << "=======================PETERNAKAN======================" << endl;
 		detail(breeder); 
 	}
 	else {
@@ -75,12 +75,18 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 void BreederView::printBarn(Breeder& breeder){
 	auto &barnInventory = breeder.barn; 
 	pair<int, int> size = {barnInventory.getWidth(), barnInventory.getHeight()};
+	cout << "=======================PETERNAKAN======================" << endl;
 	for(int y = 0; y < size.second; y++){
 		cout << "| "; 
 		for(int x = 0; x < size.first; x++){
 			auto result = barnInventory.getItem(x, y);
 			if(result.has_value()) 
-				cout << result->getCode();
+				if(result.value().getWeight() >= result.value().getWeightToHarvest()){
+					print_green(result->getCode());
+				}
+				else{
+					print_red(result->getCode());
+				}
 			else cout << "   ";
 			cout << " | ";
 		}
