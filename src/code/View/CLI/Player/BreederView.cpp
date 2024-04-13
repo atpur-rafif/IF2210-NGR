@@ -1,6 +1,7 @@
 #include "View/CLI/Player/BreederView.hpp"
 #include "Exception/PlayerViewException.hpp"
 #include <algorithm>
+#include <limits>
 
 
 BreederView::~BreederView(){};
@@ -141,41 +142,71 @@ void BreederView::detail(Breeder& breeder){
 		}
 
 		int no_hewan = 0; 
+		bool invalidInput = false;
 		while(true){
+			if (invalidInput) {
+				cout << "Periksa kembali nomor yang dipilih" << endl;
+				invalidInput = false; 
+			}
 			cout << "Nomor hewan yang ingin dipanen: "; 
 			cin >> no_hewan; 
 			int size = pick_list.size();
-			if(no_hewan > 0 &&  no_hewan <= size){
+			cin.clear(); 
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+			if(cin.fail()){
+				cout << "Input harus berupa bilangan bulat.\n"; 
+				continue;
+			}
+			if (no_hewan > 0 &&  no_hewan <= size) {
 				break;
-			}
-			else{
-				cout << "Periksa kembali nomor yang dipilih" << endl;
-			}
+			} else {
+				invalidInput = true; 
+			} 
+			
 		}
 		int amount = 0; 
+		bool isValid = false;
 		while(true){
 			cout << "Berapa petak yang ingin dipanen: "; 
 			cin >> amount; 
+        	if (cin.fail()) {
+				cout << "Input harus sebuah angka." << endl;
+				cin.clear(); 
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+				continue;
+        	}
 			if(amount <= pick_list.at(no_hewan - 1).second.second && amount >= 0){
+				isValid = true;
 				break;
 			}
-			else{
+			else if (amount > pick_list.at(no_hewan - 1).second.second && amount >= 0){
 				cout << "Jumlah hewan yang dapat dipanen lebih sedikit daripada yang ingin anda panen!" << endl;
+				continue;
+			}
+			else{
+				cout << "Input tidak valid" << endl; 
+				continue;
 			}
 
 		}
-		for (int j = 0; j < amount; j++)
-		{
-			string plot_input;
-			cout << "Petak ke-" << j << ": ";
-			cin >> plot_input;
-			while (pick_list.at(no_hewan-1).second.first != breeder.barn.getItem(plot_input)->getCode())
+		if(isValid){
+			for (int j = 0; j < amount; j++)
 			{
-				cout << "Beda Hewan bang, pilih yang betul" << endl;
+				string plot_input;
 				cout << "Petak ke-" << j << ": ";
 				cin >> plot_input;
+				while (pick_list.at(no_hewan-1).second.first != breeder.barn.getItem(plot_input)->getCode())
+				{
+					cout << "Beda Hewan bang, pilih yang betul" << endl;
+					cout << "Petak ke-" << j << ": ";
+					cin >> plot_input;
+				}
+				breeder.harvestAnimal(plot_input);
 			}
-			breeder.harvestAnimal(plot_input);
+		}	
+		else{
+			cout << "Input tidak Valid, Keluar dari perintah PANEN secara paksa"; 
 		}
 
 
