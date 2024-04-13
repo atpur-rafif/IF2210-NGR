@@ -16,6 +16,16 @@ public:
 	const char *what() const noexcept override;
 };
 
+class NotEnoughItemException : public ShopException{
+public: 
+	const char *what() const noexcept override;
+};
+
+class InvalidSelectionException : public ShopException{
+public: 
+	const char *what() const noexcept override;
+};
+
 class IllegalPurchaseException : public ShopException{
 public: 
 	const char *what() const noexcept override;
