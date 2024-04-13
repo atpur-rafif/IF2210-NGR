@@ -3,6 +3,7 @@
 
 #include "View/CLI/PlayerView.hpp"
 #include "Model/Player/Breeder.hpp"
+#include "Color/pcolor.hpp"
 
 class BreederView : public PlayerView {
 public:
