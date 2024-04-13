@@ -44,18 +44,6 @@ public:
 
 	shared_ptr<Item> createBaseItem(string code) const;
 	string getCodeByName(const string name) const;
-	
-	string getProductResult(string Code) {
-		for (const auto &repo_el:this->repository){
-			auto tempRepoItem = repo_el.second;
-			ProductItem* product = dynamic_cast<ProductItem*>(&*tempRepoItem);
-			if (product != nullptr){
-				if (product->getOrigin() == Code){
-					return repo_el.first;
-				}
-			}
-		}
-		return "";
-	}
+	map<string, shared_ptr<Item>> getRepository();
 };
 #endif

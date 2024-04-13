@@ -11,6 +11,11 @@ int Player::getTaxBracket(int taxed) {
 	else return 35;
 };
 
+string Player::playerTypeToString(int type){
+	vector<string> typeString{"Petani","Peternak","Walikota"};
+	return typeString[type];
+}
+
 int Player::countInventoryWealth() {
 	vector<shared_ptr<Item> *> items = this->inventory.getAllItem();
 

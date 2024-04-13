@@ -19,6 +19,7 @@ public:
 	void rearrangePosition();
 	vector<shared_ptr<Player>> getPlayers();
 	shared_ptr<Player> readPlayerFromStream(istream &inputStream);
+	static string toLower(string text);
 };
 
 #endif
