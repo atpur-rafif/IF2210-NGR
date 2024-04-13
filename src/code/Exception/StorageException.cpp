@@ -4,6 +4,10 @@ const char *InvalidItemNotFoundException::what() const noexcept{
 	return "Item not found";
 }
 
+const char *InvalidFoodNotFoundException::what() const noexcept{
+	return "Food for this animal isn't exists in inventory";
+}
+
 const char *InvalidCoordinateStorageException::what() const noexcept {
 	return "Invalid coordinate";
 }
@@ -12,16 +16,12 @@ const char *InvalidTypeValueException::what() const noexcept {
 	return "Invalid type";
 }
 
-const char *InvalidBarnEmpty::what() const noexcept{
-	return "Barn are empty";
-}
-
-const char *InvalidTypeException::what() const noexcept{
-	return "Invalid food type";
+const char *InvalidFieldEmptyException::what() const noexcept{
+	return "Field are empty";
 }
 
 const char *InvalidNotFoodException::what() const noexcept{
-	return "Invalid food";
+	return "Invalid food type";
 }
 
 const char *InvalidFoodHerbivores::what() const noexcept{
@@ -30,10 +30,6 @@ const char *InvalidFoodHerbivores::what() const noexcept{
 
 const char *InvalidFoodCarnivores::what() const noexcept{
 	return "Herbivores eat animal product";
-}
-
-const char *InvalidBarnProductNotFoundException::what() const noexcept{
-	return "Product not found";
 }
 
 const char *InvalidHarvestException::what() const noexcept{

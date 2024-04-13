@@ -10,6 +10,11 @@ class InvalidItemNotFoundException : public StorageException{
 public: 
 	const char *what() const noexcept override;
 };
+
+class InvalidFoodNotFoundException : public StorageException{
+	const char *what() const noexcept override; 
+};
+
 class InvalidCoordinateStorageException : public StorageException {
 public:
 	const char *what() const noexcept override;
@@ -20,14 +25,9 @@ public:
 	const char *what() const noexcept override;
 };
 
-class InvalidBarnEmpty : public StorageException {
+class InvalidFieldEmptyException : public StorageException {
 public: 
 	const char *what() const noexcept override;
-};
-
-class InvalidTypeException : public StorageException {
-public: 
-	const char *what() const noexcept override; 
 };
 
 class InvalidNotFoodException : public StorageException {
@@ -45,10 +45,6 @@ public:
 	const char *what() const noexcept override; 
 };
 
-class InvalidBarnProductNotFoundException : public StorageException{
-public: 
-	const char *what() const noexcept override; 
-};
 
 class InvalidHarvestException : public StorageException {
 public: 

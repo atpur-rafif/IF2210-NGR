@@ -15,7 +15,8 @@
         "variant": "cpp",
         "locale": "cpp",
         "iomanip": "cpp",
-        "stdexcept": "cpp"
+        "stdexcept": "cpp",
+        "ostream": "cpp"
     },
     "C_Cpp.default.compilerPath": "C:\\msys64\\mingw64\\bin\\g++.exe"
 }

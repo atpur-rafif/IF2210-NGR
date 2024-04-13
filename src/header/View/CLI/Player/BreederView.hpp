@@ -3,6 +3,7 @@
 
 #include "View/CLI/PlayerView.hpp"
 #include "Model/Player/Breeder.hpp"
+#include "Color/pcolor.hpp"
 
 class BreederView : public PlayerView {
 public:
@@ -10,7 +11,7 @@ public:
 	virtual BreederView *clone();
 	virtual void runSpecializedPlayerCommand(Player &player, string command);
 	virtual void printBarn(Breeder &breeder);
-	virtual void detail(Breeder &breeder, vector<string>&); 
+	virtual void detail(Breeder &breeder); 
 
 	string promptFieldFromBarn(Breeder& breeder, string msg, bool taruhHewan){
 		while(true){

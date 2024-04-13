@@ -7,6 +7,7 @@
 #include "Controller/GameContext.hpp"
 #include "Model/Player.hpp"
 #include "Exception/StorageException.hpp"
+#include "Exception/ItemFactoryException.hpp"
 #include "Exception/DowncastException.hpp"
 
 class ProductItem;
@@ -26,6 +27,7 @@ public:
 	//function build by me
 	void placeAnimal(string&, string&); 
 	void giveFood(string&, string&);
+	void giveFoodChecker(string&);
 	void harvestAnimal(string&);
 };
 

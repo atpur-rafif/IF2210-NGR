@@ -9,12 +9,16 @@ class ItemFactoryException : public GameException {};
 class ItemNotFoundException : public ItemFactoryException {
 public:
 	const char *what() const noexcept override;
-	
 };
 
-class InvalidFarmProductNotFoundException : public ItemFactoryException{
-public: 
-	const char *what() const noexcept override; 
+class InvalidBarnProductNotFoundException : public ItemFactoryException {
+public:
+	const char *what() const noexcept override;
+};
+
+class InvalidFarmProductNotFoundException : public ItemFactoryException {
+public:
+	const char *what() const noexcept override;
 };
 
 #endif
