@@ -7,8 +7,12 @@
 using namespace std;
 class Config {
 public:
-	// TODO: Seperate state reader
 	static void readConfig(
+			string dir,
+			GameContext &context
+	);
+
+	static void readState(
 			string dir,
 			GameContext &context
 	);

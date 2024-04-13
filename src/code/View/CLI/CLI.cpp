@@ -17,8 +17,39 @@ PlayerView &CLI::getView(PlayerType type) {
 	return this->view.at(type).get();
 };
 
+void CLI::config() {
+	while (true) {
+		string dir;
+		cout << "Config directory: ";
+		cin >> dir;
+		try {
+			Config::readConfig(dir, this->context);
+			cout << "Config loaded" << endl;
+			break;
+		} catch (const std::exception &e) {
+			cout << e.what() << endl;
+		}
+	}
+}
+
+void CLI::state() {
+	while (true) {
+		string dir;
+		cout << "State directory: ";
+		cin >> dir;
+		try {
+			Config::readState(dir, this->context);
+			cout << "State loaded" << endl;
+			break;
+		} catch (const std::exception &e) {
+			cout << e.what() << endl;
+		}
+	}
+}
+
 void CLI::start() {
-	Config::readConfig("./tmp/config", this->context);
+	this->config();
+	this->state();
 
 	while (true) {
 		Player &current = this->context.players.getCurrentPlayer();

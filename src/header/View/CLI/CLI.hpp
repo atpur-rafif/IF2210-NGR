@@ -13,6 +13,10 @@ private:
 public:
 	CLI();
 	void start();
+	void config();
+	void state();
+
+	void promptConfirmation();
 	PlayerView &getView(PlayerType type);
 };
 
