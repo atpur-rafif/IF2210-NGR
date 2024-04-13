@@ -4,6 +4,8 @@
 #include "Exception/PlayerViewException.hpp"
 #include "Exception/StorageException.hpp"
 #include "Model/Player.hpp"
+#include "Controller/GameContext.hpp"
+#include "Model/Player/Farmer.hpp"
 #include <exception>
 
 class PlayerView {
