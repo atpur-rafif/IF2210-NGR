@@ -6,6 +6,9 @@
 
 using namespace std;
 class Config {
+private:
+	static string defaultState;
+
 public:
 	static void readConfig(
 			string dir,
@@ -16,6 +19,8 @@ public:
 			string dir,
 			GameContext &context
 	);
+
+	static void readDefaultState(GameContext &context);
 };
 
 #endif

@@ -7,6 +7,7 @@
 #include "Model/Item/ProductItem.hpp"
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 #include <sys/stat.h>
 
 const string miscFilename = "misc.txt";
@@ -15,6 +16,12 @@ const string farmItemFilename = "plant.txt";
 const string barnItemFilename = "animal.txt";
 const string buildingFilename = "recipe.txt";
 const string stateFilename = "state.txt";
+
+string Config::defaultState =
+		"3"
+		"Petani1 Petani 50 40 0 0"
+		"Peternak1 Peternak 50 40 0 0"
+		"Walikota Walikota 50 40 0";
 
 #define readItemConfigFileMacro(type, dir, filename, itemFactory) \
 	{                                                               \
@@ -58,5 +65,14 @@ void Config::readState(string dir, GameContext &context) {
 		Heapify<Player> player = context.players.readPlayerFromStream(stateFile);
 		context.players.addPlayer(player);
 	}
-	context.players.rearrangePosition();
+}
+
+void Config::readDefaultState(GameContext &context) {
+	istringstream stateStream(Config::defaultState);
+	int playerCount;
+	stateStream >> playerCount;
+	while (playerCount--) {
+		Heapify<Player> player = context.players.readPlayerFromStream(stateStream);
+		context.players.addPlayer(player);
+	}
 }

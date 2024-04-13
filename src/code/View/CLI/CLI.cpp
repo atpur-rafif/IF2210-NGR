@@ -33,16 +33,34 @@ void CLI::config() {
 }
 
 void CLI::state() {
+	cout << "State option:" << endl;
+	cout << "1. Use default state" << endl;
+	cout << "2. Read from file" << endl;
+	cout << "> ";
+
+	string prompt;
 	while (true) {
-		string dir;
-		cout << "State directory: ";
-		cin >> dir;
-		try {
-			Config::readState(dir, this->context);
-			cout << "State loaded" << endl;
+		cin >> prompt;
+		if (prompt == "1") {
+			Config::readDefaultState(this->context);
+			cout << "Using default state" << endl;
 			break;
-		} catch (const std::exception &e) {
-			cout << e.what() << endl;
+		} else if (prompt == "2") {
+			while (true) {
+				string dir;
+				cout << "State directory: ";
+				cin >> dir;
+				try {
+					Config::readState(dir, this->context);
+					cout << "State loaded" << endl;
+					break;
+				} catch (const std::exception &e) {
+					cout << e.what() << endl;
+				}
+			}
+			break;
+		} else {
+			cout << "Invalid option" << endl;
 		}
 	}
 }
