@@ -12,8 +12,8 @@ public:
 	virtual FarmerView *clone();
 	virtual void runSpecializedPlayerCommand(Player &player, string command);
 	void printFarm(Farmer &farmer);
-	void plantHelper(Farmer &farmer);
-	void harvestHelper(Farmer &farmer);
+	void plantingPlant(Farmer &farmer);
+	void harvest(Farmer &farmer);
 
 	string promptFieldFromFarm(Farmer &farmer) {
 		while (true) {

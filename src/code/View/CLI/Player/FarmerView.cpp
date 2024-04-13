@@ -10,10 +10,10 @@ FarmerView *FarmerView::clone() { return new FarmerView(*this); }
 void FarmerView::runSpecializedPlayerCommand(Player &player, string command) {
 	Farmer &farmer = *(dynamic_cast<Farmer *>(&player));
 	if (command == "TANAM") {
-		this->plantHelper(farmer);
+		this->plantingPlant(farmer);
 	} 
 	else if (command == "PANEN") {
-		this->harvestHelper(farmer);
+		this->harvest(farmer);
 	} 
 	else if (command == "CETAK_LADANG") {
 		this->printFarm(farmer);
@@ -56,7 +56,7 @@ void FarmerView::printFarm(Farmer &farmer) {
 	}
 }
 
-void FarmerView::plantHelper(Farmer &farmer) {
+void FarmerView::plantingPlant(Farmer &farmer) {
 	while (true)
 	{
 		cout << "Pilih tanaman dari penyimpanan" << endl;
@@ -78,109 +78,47 @@ void FarmerView::plantHelper(Farmer &farmer) {
 	
 }
 
-void FarmerView::harvestHelper(Farmer &farmer) {
+void FarmerView::harvest(Farmer &farmer) {
 	this->printFarm(farmer);
 	vector<FarmItem* > field_item = farmer.farm.getAllItem();
-	vector<pair<string, int>> list_item;
-	list_item.push_back({"TEK", 0});
-	list_item.push_back({"SDT", 0});
-	list_item.push_back({"ALT", 0});
-	list_item.push_back({"IRN", 0});
-	list_item.push_back({"APL", 0});
-	list_item.push_back({"ORG", 0});
-	list_item.push_back({"BNT", 0});
-	list_item.push_back({"GAV", 0});
+	map<string, pair<int, string>> list_item;
+	list_item.insert({"TEK", {0, "- TEK: Teak Tree"}});
+	list_item.insert({"SDT", {0, "- SDT: Sandalwood Tree"}});
+	list_item.insert({"ALT", {0, "- ALT: Aloe Tree"}});
+	list_item.insert({"IRN", {0, "- IRN: Ironwood Tree"}});
+	list_item.insert({"APL", {0, "- APL: Apple Tree"}});
+	list_item.insert({"ORG", {0, "- ORG: Orange Tree"}});
+	list_item.insert({"BNT", {0, "- BNT: Banana Tree"}});
+	list_item.insert({"GAV", {0, "- GAV: Guava Tree"}});
 	for (FarmItem* item: field_item)
 	{
 		if (item->getAge() >= item->getDurationToHarvest())
 		{
-			if (item->getCode() == "TEK")
-			{
-				list_item[0].second += 1;
-			}
-			if (item->getCode() == "SDT")
-			{
-				list_item[1].second += 1;
-			}
-			if (item->getCode() == "ALT")
-			{
-				list_item[2].second += 1;
-			}
-			if (item->getCode() == "IRN")
-			{
-				list_item[3].second += 1;
-			}
-			if (item->getCode() == "APL")
-			{
-				list_item[4].second += 1;
-			}
-			if (item->getCode() == "ORG")
-			{
-				list_item[5].second += 1;
-			}
-			if (item->getCode() == "BNT")
-			{
-				list_item[6].second += 1;
-			}
-			if (item->getCode() == "GAV")
-			{
-				list_item[7].second += 1;
-			}
+			list_item[item->getCode()].first += 1;
 		}
 	}
-
+	cout << endl;
 	bool can_harvest = false;
-	if (list_item[0].second != 0)
-	{
-		cout << "- TEK: Teak Tree" << endl;
-		can_harvest = true;
-	}
-	if (list_item[1].second != 0)
-	{
-		cout << "- SDT: Sandalwood Tree" << endl;
-		can_harvest = true;
-	}
-	if (list_item[2].second != 0)
-	{
-		cout << "- ALT: Aloe Tree" << endl;
-		can_harvest = true;
-	}
-	if (list_item[3].second != 0)
-	{
-		cout << "- IRN: Ironwood Tree" << endl;
-		can_harvest = true;
-	}
-	if (list_item[4].second != 0)
-	{
-		cout << "- APL: Apple Tree" << endl;
-		can_harvest = true;
-	}
-	if (list_item[5].second != 0)
-	{
-		cout << "- ORG: Orange Tree" << endl;
-		can_harvest = true;
-	}
-	if (list_item[6].second != 0)
-	{
-		cout << "- BNT: Banana Tree" << endl;
-		can_harvest = true;
-	}
-	if (list_item[7].second != 0)
-	{
-		cout << "- GAV: Guava Tree" << endl;
-		can_harvest = true;
-	}
+	for ( const auto &item : list_item ) {
+        if (item.second.first != 0)
+		{
+			cout << item.second.second << endl;
+			can_harvest = true;
+		}
+		
+    }
 	if (can_harvest)
 	{
+		cout << endl;
 		int i = 1;
 		cout << "Pilih tanaman siap panen yang kamu miliki: " << endl;
 		vector<pair<int, pair<string, int>>> pick_list;
-		for (pair<string, int> item: list_item)
+		for (auto item: list_item)
 		{
-			if (item.second != 0)
+			if (item.second.first != 0)
 			{
-				cout << i << ". " << item.first << " (" << item.second << " petak siap panen)" << endl;
-				pick_list.push_back({i,item});
+				cout << i << ". " << item.first << " (" << item.second.first << " petak siap panen)" << endl;
+				pick_list.push_back({i,{item.first, item.second.first}});
 				i++;
 			}	
 		}
@@ -238,6 +176,7 @@ void FarmerView::harvestHelper(Farmer &farmer) {
 			while (pick_list.at(no_tanaman-1).second.first != farmer.farm.getItem(plot_input)->getCode())
 			{
 				cout << "Beda tanaman bang, pilih yang betul" << endl;
+				cout << "Petak ke-" << j+1 << ": ";
 				cin >> plot_input;
 			}
 			farmer.harvestPlant(plot_input);
