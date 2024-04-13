@@ -82,7 +82,7 @@ void Breeder::harvestAnimal(string& coordinate){
 	optional<BarnItem> harvestedAnimal = this->barn.getItem(coordinate);
 	string code; 
 	if(harvestedAnimal.has_value()){
-		code = this->getContext().itemFactory.getProductResult(harvestedAnimal.value().getName()); 
+		code = this->getContext().itemFactory.getProductResult(harvestedAnimal.value().getName(), ""); 
         if(code.empty()){
             throw InvalidBarnProductNotFoundException();
         }

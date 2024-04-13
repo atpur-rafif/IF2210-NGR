@@ -39,6 +39,7 @@ void Farmer::plant(string &invLocation, string &fieldLocation) {
 	{
 		throw InvalidDowncastException();
 	}
+	selected_plant->setAge(0);
 	this->farm.setItem(fieldLocation, *selected_plant);
 	this->inventory.clearItem(invLocation);
 }
@@ -48,7 +49,7 @@ void Farmer::harvestPlant(string& coordinate) {
 	string code;
 	if (harvested_item.has_value())
 	{
-		code = this->getContext().itemFactory.getProductResult(harvested_item.value().getName());
+		code = this->getContext().itemFactory.getProductResult(harvested_item.value().getName(), "");
 	}
 	if (code.empty())
 	{
@@ -59,4 +60,11 @@ void Farmer::harvestPlant(string& coordinate) {
 	shared_ptr<Item> addedItem = make_shared<ProductItem>(harvest_product);
 	this->inventory.addItem(addedItem);
 	this->farm.clearItem(coordinate);
+}
+
+void Farmer::plantsGrow() {
+	for (FarmItem *plant : this->farm.getAllItem())
+	{
+		plant->setAge(plant->getAge() + 1);
+	}
 }

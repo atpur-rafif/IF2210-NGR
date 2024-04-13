@@ -78,6 +78,7 @@ shared_ptr<Player> PlayerController::readPlayerFromStream(istream &inputStream) 
 			string code = context.itemFactory.getCodeByName(name);
 			FarmItem item;
 			context.itemFactory.createItem(code, item);
+			item.setAge(age);
 			farmer->farm.setItem(location, item);
 		}
 	} else if (newPlayer->type == BreederType) {

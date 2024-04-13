@@ -24,6 +24,7 @@ public:
 	int countFarmWealth();
 	void plant(string &invLocation, string &fieldLocation);
 	void harvestPlant(string &coordinate);
+	void plantsGrow();
 };
 
 #endif

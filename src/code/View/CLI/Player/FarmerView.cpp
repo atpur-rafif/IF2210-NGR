@@ -16,6 +16,10 @@ void FarmerView::runSpecializedPlayerCommand(Player &player, string command) {
 	else if (command == "CETAK_LADANG") {
 		this->printFarm(farmer);
 	} 
+	else if (command == "TES")
+	{
+		farmer.plantsGrow();
+	}
 	else 
 	{
 		throw CommandNotFoundPlayerViewException();
@@ -24,7 +28,7 @@ void FarmerView::runSpecializedPlayerCommand(Player &player, string command) {
 
 void FarmerView::printFarm(Farmer &farmer) {
 	auto &farmInventory = farmer.farm;
-	auto size = farmInventory.getSize();
+	pair<int, int> size = farmInventory.getSize();
 	for (int i = 0; i < size.first; i++)
 	{
 		cout << "| ";
@@ -83,6 +87,8 @@ void FarmerView::harvestHelper(Farmer &farmer) {
 	list_item.push_back({"GAV", 0});
 	for (FarmItem* item: field_item)
 	{
+		cout << "age: " << item->getAge() << endl; 
+		cout << "duration: " << item->getDurationToHarvest() << endl;
 		if (item->getAge() >= item->getDurationToHarvest())
 		{
 			if (item->getCode() == "TEK")
@@ -170,7 +176,7 @@ void FarmerView::harvestHelper(Farmer &farmer) {
 		{
 			if (item.second != 0)
 			{
-				cout << i << ". " << item.first << "(" << item.second << "petak siap panen)" << endl;
+				cout << i << ". " << item.first << " (" << item.second << " petak siap panen)" << endl;
 				pick_list.push_back({i,item});
 				i++;
 			}	
