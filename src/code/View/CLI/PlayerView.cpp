@@ -2,6 +2,7 @@
 #include "Exception/GameException.hpp"
 #include "Exception/PlayerViewException.hpp"
 #include "Model/Item//ProductItem.hpp"
+#include "View/Config/Config.hpp"
 #include <iostream>
 using namespace std;
 
@@ -49,6 +50,11 @@ void PlayerView::runPlayerCommand(Player &player, string command) {
 	} else if (command == "STATUS") {
 		cout << "Money: " << player.money << endl;
 		cout << "Weight: " << player.weight << endl;
+	} else if (command == "SIMPAN") {
+		cout << "Location to save: ";
+		string location;
+		cin >> location;
+		Config::writeState(location, player.getContext());
 	} else throw CommandNotFoundPlayerViewException();
 }
 

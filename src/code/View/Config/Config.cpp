@@ -7,6 +7,7 @@
 #include "Model/Item/ProductItem.hpp"
 #include <filesystem>
 #include <fstream>
+#include <ostream>
 #include <sstream>
 #include <sys/stat.h>
 
@@ -76,3 +77,18 @@ void Config::readDefaultState(GameContext &context) {
 		context.players.addPlayer(player);
 	}
 }
+
+void Config::writeState(string dir, GameContext &context) {
+	ofstream outputStream;
+	outputStream.open(dir + "/" + stateFilename);
+	auto players = context.players.getPlayers();
+	outputStream << players.size() << endl;
+	for (auto player : players) {
+		outputStream << player->username << ' ';
+		outputStream << Player::playerTypeToString(player->type) << ' ';
+		outputStream << player->weight << ' ';
+		outputStream << player->money << endl;
+		player->writeInventory(outputStream);
+		player->writeSpecializedConfig(outputStream);
+	}
+};

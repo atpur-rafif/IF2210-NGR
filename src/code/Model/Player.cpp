@@ -41,3 +41,11 @@ void Player::readInventory(istream &inputStream) {
 		this->inventory.addItem(item);
 	}
 };
+
+void Player::writeInventory(ostream &outputStream) {
+	auto items = this->inventory.getAllItem();
+	outputStream << items.size() << endl;
+	for (auto item : items) {
+		outputStream << (*item)->getName() << endl;
+	}
+};

@@ -31,7 +31,9 @@ public:
 	static string playerTypeToString(int type);
 
 	void readInventory(istream &inputStream);
+	void writeInventory(ostream &outputStream);
 	virtual void readSpecializedConfig(istream &inputStream) = 0;
+	virtual void writeSpecializedConfig(ostream &outputStream) = 0;
 };
 
 #endif

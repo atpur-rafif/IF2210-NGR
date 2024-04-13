@@ -63,21 +63,17 @@ shared_ptr<Player> PlayerController::readPlayerFromStream(istream &inputStream) 
 	newPlayer->username = username;
 	newPlayer->weight = weight;
 	newPlayer->money = money;
+	newPlayer->readInventory(inputStream);
 	newPlayer->readSpecializedConfig(inputStream);
 
 	shared_ptr<Player> ptr{newPlayer};
 	return ptr;
 };
 
-void PlayerController::readPlayerFromStream(shared_ptr<Player> player, ostream &outputStream) {
+void PlayerController::writePlayerToStream(shared_ptr<Player> player, ostream &outputStream) {
 	outputStream << player->username << ' ';
 	outputStream << Player::playerTypeToString(player->type) << ' ';
 	outputStream << player->weight << ' ';
 	outputStream << player->money << endl;
-
-	auto items = player->inventory.getAllItem();
-	outputStream << items.size() << endl;
-	for (auto item : items) {
-		outputStream << (*item)->getName() << endl;
-	}
+	player->writeInventory(outputStream);
 };

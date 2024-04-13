@@ -2,10 +2,11 @@
 #define STORAGE_HPP
 
 #include "Exception/StorageException.hpp"
+#include <iostream>
+#include <map>
 #include <optional>
 #include <string>
 #include <vector>
-#include <map>
 using namespace std;
 
 /*
@@ -29,7 +30,7 @@ protected:
 		return result;
 	}
 
-	static pair<int, int> parseCoordinate(string str) {
+	static pair<int, int> decodeCoordinate(string str) {
 		int len = str.length();
 
 		string x = "";
@@ -50,6 +51,21 @@ protected:
 		return {stringToInt(x), stoi(y) - 1};
 	}
 
+	static string encodeCoordinate(int x, int y) {
+		string str = "";
+		if (x == 0) {
+			str += "A";
+		} else {
+			while (x) {
+				str += ('A' + (x % 26));
+				x /= 26;
+			}
+		}
+
+		str += to_string(y + 1);
+		return str;
+	}
+
 public:
 	Storage() : Storage(0, 0){};
 
@@ -62,12 +78,12 @@ public:
 	};
 
 	optional<T> &getItem(string coordinate) {
-		auto position = this->parseCoordinate(coordinate);
+		auto position = this->decodeCoordinate(coordinate);
 		return this->getItem(position.first, position.second);
 	};
 
 	void clearItem(string coordinate) {
-		auto position = this->parseCoordinate(coordinate);
+		auto position = this->decodeCoordinate(coordinate);
 		this->clearItem(position.first, position.second);
 	}
 
@@ -85,13 +101,25 @@ public:
 		return items;
 	}
 
+	vector<pair<string, T *>> getAllItemWithCoordinate() {
+		vector<pair<string, T *>> items;
+		for (int y = 0; y < this->height; ++y) {
+			for (int x = 0; x < this->width; ++x) {
+				int i = this->width * y + x;
+				if (this->storage[i].has_value())
+					items.push_back({Storage::encodeCoordinate(x, y), &this->storage[i].value()});
+			}
+		}
+		return items;
+	}
+
 	void setItem(int x, int y, T &item) {
 		int i = this->flat(x, y);
 		this->storage[i] = item;
 	};
 
 	void setItem(string coordinate, T &item) {
-		auto position = this->parseCoordinate(coordinate);
+		auto position = this->decodeCoordinate(coordinate);
 		this->setItem(position.first, position.second, item);
 	};
 
@@ -112,9 +140,10 @@ public:
 			for (int x = 0; x < this->width; ++x) {
 				int i = this->flat(x, y);
 				if (this->storage[i].has_value()) {
-					if(this->storage[i].value()->getName()==name){
-					this->storage[i].reset();
-					return;}
+					if (this->storage[i].value()->getName() == name) {
+						this->storage[i].reset();
+						return;
+					}
 				}
 			}
 		}
@@ -124,19 +153,18 @@ public:
 		return {this->width, this->height};
 	}
 
-	map<string,int> getItemFreq() {
+	map<string, int> getItemFreq() {
 		vector<T> vec;
-		map<string,int> result;
+		map<string, int> result;
 		for (int i = 0; i < this->width * this->height; ++i) {
 			if (this->storage[i].has_value())
 				vec.push_back(this->storage[i].value());
 		}
-		for (auto const & item : vec){
-			    ++result[item.get()->getName()];
-			}
+		for (auto const &item : vec) {
+			++result[item.get()->getName()];
+		}
 		return result;
-    }
-	
+	}
 };
 
 #endif

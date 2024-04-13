@@ -19,6 +19,7 @@ public:
 	void isEnoughMoney();
 
 	virtual void readSpecializedConfig(istream &inputStream);
+	virtual void writeSpecializedConfig(ostream &outputStream);
 };
 
 #endif

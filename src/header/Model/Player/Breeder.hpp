@@ -16,6 +16,8 @@ public:
 	int countBarnWealth();
 
 	virtual void readSpecializedConfig(istream &inputStream);
+
+	void writeSpecializedConfig(ostream &outputStream);
 };
 
 #endif

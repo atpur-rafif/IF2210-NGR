@@ -16,6 +16,7 @@ public:
 	int countFarmWealth();
 
 	virtual void readSpecializedConfig(istream &inputStream);
+	virtual void writeSpecializedConfig(ostream &outputStream);
 };
 
 #endif

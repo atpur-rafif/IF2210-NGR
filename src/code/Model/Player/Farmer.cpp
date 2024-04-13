@@ -31,12 +31,22 @@ void Farmer::readSpecializedConfig(istream &inputStream) {
 	int farmCount;
 	inputStream >> farmCount;
 	while (farmCount--) {
-		int age;
+		int plantAge;
 		string location, name;
-		inputStream >> location >> name >> age;
+		inputStream >> location >> name >> plantAge;
 		string code = ctx.itemFactory.getCodeByName(name);
 		FarmItem item;
 		ctx.itemFactory.createItem(code, item);
+		item.setAge(plantAge);
 		this->farm.setItem(location, item);
+	}
+};
+
+void Farmer::writeSpecializedConfig(ostream &outputStream) {
+	auto farmItems = this->farm.getAllItemWithCoordinate();
+	outputStream << farmItems.size() << endl;
+	for (auto it : farmItems) {
+		auto item = it.second;
+		outputStream << it.first << ' ' << item->getName() << ' ' << item->getAge() << endl;
 	}
 };

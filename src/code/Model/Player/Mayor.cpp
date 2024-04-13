@@ -107,3 +107,7 @@ void Mayor::isEnoughMoney() {
 void Mayor::readSpecializedConfig(istream &inputStream) {
 	(void)inputStream;
 }
+
+void Mayor::writeSpecializedConfig(ostream &outputStream) {
+	(void)outputStream;
+}

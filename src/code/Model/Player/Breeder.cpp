@@ -27,15 +27,25 @@ void Breeder::readSpecializedConfig(istream &inputStream) {
 	auto ctx = this->getContext();
 	auto barnSize = ctx.miscConfig.getBarnSize();
 	this->barn = Storage<BarnItem>(barnSize.first, barnSize.second);
-	int farmCount;
-	inputStream >> farmCount;
-	while (farmCount--) {
-		int age;
+	int barnCount;
+	inputStream >> barnCount;
+	while (barnCount--) {
+		int animalWeight;
 		string location, name;
-		inputStream >> location >> name >> age;
+		inputStream >> location >> name >> animalWeight;
 		string code = ctx.itemFactory.getCodeByName(name);
 		BarnItem item;
 		ctx.itemFactory.createItem(code, item);
+		item.setWeight(animalWeight);
 		this->barn.setItem(location, item);
 	}
 }
+
+void Breeder::writeSpecializedConfig(ostream &outputStream) {
+	auto barnItems = this->barn.getAllItemWithCoordinate();
+	outputStream << barnItems.size() << endl;
+	for (auto it : barnItems) {
+		auto item = it.second;
+		outputStream << it.first << ' ' << item->getName() << ' ' << item->getWeight() << endl;
+	}
+};
