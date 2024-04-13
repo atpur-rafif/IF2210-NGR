@@ -3,6 +3,7 @@
 #include "Exception/DowncastException.hpp"
 #include "Exception/PlayerException.hpp"
 #include "Exception/ItemFactoryException.hpp"
+#include "Exception/PlayerControllerException.hpp"
 #include "Model/Player.hpp"
 #include "Model/Player/Mayor.hpp"
 
@@ -74,8 +75,11 @@ void MayorView::runSpecializedPlayerCommand(Player &player, string command) {
 			cout << "Pemain baru ditambahkan!" << endl;
 			cout << "Selamat datang " << username << " di kota ini!" << endl;
 		}
-		catch(const char* err){
-			cout << err << endl;
+		catch(const InvalidPlayerTypeException& e){
+			cout << "Jenis pemain tidak valid" << endl;
+		}
+		catch(const NotEnoughResourceException& e){
+			cout << "Uang tidak cukup!" << endl;
 		}
 	}
 	else throw CommandNotFoundPlayerViewException();

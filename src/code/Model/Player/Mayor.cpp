@@ -2,6 +2,7 @@
 #include "Model/Item/BuildingItem.hpp"
 #include "Controller/GameContext.hpp"
 #include "Exception/PlayerException.hpp"
+#include "Exception/PlayerControllerException.hpp"
 #include <sstream>
 
 #define MINIMUM_MONEY 50
@@ -88,7 +89,7 @@ void Mayor::buildBuilding(string recipe){
 void Mayor::addPlayer(string username,string type){
 	transform(next(type.begin()),type.end(),next(type.begin()),::tolower);
 	transform(type.begin(),next(type.begin()),type.begin(),::toupper);
-	if(type=="Walikota") throw "Invalid player type";
+	if(type=="Walikota") throw InvalidPlayerTypeException();
 	string weight = "0";
 	string money = "50";
 	string inventoryCount = "0";
