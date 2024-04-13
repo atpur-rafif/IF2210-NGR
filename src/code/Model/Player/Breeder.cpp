@@ -123,6 +123,10 @@ void Breeder::giveFood(string& locInventory, string& locField) {
     currAnimal->setWeight(currAnimal->getWeight() + itemFood->getAddedWeight());
 }
 
+/**
+ * ISSUE: 
+ * Muncul animal di coordinate lain padahal aslinya gada, tapi pas diharvest bisa, item yang lain bisa ikut ilang 
+*/
 void Breeder::harvestAnimal(string& coordinate){
     pair<string, string> special = {"DCK", "CHK"};
     bool isSpecial = false;

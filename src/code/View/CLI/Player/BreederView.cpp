@@ -68,8 +68,10 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 
 }
 
-//ISSUE: ada yang dia cuman satu tapi kecetak dua, misal di A1 ada DCK (kenyataannya begitu), tapi pas dicetak somehov muncul 
-//beberapa kali di F2 (misalnya) dia muncul DCK juga.
+/** ISSUE: 
+ *  ada yang dia cuman satu tapi kecetak dua, misal di A1 ada DCK (kenyataannya begitu), tapi pas dicetak somehov muncul 
+ * 	beberapa kali di F2 (misalnya) dia muncul DCK juga.
+*/
 void BreederView::printBarn(Breeder& breeder){
 	auto &barnInventory = breeder.barn; 
 	auto size = barnInventory.getSize();
@@ -87,7 +89,7 @@ void BreederView::printBarn(Breeder& breeder){
 }
 
 void BreederView::detail(Breeder& breeder){
-    pair<int, int> farm_size = breeder.getContext().miscConfig.getFarmSize();
+    pair<int, int> farm_size = breeder.barn.getSize();
     vector<pair<string, int>> list_item = {{"COW", 0}, {"SHP", 0}, {"RBT", 0}, {"HRS", 0}, {"SNK", 0}, {"CHK", 0}, {"DCK", 0}};
 	vector<pair<string, string>> list_item_grid; 
     auto& barnInventory = breeder.barn;
@@ -97,7 +99,7 @@ void BreederView::detail(Breeder& breeder){
         for(int x = 0; x < farm_size.second; x++) {
             auto item = barnInventory.getItem(x, y);
             if(item.has_value() && item.value().getWeight() >= item.value().getWeightToHarvest()) {
-				cout << item.value().getWeight() << " " << item.value().getWeightToHarvest();
+				// cout << item.value().getWeight() << " " << item.value().getWeightToHarvest();
 				list_item_grid.push_back({intToCoordinate(x, y), item->getName()});
                 for(int i = 0; i < 7; ++i) {
                     if(item->getCode() == list_item[i].first) {
