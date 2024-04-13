@@ -1,4 +1,5 @@
 #include "Controller/ItemFactory.hpp"
+#include "Exception/ItemFactoryException.hpp"
 
 ItemFactory::ItemFactory(){};
 
@@ -7,7 +8,7 @@ string ItemFactory::codeFinder(function<bool(shared_ptr<Item>)> &lambda) const {
 		auto item = i.second;
 		if (lambda(item)) return item->getCode();
 	}
-	throw InvalidItemNotFoundException();
+	throw ItemNotFoundException();
 }
 
 shared_ptr<Item> ItemFactory::createBaseItem(string code) const {
@@ -21,4 +22,8 @@ string ItemFactory::getCodeByName(const string name) const {
 		return item->getName() == name;
 	};
 	return this->codeFinder(fn);
+}
+
+map<string, shared_ptr<Item>> ItemFactory::getRepository(){
+	return this->repository;
 }

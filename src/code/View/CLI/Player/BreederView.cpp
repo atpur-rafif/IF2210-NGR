@@ -74,10 +74,10 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 */
 void BreederView::printBarn(Breeder& breeder){
 	auto &barnInventory = breeder.barn; 
-	auto size = barnInventory.getSize();
-	for(int y = 0; y < size.first; y++){
+	pair<int, int> size = {barnInventory.getWidth(), barnInventory.getHeight()};
+	for(int y = 0; y < size.second; y++){
 		cout << "| "; 
-		for(int x = 0; x < size.second; x++){
+		for(int x = 0; x < size.first; x++){
 			auto result = barnInventory.getItem(x, y);
 			if(result.has_value()) 
 				cout << result->getCode();
@@ -89,14 +89,14 @@ void BreederView::printBarn(Breeder& breeder){
 }
 
 void BreederView::detail(Breeder& breeder){
-    pair<int, int> farm_size = breeder.barn.getSize();
+	auto &barnInventory = breeder.barn;
+    pair<int, int> farm_size = {barnInventory.getWidth(), barnInventory.getHeight()};
     vector<pair<string, int>> list_item = {{"COW", 0}, {"SHP", 0}, {"RBT", 0}, {"HRS", 0}, {"SNK", 0}, {"CHK", 0}, {"DCK", 0}};
 	vector<pair<string, string>> list_item_grid; 
-    auto& barnInventory = breeder.barn;
 
-    for(int y = 0; y < farm_size.first; y++){
+    for(int y = 0; y < farm_size.second; y++){
         cout << "| ";
-        for(int x = 0; x < farm_size.second; x++) {
+        for(int x = 0; x < farm_size.first; x++) {
             auto item = barnInventory.getItem(x, y);
             if(item.has_value() && item.value().getWeight() >= item.value().getWeightToHarvest()) {
 				// cout << item.value().getWeight() << " " << item.value().getWeightToHarvest();

@@ -57,5 +57,6 @@ public:
         }
         return "";
     }
+	map<string, shared_ptr<Item>> getRepository();
 };
 #endif
