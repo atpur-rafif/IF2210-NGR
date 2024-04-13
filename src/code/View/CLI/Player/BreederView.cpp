@@ -31,7 +31,7 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 		}
 
 	}
-	else if (command == "BARN"){
+	else if (command == "CETAK_PETERNAKAN"){
 		printBarn(breeder);
 	}
 	else if (command == "KASIH_MAKAN"){
