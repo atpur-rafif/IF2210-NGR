@@ -62,7 +62,7 @@ void Config::readState(string dir, GameContext &context) {
 	int playerCount;
 	stateFile >> playerCount;
 	while (playerCount--) {
-		Heapify<Player> player = context.players.readPlayerFromStream(stateFile);
+		shared_ptr<Player> player = context.players.readPlayerFromStream(stateFile);
 		context.players.addPlayer(player);
 	}
 }
@@ -72,7 +72,7 @@ void Config::readDefaultState(GameContext &context) {
 	int playerCount;
 	stateStream >> playerCount;
 	while (playerCount--) {
-		Heapify<Player> player = context.players.readPlayerFromStream(stateStream);
+		shared_ptr<Player> player = context.players.readPlayerFromStream(stateStream);
 		context.players.addPlayer(player);
 	}
 }

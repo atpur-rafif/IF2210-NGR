@@ -8,7 +8,7 @@
 class CLI {
 private:
 	GameContext context;
-	map<PlayerType, Heapify<PlayerView>> view;
+	map<PlayerType, shared_ptr<PlayerView>> view;
 
 public:
 	CLI();
@@ -17,7 +17,7 @@ public:
 	void state();
 
 	void promptConfirmation();
-	PlayerView &getView(PlayerType type);
+	shared_ptr<PlayerView> getView(PlayerType type);
 };
 
 #endif

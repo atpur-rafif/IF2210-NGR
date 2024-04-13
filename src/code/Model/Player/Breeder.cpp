@@ -6,11 +6,8 @@ Breeder::~Breeder() {}
 Breeder *Breeder::clone() { return new Breeder(*this); }
 
 int Breeder::countBarnWealth() {
-	vector<BarnItem *> items;
-	this->barn.getAllItem(items);
-
 	int wealth = 0;
-	for (const auto &itemPtr : items)
+	for (auto &itemPtr : this->barn.getAllItem())
 		wealth += itemPtr->getPrice();
 	return wealth;
 }
@@ -20,5 +17,7 @@ int Breeder::calculateTax() {
 	int wealth = this->money + this->countInventoryWealth() + this->countBarnWealth();
 	int taxed = wealth - BreederUntaxed;
 	int bracket = getTaxBracket(taxed);
-	return max((int)round((taxed * bracket) / 100.0), 0);
+	int tax = max((int)round((taxed * bracket) / 100.0), 0);
+	if(this->money<tax) tax = this->money;
+	return tax;
 }

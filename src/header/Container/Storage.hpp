@@ -5,6 +5,7 @@
 #include <optional>
 #include <string>
 #include <vector>
+#include <map>
 using namespace std;
 
 /*
@@ -75,11 +76,13 @@ public:
 		this->storage[i].reset();
 	}
 
-	void getAllItem(vector<T *> &vec) {
+	vector<T *> getAllItem() {
+		vector<T *> items;
 		for (int i = 0; i < this->width * this->height; ++i) {
 			if (this->storage[i].has_value())
-				vec.push_back(&this->storage[i].value());
+				items.push_back(&this->storage[i].value());
 		}
+		return items;
 	}
 
 	void setItem(int x, int y, T &item) {
@@ -104,9 +107,36 @@ public:
 		}
 	}
 
+	void removeItem(string name) {
+		for (int y = 0; y < this->height; ++y) {
+			for (int x = 0; x < this->width; ++x) {
+				int i = this->flat(x, y);
+				if (this->storage[i].has_value()) {
+					if(this->storage[i].value()->getName()==name){
+					this->storage[i].reset();
+					return;}
+				}
+			}
+		}
+	}
+
 	pair<int, int> getSize() {
 		return {this->width, this->height};
 	}
+
+	map<string,int> getItemFreq() {
+		vector<T> vec;
+		map<string,int> result;
+		for (int i = 0; i < this->width * this->height; ++i) {
+			if (this->storage[i].has_value())
+				vec.push_back(this->storage[i].value());
+		}
+		for (auto const & item : vec){
+			    ++result[item.get()->getName()];
+			}
+		return result;
+    }
+	
 };
 
 #endif
