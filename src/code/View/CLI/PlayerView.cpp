@@ -66,10 +66,11 @@ void PlayerView::runPlayerCommand(Player &player, string command) {
 
 void PlayerView::printInventory(Player &player) {
 	auto &inventory = player.inventory;
-	auto size = inventory.getSize();
-	for (int y = 0; y < size.first; ++y) {
+	auto width = inventory.getWidth();
+	auto height = inventory.getHeight();
+	for (int y = 0; y < height; ++y) {
 		cout << "| ";
-		for (int x = 0; x < size.second; ++x) {
+		for (int x = 0; x < width; ++x) {
 			auto result = inventory.getItem(x, y);
 			if (result.has_value()) cout << result.value()->getCode();
 			else cout << "   ";

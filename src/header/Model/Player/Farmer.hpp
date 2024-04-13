@@ -9,6 +9,7 @@
 #include "Model/GameObject.hpp"
 #include "Exception/StorageException.hpp"
 #include "Exception/DowncastException.hpp"
+#include "Exception/ItemFactoryException.hpp"
 
 class ProductItem;
 

@@ -27,11 +27,11 @@ void FarmerView::runSpecializedPlayerCommand(Player &player, string command) {
 void FarmerView::printFarm(Farmer &farmer) {
 	cout << "================[ Ladang ]=================" << endl;
 	auto &farmInventory = farmer.farm;
-	pair<int, int> size = farmInventory.getSize();
-	for (int i = 0; i < size.first; i++)
+	pair<int, int> size = {farmInventory.getWidth(), farmInventory.getHeight()};
+	for (int i = 0; i < size.second; i++)
 	{
 		cout << "| ";
-		for (int j = 0; j < size.second; j++)
+		for (int j = 0; j < size.first; j++)
 		{
 			auto result = farmInventory.getItem(j,i);
 			if (result.has_value())
@@ -92,8 +92,6 @@ void FarmerView::harvestHelper(Farmer &farmer) {
 	list_item.push_back({"GAV", 0});
 	for (FarmItem* item: field_item)
 	{
-		cout << "age: " << item->getAge() << endl; 
-		cout << "duration: " << item->getDurationToHarvest() << endl;
 		if (item->getAge() >= item->getDurationToHarvest())
 		{
 			if (item->getCode() == "TEK")

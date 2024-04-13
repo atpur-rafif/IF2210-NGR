@@ -28,6 +28,7 @@ public:
 	int countInventoryWealth();
 
 	static int getTaxBracket(int taxed);
+	static string playerTypeToString(int type);
 };
 
 #endif

@@ -20,7 +20,9 @@ int Farmer::calculateTax() {
 	int wealth = this->money + this->countInventoryWealth() + this->countFarmWealth();
 	int taxed = wealth - FarmerUntaxed;
 	int bracket = Player::getTaxBracket(taxed);
-	return max((int)round((taxed * bracket) / 100.0), 0);
+	int tax = max((int)round((taxed * bracket) / 100.0), 0);
+	if(this->money<tax) tax = this->money;
+	return tax;
 }
 
 void Farmer::plant(string &invLocation, string &fieldLocation) {
@@ -53,7 +55,7 @@ void Farmer::harvestPlant(string& coordinate) {
 	}
 	if (code.empty())
 	{
-		throw;
+		throw InvalidFarmProductNotFoundException();
 	}
 	ProductItem harvest_product;
 	this->getContext().itemFactory.createItem(code, harvest_product);
