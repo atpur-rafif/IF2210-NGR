@@ -2,10 +2,10 @@
 #define STORAGE_HPP
 
 #include "Exception/StorageException.hpp"
+#include <map>
 #include <optional>
 #include <string>
 #include <vector>
-#include <map>
 using namespace std;
 
 /*
@@ -112,31 +112,35 @@ public:
 			for (int x = 0; x < this->width; ++x) {
 				int i = this->flat(x, y);
 				if (this->storage[i].has_value()) {
-					if(this->storage[i].value()->getName()==name){
-					this->storage[i].reset();
-					return;}
+					if (this->storage[i].value()->getName() == name) {
+						this->storage[i].reset();
+						return;
+					}
 				}
 			}
 		}
 	}
 
-	pair<int, int> getSize() {
-		return {this->width, this->height};
+	int getWidth() {
+		return this->width;
 	}
 
-	map<string,int> getItemFreq() {
+	int getHeight() {
+		return this->height;
+	}
+
+	map<string, int> getItemFreq() {
 		vector<T> vec;
-		map<string,int> result;
+		map<string, int> result;
 		for (int i = 0; i < this->width * this->height; ++i) {
 			if (this->storage[i].has_value())
 				vec.push_back(this->storage[i].value());
 		}
-		for (auto const & item : vec){
-			    ++result[item.get()->getName()];
-			}
+		for (auto const &item : vec) {
+			++result[item.get()->getName()];
+		}
 		return result;
-    }
-	
+	}
 };
 
 #endif
