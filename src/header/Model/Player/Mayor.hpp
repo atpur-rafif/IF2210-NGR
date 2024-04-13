@@ -11,16 +11,14 @@ public:
 	virtual ~Mayor();
 
 	virtual int calculateTax();
-	vector<pair<shared_ptr<Player>,int>> collectTax();
-	void getRecipe(map<string,map<string,int>> &recipe);
+	vector<pair<shared_ptr<Player>, int>> collectTax();
+	void getRecipe(map<string, map<string, int>> &recipe);
 
 	void buildBuilding(string);
-	void addPlayer(string name,string type);
+	void addPlayer(string name, string type);
 	void isEnoughMoney();
 
-
-
+	virtual void readSpecializedConfig(istream &inputStream);
 };
-
 
 #endif

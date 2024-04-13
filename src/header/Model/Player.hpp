@@ -29,6 +29,9 @@ public:
 
 	static int getTaxBracket(int taxed);
 	static string playerTypeToString(int type);
+
+	void readInventory(istream &inputStream);
+	virtual void readSpecializedConfig(istream &inputStream) = 0;
 };
 
 #endif

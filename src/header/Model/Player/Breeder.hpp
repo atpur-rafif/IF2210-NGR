@@ -14,6 +14,8 @@ public:
 
 	virtual int calculateTax();
 	int countBarnWealth();
+
+	virtual void readSpecializedConfig(istream &inputStream);
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include "Model/Player.hpp"
+#include "Controller/GameContext.hpp"
 
 Player::Player() {}
 Player::~Player() {}
@@ -11,8 +12,8 @@ int Player::getTaxBracket(int taxed) {
 	else return 35;
 };
 
-string Player::playerTypeToString(int type){
-	vector<string> typeString{"Petani","Peternak","Walikota"};
+string Player::playerTypeToString(int type) {
+	vector<string> typeString{"Petani", "Peternak", "Walikota"};
 	return typeString[type];
 }
 
@@ -24,3 +25,19 @@ int Player::countInventoryWealth() {
 		wealth += (*itemPtr)->getPrice();
 	return wealth;
 }
+
+void Player::readInventory(istream &inputStream) {
+	auto ctx = this->getContext();
+	auto inventorySize = ctx.miscConfig.getInventorySize();
+	this->inventory = Storage<shared_ptr<Item>>(inventorySize.first, inventorySize.second);
+
+	int inventoryCount;
+	inputStream >> inventoryCount;
+	while (inventoryCount--) {
+		string name;
+		inputStream >> name;
+		string code = ctx.itemFactory.getCodeByName(name);
+		shared_ptr<Item> item = ctx.itemFactory.createBaseItem(code);
+		this->inventory.addItem(item);
+	}
+};

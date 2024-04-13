@@ -103,3 +103,7 @@ void Mayor::addPlayer(string username, string type) {
 void Mayor::isEnoughMoney() {
 	if (this->money < MINIMUM_MONEY) throw NotEnoughResourceException();
 }
+
+void Mayor::readSpecializedConfig(istream &inputStream) {
+	(void)inputStream;
+}
