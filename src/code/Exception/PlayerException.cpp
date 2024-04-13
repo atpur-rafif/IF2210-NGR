@@ -22,7 +22,7 @@ NotEnoughResourceException::NotEnoughResourceException(map<string,int> &remainin
 }
 
 NotEnoughResourceException::NotEnoughResourceException(){
-    this->message = "Uang tidak cukup";
+    this->message = "Not enough money";
 }
 
 const char *NotEnoughResourceException::what() const noexcept {

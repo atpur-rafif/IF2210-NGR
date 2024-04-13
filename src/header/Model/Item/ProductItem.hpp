@@ -23,6 +23,7 @@ public:
 
 	ProductItemType getProductItemType();
 	int getAddedWeight();
+	string getOrigin(); 
 };
 
 #endif

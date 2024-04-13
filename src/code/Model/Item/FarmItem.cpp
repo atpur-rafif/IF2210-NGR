@@ -16,3 +16,5 @@ void FarmItem::readAttributeFromStream(istream &inputStream) {
 	else if (type == "FRUIT_PLANT") this->farmItemType = Fruit;
 	inputStream >> this->durationToHarvest;
 }
+
+int FarmItem::getDurationToHarvest() { return this->durationToHarvest; }

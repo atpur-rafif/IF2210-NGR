@@ -16,8 +16,12 @@ public:
 	int countBarnWealth();
 
 	virtual void readSpecializedConfig(istream &inputStream);
-
 	void writeSpecializedConfig(ostream &outputStream);
+
+	void placeAnimal(string &, string &);
+	void giveFood(string &, string &);
+	void giveFoodChecker(string &);
+	void harvestAnimal(string &);
 };
 
 #endif

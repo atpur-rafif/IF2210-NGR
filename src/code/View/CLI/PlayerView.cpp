@@ -13,7 +13,18 @@ void PlayerView::start(Player &player) {
 		cout << player.username << "> ";
 		string command;
 		cin >> command;
-		if (command == "NEXT") return;
+		if (command == "NEXT") {
+			auto list_player = player.getContext().players.getPlayers();
+			int size = list_player.size();
+			for (int i = 0; i < size; ++i) {
+				auto farmer_player = list_player.at(i).get();
+				if (farmer_player->type == FarmerType) {
+					Farmer &farmer = *(dynamic_cast<Farmer *>(farmer_player));
+					farmer.plantsGrow();
+				}
+			}
+			return;
+		}
 
 		try {
 			try {

@@ -152,6 +152,13 @@ public:
 	pair<int, int> getSize() {
 		return {this->width, this->height};
 	}
+	int getWidth() {
+		return this->width;
+	}
+
+	int getHeight() {
+		return this->height;
+	}
 
 	map<string, int> getItemFreq() {
 		vector<T> vec;
