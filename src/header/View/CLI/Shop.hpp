@@ -1,44 +1,31 @@
 #ifndef SHOP_ITEM_HPP
 #define SHOP_ITEM_HPP
 
+#include "Controller/ItemFactory.hpp"
 #include "PlayerView.hpp"
-#include "Exception/ShopException.hpp"
-#include <iostream>
 #include <map>
 #include <string>
 using namespace std;
 
 class Shop : public PlayerView {
 public:
+    ItemFactory itemFactory;
     /*
     * Map item's code to the amount of that item
     * -1 to indicate infinite amount of that item
     **/
-    map<string, int> shopInventory{
-                                   // Plant
-                                   {"TEK", -1}, {"SDT", -1}, {"ALT", -1}, {"IRN", -1}, {"APL", -1}, {"ORG", -1}, {"BNT", -1}, {"GAV", -1},
+    map<string, int> shopInventory;
 
-                                   // Animal
-                                   {"COW", -1}, {"SHP", -1}, {"HRS", -1}, {"RBT", -1}, {"SNK", -1}, {"CHK", -1}, {"DCK", -1},
+    void initShopInventory();
 
-                                   // Product
-                                   {"TAW", 0}, {"SAW", 0}, {"ALW", 0}, {"IRW", 0}, {"APP", 0}, {"ORP", 0}, {"BNP", 0}, {"GAP", 0}, {"COM", 0}, {"SHM", 0}, {"HRM", 0}, {"RBM", 0}, {"SNM", 0}, {"CHM", 0}, {"DCM", 0}, {"CHE", 0}, {"DCE", 0},
-
-                                   /*
-                                   * Building
-                                   * Walikota Cannot buy this
-                                   * Petani and Peternak banned Cannot sell this
-                                   **/
-                                   {"SMH", 0}, {"MDH", 0}, {"LRH", 0}, {"HTL", 0}
-								   };
+    pair<string, int> nthItem(int n);
 
     template <class T>
     void playerSellItem(Player &player);
 
-	template <class T>
 	void playerBuyItem(Player &player);
 
-    void printInventory(const map<string, int> &m);
+    void printShopInventory();
 };
 
 #endif
