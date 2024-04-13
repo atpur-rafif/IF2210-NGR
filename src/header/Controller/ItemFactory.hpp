@@ -1,20 +1,20 @@
 #ifndef ITEM_FACTORY_HPP
 #define ITEM_FACTORY_HPP
 
-#include "Container/Heapify.hpp"
+#include "Exception/DowncastException.hpp"
 #include "Model/GameObject.hpp"
 #include "Model/Item.hpp"
-#include "Exception/DowncastException.hpp"
 #include <functional>
 #include <map>
+#include <memory>
 
 class ItemFactory : public GameObject {
 	friend class GameContext;
 
 protected:
 	ItemFactory();
-	map<string, Heapify<Item>> repository;
-	string codeFinder(function<bool(Item *)> &lambda) const;
+	map<string, shared_ptr<Item>> repository;
+	string codeFinder(function<bool(shared_ptr<Item>)> &lambda) const;
 
 public:
 	/*
@@ -22,28 +22,26 @@ public:
 	 * */
 	template <class T>
 	void addTemplateItem(T item) {
-		Item *base = &item;
-		Heapify<Item> heap = Heapify(base);
-		this->repository[item.getCode()] = heap;
+		shared_ptr<Item> ptr{item.clone()};
+		this->repository[item.getCode()] = ptr;
 	}
 
 	template <class T>
 	void createItem(string code, T &result) const {
-		Item *base = this->repository.at(code).getRaw();
-		Item *clone = base->clone();
-		if (clone->getType()==result.getType()){
-			T *ptr = dynamic_cast<T *>(clone);
+		auto base = this->repository.at(code);
+		shared_ptr<Item> clone{base->clone()};
+		if (clone->getType() == result.getType()) {
+			shared_ptr<T> ptr = dynamic_pointer_cast<T>(clone);
 			result = *ptr;
 			result.setContext(this->getContext());
-		}
-		else{
+		} else {
 			throw InvalidDowncastException();
 		}
-		
 	}
 
-	Heapify<Item> createBaseItem(string code) const;
+	shared_ptr<Item> createBaseItem(string code) const;
 	string getCodeByName(const string name) const;
+	map<string, shared_ptr<Item>> getRepository();
 };
 
 #endif

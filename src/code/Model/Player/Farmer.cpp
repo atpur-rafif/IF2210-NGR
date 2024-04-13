@@ -7,11 +7,8 @@ Farmer::~Farmer() {}
 Farmer *Farmer::clone() { return new Farmer(*this); }
 
 int Farmer::countFarmWealth() {
-	vector<FarmItem *> items;
-	this->farm.getAllItem(items);
-
 	int wealth = 0;
-	for (const auto &itemPtr : items)
+	for (auto &itemPtr : this->farm.getAllItem())
 		wealth += itemPtr->getPrice();
 	return wealth;
 }
@@ -21,5 +18,7 @@ int Farmer::calculateTax() {
 	int wealth = this->money + this->countInventoryWealth() + this->countFarmWealth();
 	int taxed = wealth - FarmerUntaxed;
 	int bracket = Player::getTaxBracket(taxed);
-	return max((int)round((taxed * bracket) / 100.0), 0);
+	int tax = max((int)round((taxed * bracket) / 100.0), 0);
+	if(this->money<tax) tax = this->money;
+	return tax;
 }

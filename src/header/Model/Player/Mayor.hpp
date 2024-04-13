@@ -2,6 +2,7 @@
 #define MODEL_PLAYER_MAYOR_HPP
 
 #include "Model/Player.hpp"
+#include <map>
 
 class Mayor : public Player {
 public:
@@ -10,7 +11,16 @@ public:
 	virtual ~Mayor();
 
 	virtual int calculateTax();
-	void collectTax();
+	vector<pair<shared_ptr<Player>,int>> collectTax();
+	void getRecipe(map<string,map<string,int>> &recipe);
+
+	void buildBuilding(string);
+	void addPlayer(string name,string type);
+	void isEnoughMoney();
+
+
+
 };
+
 
 #endif
