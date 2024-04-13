@@ -59,11 +59,12 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 
 void BreederView::printBarn(Breeder &breeder) {
 	auto &barnInventory = breeder.barn;
-	pair<int, int> size = {barnInventory.getWidth(), barnInventory.getHeight()};
+	auto width = barnInventory.getWidth();
+	auto height = barnInventory.getHeight();
 	cout << "=======================PETERNAKAN======================" << endl;
-	for (int y = 0; y < size.second; y++) {
+	for (int y = 0; y < height; y++) {
 		cout << "| ";
-		for (int x = 0; x < size.first; x++) {
+		for (int x = 0; x < width; x++) {
 			auto result = barnInventory.getItem(x, y);
 			if (result.has_value())
 				if (result.value().getWeight() >= result.value().getWeightToHarvest()) {

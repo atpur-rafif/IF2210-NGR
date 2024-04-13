@@ -25,9 +25,9 @@ int Farmer::calculateTax() {
 }
 
 void Farmer::readSpecializedConfig(istream &inputStream) {
-	auto ctx = this->getContext();
-	auto farmSize = ctx.miscConfig.getFarmSize();
-	this->farm = Storage<FarmItem>(farmSize.first, farmSize.second);
+	auto &ctx = this->getContext();
+	auto &misc = ctx.miscConfig;
+	this->farm = Storage<FarmItem>(misc.getFarmWidth(), misc.getFarmHeight());
 	int farmCount;
 	inputStream >> farmCount;
 	while (farmCount--) {

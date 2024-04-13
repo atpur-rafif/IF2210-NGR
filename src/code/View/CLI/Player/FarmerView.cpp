@@ -21,11 +21,12 @@ void FarmerView::runSpecializedPlayerCommand(Player &player, string command) {
 void FarmerView::printFarm(Farmer &farmer) {
 	cout << "================[ Ladang ]=================" << endl;
 	auto &farmInventory = farmer.farm;
-	pair<int, int> size = {farmInventory.getWidth(), farmInventory.getHeight()};
-	for (int i = 0; i < size.second; i++) {
+	auto width = farmInventory.getWidth();
+	auto height = farmInventory.getHeight();
+	for (int y = 0; y < height; y++) {
 		cout << "| ";
-		for (int j = 0; j < size.first; j++) {
-			auto result = farmInventory.getItem(j, i);
+		for (int x = 0; x < width; x++) {
+			auto result = farmInventory.getItem(x, y);
 			if (result.has_value()) {
 				if (result->getAge() >= result->getDurationToHarvest()) {
 					print_green(result->getCode());

@@ -27,9 +27,9 @@ int Player::countInventoryWealth() {
 }
 
 void Player::readInventory(istream &inputStream) {
-	auto ctx = this->getContext();
-	auto inventorySize = ctx.miscConfig.getInventorySize();
-	this->inventory = Storage<shared_ptr<Item>>(inventorySize.first, inventorySize.second);
+	auto &ctx = this->getContext();
+	auto &misc = ctx.miscConfig;
+	this->inventory = Storage<shared_ptr<Item>>(misc.getInventoryWidth(), misc.getInventoryHeight());
 
 	int inventoryCount;
 	inputStream >> inventoryCount;

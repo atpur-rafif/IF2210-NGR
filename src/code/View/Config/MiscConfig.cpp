@@ -3,22 +3,27 @@
 MiscConfig::MiscConfig(){};
 int MiscConfig::getTargetMoney() { return this->targetMoney; };
 int MiscConfig::getTargetWeight() { return this->targetWeight; };
-pair<int, int> MiscConfig::getInventorySize() { return this->inventorySize; };
-pair<int, int> MiscConfig::getBarnSize() { return this->barnSize; };
-pair<int, int> MiscConfig::getFarmSize() { return this->farmSize; };
+
+int MiscConfig::getInventoryWidth() { return this->inventoryWidth; };
+int MiscConfig::getBarnWidth() { return this->barnWidth; };
+int MiscConfig::getFarmWidth() { return this->farmWidth; };
+
+int MiscConfig::getInventoryHeight() { return this->inventoryHeight; };
+int MiscConfig::getBarnHeight() { return this->barnHeight; };
+int MiscConfig::getFarmHeight() { return this->farmHeight; };
 
 istream &operator>>(istream &inputStream, MiscConfig &config) {
 	inputStream >> config.targetMoney;
 	inputStream >> config.targetWeight;
 
-	inputStream >> config.inventorySize.first;
-	inputStream >> config.inventorySize.second;
+	inputStream >> config.inventoryHeight;
+	inputStream >> config.inventoryWidth;
 
-	inputStream >> config.farmSize.first;
-	inputStream >> config.farmSize.second;
+	inputStream >> config.farmHeight;
+	inputStream >> config.farmWidth;
 
-	inputStream >> config.barnSize.first;
-	inputStream >> config.barnSize.second;
+	inputStream >> config.barnHeight;
+	inputStream >> config.barnWidth;
 
 	return inputStream;
 };

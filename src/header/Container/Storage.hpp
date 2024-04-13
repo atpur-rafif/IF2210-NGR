@@ -149,9 +149,6 @@ public:
 		}
 	}
 
-	pair<int, int> getSize() {
-		return {this->width, this->height};
-	}
 	int getWidth() {
 		return this->width;
 	}

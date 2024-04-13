@@ -26,8 +26,8 @@ int Breeder::calculateTax() {
 
 void Breeder::readSpecializedConfig(istream &inputStream) {
 	auto ctx = this->getContext();
-	auto barnSize = ctx.miscConfig.getBarnSize();
-	this->barn = Storage<BarnItem>(barnSize.first, barnSize.second);
+	auto &misc = ctx.miscConfig;
+	this->barn = Storage<BarnItem>(misc.getBarnWidth(), misc.getFarmHeight());
 	int barnCount;
 	inputStream >> barnCount;
 	while (barnCount--) {
