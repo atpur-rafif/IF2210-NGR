@@ -68,6 +68,8 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 
 }
 
+//ISSUE: ada yang dia cuman satu tapi kecetak dua, misal di A1 ada DCK (kenyataannya begitu), tapi pas dicetak somehov muncul 
+//beberapa kali di F2 (misalnya) dia muncul DCK juga.
 void BreederView::printBarn(Breeder& breeder){
 	auto &barnInventory = breeder.barn; 
 	auto size = barnInventory.getSize();
@@ -94,18 +96,24 @@ void BreederView::detail(Breeder& breeder){
         cout << "| ";
         for(int x = 0; x < farm_size.second; x++) {
             auto item = barnInventory.getItem(x, y);
-            if(item.has_value() && item->getWeight() >= item->getWeightToHarvest()) {
-				list_item_grid.push_back({intToCoordinate(x, y), item->getCode()});
+            if(item.has_value() && item.value().getWeight() >= item.value().getWeightToHarvest()) {
+				cout << item.value().getWeight() << " " << item.value().getWeightToHarvest();
+				list_item_grid.push_back({intToCoordinate(x, y), item->getName()});
                 for(int i = 0; i < 7; ++i) {
                     if(item->getCode() == list_item[i].first) {
                         list_item[i].second++;
                         break;
                     }
                 }
-                //TODO: kasih kode hijau 
+                /**
+				 * TODO: 
+				 * kasih kode hijau  kalo bisa diharvest
+				 */
                 cout << item->getCode();
             } else if(item.has_value() && item->getWeight() < item->getWeightToHarvest()) {
-                //TODO: kasih kode merah
+                /**
+				 * TODO: kasih kode merah kalo gabisa diharvest
+				*/
                 cout << item->getCode(); 
             } else {
                 cout << "   ";
@@ -151,11 +159,10 @@ void BreederView::detail(Breeder& breeder){
 			cout << "Nomor hewan yang ingin dipanen: "; 
 			cin >> no_hewan; 
 			int size = pick_list.size();
-			cin.clear(); 
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
 			if(cin.fail()){
 				cout << "Input harus berupa bilangan bulat.\n"; 
+				cin.clear(); 
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
 				continue;
 			}
 			if (no_hewan > 0 &&  no_hewan <= size) {

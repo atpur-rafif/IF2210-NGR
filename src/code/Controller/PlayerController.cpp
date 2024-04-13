@@ -88,12 +88,13 @@ shared_ptr<Player> PlayerController::readPlayerFromStream(istream &inputStream) 
 		int farmCount;
 		inputStream >> farmCount;
 		while (farmCount--) {
-			int age;
+			int weight;
 			string location, name;
-			inputStream >> location >> name >> age;
+			inputStream >> location >> name >> weight;
 			string code = context.itemFactory.getCodeByName(name);
 			BarnItem item;
 			context.itemFactory.createItem(code, item);
+			item.setWeight(weight);
 			breeder->barn.setItem(location, item);
 		}
 	}

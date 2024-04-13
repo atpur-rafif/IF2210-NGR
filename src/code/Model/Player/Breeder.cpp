@@ -130,11 +130,14 @@ void Breeder::harvestAnimal(string& coordinate){
 	string code; 
     string code2;
 	if(harvestedAnimal.has_value()){
+        if(harvestedAnimal.value().getWeight() < harvestedAnimal.value().getWeightToHarvest()){
+            throw InvalidHarvestException();
+        }
+
 		code = this->getContext().itemFactory.getProductResult(harvestedAnimal.value().getName(), ""); 
         if(code.empty()){
             throw InvalidBarnProductNotFoundException();
         }
-
         if(harvestedAnimal.value().getCode() == special.first || harvestedAnimal.value().getCode() == special.second){
             isSpecial = true;
             code2 = this->getContext().itemFactory.getProductResult(harvestedAnimal.value().getName(), code); 
