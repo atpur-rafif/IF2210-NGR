@@ -11,4 +11,9 @@ public:
 	const char *what() const noexcept;
 };
 
+class UsernameAlreadyExist : public PlayerControllerException {
+public:
+	const char *what() const noexcept;
+};
+
 #endif
