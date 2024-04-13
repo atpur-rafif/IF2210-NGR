@@ -96,7 +96,7 @@ shared_ptr<Player> PlayerController::readPlayerFromStream(istream &inputStream) 
 		Breeder *breeder = dynamic_cast<Breeder *>(newPlayer);
 
 		auto barnSize = context.miscConfig.getBarnSize();
-		breeder->barn = Storage<BarnItem>(barnSize.first, barnSize.second);
+		breeder->barn = Storage<BarnItem>(barnSize.second, barnSize.first);
 		int farmCount;
 		inputStream >> farmCount;
 		while (farmCount--) {
