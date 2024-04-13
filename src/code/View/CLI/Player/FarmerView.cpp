@@ -36,7 +36,15 @@ void FarmerView::printFarm(Farmer &farmer) {
 			auto result = farmInventory.getItem(j,i);
 			if (result.has_value())
 			{
-				cout << result->getCode();
+				if (result->getAge() >= result->getDurationToHarvest())
+				{
+					print_green(result->getCode());
+					
+				}
+				else
+				{
+					print_red(result->getCode());
+				}
 			}
 			else
 			{
