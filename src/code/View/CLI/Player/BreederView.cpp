@@ -59,7 +59,7 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 		string total; 
 		vector<pair<int, string>> listNumber;
 
-		cout << "========================PETERNAKAN==============================\n";
+		cout << "=======================PETERNAKAN=========================\n";
 		detail(breeder); 
 	}
 	else {
@@ -111,16 +111,18 @@ void BreederView::detail(Breeder& breeder){
 				 * TODO: 
 				 * kasih kode hijau  kalo bisa diharvest
 				 */
-                cout << item->getCode();
+				print_green(item->getCode());
+                // cout << item->getCode();
             } else if(item.has_value() && item->getWeight() < item->getWeightToHarvest()) {
                 /**
 				 * TODO: kasih kode merah kalo gabisa diharvest
 				*/
-                cout << item->getCode(); 
+				print_red(item->getCode());
+                // cout << item->getCode(); 
             } else {
                 cout << "   ";
             }
-            cout << "  |  ";
+            cout << " | ";
         }
         cout << endl;
 		std::sort(list_item.begin(), list_item.end(), [](const pair<string, int>& a, const pair<string, int>& b) {
