@@ -1,11 +1,11 @@
 #include "Exception/PlayerViewException.hpp"
 
 const char *CommandNotFoundPlayerViewException::what() const noexcept {
-	return "Command not found";
+	return "Perintah tidak ditemukan";
 }
 
 const char *UserCancelledPlayerViewException::what() const noexcept {
-	return "Command cancelled";
+	return "Perintah dihentikan";
 }
 
 const char *ViewNotImplementedPlayerViewException ::what() const noexcept {

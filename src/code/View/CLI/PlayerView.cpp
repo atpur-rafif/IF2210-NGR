@@ -45,6 +45,7 @@ void PlayerView::start(Player &player) {
 
 void PlayerView::runPlayerCommand(Player &player, string command) {
 	if (command == "BELI") ShopView::buyItem(player);
+	else if (command == "JUAL") ShopView::sellItem(player);
 	else if (command == "CETAK_PENYIMPANAN") this->printInventory(player);
 	else if (command == "MAKAN") {
 		this->printInventory(player);

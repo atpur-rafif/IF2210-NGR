@@ -4,13 +4,46 @@
 #include "Exception/ShopException.hpp"
 #include "Exception/StorageException.hpp"
 #include "Model/Item.hpp"
+#include <cstdio>
 #include <iostream>
 #include <sstream>
 #include <string>
 using namespace std;
 
 void ShopView::sellItem(Player &player) {
-	(void)player;
+	PlayerView::printInventory(player);
+	auto &shop = player.getContext().getShopController();
+
+	while (true) {
+		cout << "Petak untuk dijual (CANCEL untuk berhenti): ";
+		string location;
+		cin >> location;
+		cin.ignore(INT_MAX, '\n');
+		if (location == "CANCEL") throw UserCancelledPlayerViewException();
+
+		try {
+			auto &opt = player.inventory.getItem(location);
+			if (!opt.has_value()) {
+				cout << "Slot penyimpanan tersebut kosong" << endl;
+				continue;
+			}
+
+			auto &item = opt.value();
+			if (!shop.getAccepted(player.getType(), item->getType())) {
+				cout << "Barang tidak bisa dijual" << endl;
+				continue;
+			}
+
+			int price = item->getPrice();
+			player.setMoney(player.getMoney() + price);
+			player.inventory.clearItem(location);
+
+			cout << "Barang Anda berhasil dijual! Uang Anda bertambah " << price << " gulden!" << endl;
+			PlayerView::printInventory(player);
+		} catch (const std::exception &err) {
+			cout << err.what() << endl;
+		}
+	}
 };
 
 void ShopView::buyItem(Player &player) {
@@ -48,7 +81,7 @@ void ShopView::buyItem(Player &player) {
 
 		if (input == "CANCEL") throw UserCancelledPlayerViewException();
 
-		int nth = stoi(input);
+		int nth = atoi(input.c_str());
 		if (1 <= nth && nth <= listSize) {
 			selectedName = nthList[nth - 1];
 			break;
@@ -68,7 +101,7 @@ void ShopView::buyItem(Player &player) {
 
 		if (input == "CANCEL") throw UserCancelledPlayerViewException();
 
-		quantity = stoi(input);
+		quantity = atoi(input.c_str());
 		if (quantity <= 0) {
 			cout << "Kuantitas tidak valid!" << endl;
 			continue;
@@ -123,4 +156,5 @@ void ShopView::buyItem(Player &player) {
 		shared_ptr<Item> item = itemFactory.createBaseItem(code);
 		inventory.setItem(slot.first, slot.second, item);
 	}
+	PlayerView::printInventory(player);
 };

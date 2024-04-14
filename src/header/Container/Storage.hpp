@@ -2,6 +2,7 @@
 #define STORAGE_HPP
 
 #include "Exception/StorageException.hpp"
+#include <cstdlib>
 #include <iostream>
 #include <map>
 #include <optional>
@@ -114,7 +115,11 @@ public:
 	}
 
 	int getEmptySpaceCount() {
-		return (this->width * this->height) - this->getAllItem().size();
+		return (this->width * this->height) - this->getFilledSpaceCount();
+	}
+
+	int getFilledSpaceCount() {
+		return this->getAllItem().size();
 	}
 
 	int getWidth() {
@@ -157,7 +162,7 @@ public:
 		if (sx.length() == 0 || sy.length() == 0) throw InvalidCoordinateStorageException();
 
 		int x = stringToInt(sx);
-		int y = stoi(sy) - 1;
+		int y = atoi(sy.c_str()) - 1;
 
 		if (x < 0 || this->width < x || y < 0 || this->height < y) throw InvalidCoordinateStorageException();
 

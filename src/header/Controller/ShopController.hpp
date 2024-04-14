@@ -13,10 +13,12 @@ class ShopController : public GameObject {
 protected:
 	static map<ItemType, bool> infinity;
 	static map<PlayerType, set<ItemType>> catalogue;
+	static map<PlayerType, set<ItemType>> accept;
 	map<string, int> items;
 
 public:
 	map<string, int> getCatalogue(PlayerType type);
+	bool getAccepted(PlayerType playerType, ItemType itemType);
 	void addItem(shared_ptr<Item> item);
 	void addItem(shared_ptr<Item> item, int count);
 	void removeItem(shared_ptr<Item> item);

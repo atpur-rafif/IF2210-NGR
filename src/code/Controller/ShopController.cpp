@@ -14,6 +14,16 @@ map<PlayerType, set<ItemType>> ShopController::catalogue = {
 		{MayorType, {Product}}
 };
 
+map<PlayerType, set<ItemType>> ShopController::accept = {
+		{FarmerType, {Product, Farm}},
+		{BreederType, {Product, Barn}},
+		{MayorType, {Product, Building}}
+};
+
+bool ShopController::getAccepted(PlayerType playerType, ItemType itemType) {
+	return ShopController::accept[playerType].contains(itemType);
+};
+
 map<string, int> ShopController::getCatalogue(PlayerType playerType) {
 	auto ctx = this->getContext();
 	map<string, int> list;
