@@ -66,8 +66,7 @@ void ShopController::readShopFromStream(istream &inputStream) {
 		int count;
 		string name;
 		inputStream >> name >> count;
-		string code = itemFactory.getCodeByName(name);
-		shared_ptr<Item> item = itemFactory.createBaseItem(code);
+		shared_ptr<Item> item = itemFactory.createBaseItemByName(name);
 		this->addItem(item, count);
 	}
 };

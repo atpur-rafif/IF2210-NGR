@@ -36,9 +36,8 @@ void Farmer::readSpecializedConfig(istream &inputStream) {
 		int plantAge;
 		string location, name;
 		inputStream >> location >> name >> plantAge;
-		string code = ctx.getItemFactory().getCodeByName(name);
 		FarmItem item;
-		ctx.getItemFactory().createItem(code, item);
+		ctx.getItemFactory().createItemByName(name, item);
 		item.setAge(plantAge);
 		this->farm.setItem(location, item);
 	}
@@ -80,7 +79,7 @@ void Farmer::harvestPlant(string &coordinate) {
 		throw InvalidFarmProductNotFoundException();
 	}
 	ProductItem harvest_product;
-	this->getContext().getItemFactory().createItem(code, harvest_product);
+	this->getContext().getItemFactory().createItemByName(code, harvest_product);
 	shared_ptr<Item> addedItem = make_shared<ProductItem>(harvest_product);
 	this->inventory.addItem(addedItem);
 	this->farm.clearItem(coordinate);

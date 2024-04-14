@@ -17,18 +17,17 @@ protected:
 	string codeFinder(function<bool(shared_ptr<Item>)> &lambda) const;
 
 public:
-	/*
-	 * From the name of it, isn't it obvious you can only use Item instance here?
-	 * */
+	// Add new item from derived class, without the need to upcast
 	template <class T>
 	void addTemplateItem(T item) {
 		shared_ptr<Item> ptr{item.clone()};
-		this->repository[item.getCode()] = ptr;
+		this->repository[item.getName()] = ptr;
 	}
 
+	// Create item directly to derived class
 	template <class T>
-	void createItem(string code, T &result) const {
-		auto base = this->repository.at(code);
+	void createItemByName(string name, T &result) const {
+		auto base = this->repository.at(name);
 		shared_ptr<Item> clone{base->clone()};
 		if (clone->getType() == result.getType()) {
 			shared_ptr<T> ptr = dynamic_pointer_cast<T>(clone);
@@ -39,18 +38,18 @@ public:
 		}
 	}
 
-	shared_ptr<Item> createBaseItem(string code) const;
-	shared_ptr<Item> &getItemByCode(string code);
-	string getCodeByName(const string name) const;
+	// Creating base item (shared pointer to Item)
+	shared_ptr<Item> createBaseItemByName(string name) const;
+	shared_ptr<Item> &getItemByName(string name);
 
-	vector<string> getProductResults(string codeFrom) {
+	vector<string> getProductResults(string name) {
 		vector<string> results;
 		for (const auto &repo_el : this->repository) {
 			auto tempRepoItem = repo_el.second;
 			ProductItem *product = dynamic_cast<ProductItem *>(&*tempRepoItem);
 			if (product != nullptr) {
-				if (product->getOrigin() == this->repository[codeFrom]->getName()) {
-					results.push_back(product->getCode());
+				if (product->getOrigin() == this->repository[name]->getName()) {
+					results.push_back(product->getName());
 				}
 			}
 		}
@@ -63,7 +62,7 @@ public:
 			ProductItem *product = dynamic_cast<ProductItem *>(&*tempRepoItem);
 			if (product != nullptr) {
 				if (product->getOrigin() == Code && repo_el.first != obtainedProduct) {
-					return repo_el.first;
+					return repo_el.second->getName();
 				}
 			}
 		}

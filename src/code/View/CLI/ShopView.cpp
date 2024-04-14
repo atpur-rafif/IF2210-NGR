@@ -61,17 +61,16 @@ void ShopView::buyItem(Player &player) {
 	vector<string> nthList;
 
 	int i = 0;
-	for (auto &it : sorted) {
-		if (it.first == 0) continue;
+	for (auto &[count, name] : sorted) {
+		if (count == 0) continue;
 		cout << ++i << ". ";
-		cout << it.second << " - ";
-		auto code = itemFactory.getCodeByName(it.second);
-		auto price = itemFactory.getItemByCode(code)->getPrice();
+		cout << name << " - ";
+		auto price = itemFactory.getItemByName(name)->getPrice();
 		cout << price;
-		if (it.first != -1)
-			cout << " (" << it.first << ")";
+		if (count != -1)
+			cout << " (" << count << ")";
 		cout << endl;
-		nthList.push_back(it.second);
+		nthList.push_back(name);
 	}
 
 	cout << "Uang anda: " << player.getMoney() << endl;
@@ -97,7 +96,6 @@ void ShopView::buyItem(Player &player) {
 
 	int quantity;
 	int totalPrice;
-	string code = itemFactory.getCodeByName(selectedName);
 
 	while (true) {
 		string input;
@@ -123,7 +121,7 @@ void ShopView::buyItem(Player &player) {
 			continue;
 		}
 
-		totalPrice = itemFactory.getItemByCode(code)->getPrice() * quantity;
+		totalPrice = itemFactory.getItemByName(selectedName)->getPrice() * quantity;
 		if (totalPrice > player.getMoney()) {
 			cout << "Uang tidak cukup!" << endl;
 			continue;
@@ -164,7 +162,7 @@ void ShopView::buyItem(Player &player) {
 	player.setMoney(player.getMoney() - totalPrice);
 	cout << "Selamat Anda berhasil membeli " + to_string(quantity) + " " + selectedName + ". Uang Anda tersisa " + to_string(player.getMoney()) + " gulden." << endl;
 	for (auto &slot : slots) {
-		shared_ptr<Item> item = itemFactory.createBaseItem(code);
+		shared_ptr<Item> item = itemFactory.createBaseItemByName(selectedName);
 		inventory.setItem(slot.first, slot.second, item);
 	}
 	PlayerView::printInventory(player);

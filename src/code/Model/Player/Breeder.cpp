@@ -36,9 +36,8 @@ void Breeder::readSpecializedConfig(istream &inputStream) {
 		int animalWeight;
 		string location, name;
 		inputStream >> location >> name >> animalWeight;
-		string code = ctx.getItemFactory().getCodeByName(name);
 		BarnItem item;
-		ctx.getItemFactory().createItem(code, item);
+		ctx.getItemFactory().createItemByName(name, item);
 		item.setWeight(animalWeight);
 		this->barn.setItem(location, item);
 	}
@@ -135,11 +134,11 @@ void Breeder::harvestAnimal(string &coordinate) {
 		throw InvalidFieldEmptyException();
 
 	BarnItem &item = harvestedAnimal.value();
-	vector<string> results = itemFactory.getProductResults(item.getCode());
+	vector<string> results = itemFactory.getProductResults(item.getName());
 
 	this->barn.clearItem(coordinate);
-	for (auto code : results) {
-		shared_ptr<Item> item = itemFactory.createBaseItem(code);
+	for (auto name : results) {
+		shared_ptr<Item> item = itemFactory.createBaseItemByName(name);
 		this->inventory.addItem(item);
 	}
 }

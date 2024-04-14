@@ -56,11 +56,10 @@ void Mayor::getRecipe(map<string, map<string, int>> &recipe) {
 void Mayor::buildBuilding(string recipe) {
 	map<string, int> inventoryFreq = this->inventory.getItemFreq();
 	map<string, int> remainingIngredient;
-	string code = this->getContext().getItemFactory().getCodeByName(recipe);
 	bool enoughResource = true;
 	BuildingItem build;
 	int remainingMoney;
-	this->getContext().getItemFactory().createItem(code, build);
+	this->getContext().getItemFactory().createItemByName(recipe, build);
 	remainingMoney = build.getPrice() - this->money;
 	for (auto it = build.getIngredients()->cbegin(); it != build.getIngredients()->cend(); ++it) {
 		if (it->second - inventoryFreq[it->first] > 0) {

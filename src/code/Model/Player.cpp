@@ -45,8 +45,7 @@ void Player::readInventory(istream &inputStream) {
 	while (inventoryCount--) {
 		string name;
 		inputStream >> name;
-		string code = ctx.getItemFactory().getCodeByName(name);
-		shared_ptr<Item> item = ctx.getItemFactory().createBaseItem(code);
+		shared_ptr<Item> item = ctx.getItemFactory().createBaseItemByName(name);
 		this->inventory.addItem(item);
 	}
 };
