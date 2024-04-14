@@ -52,20 +52,26 @@ void ShopView::buyItem(Player &player) {
 	auto &inventory = player.inventory;
 	auto catalogue = shop.getCatalogue(player.getType());
 
+	vector<pair<int, string>> sorted;
+	for (auto &it : catalogue) {
+		sorted.push_back({it.second, it.first});
+	}
+	sort(sorted.begin(), sorted.end(), greater());
+
 	vector<string> nthList;
 
 	int i = 0;
-	for (auto &it : catalogue) {
-		if (it.second == 0) continue;
+	for (auto &it : sorted) {
+		if (it.first == 0) continue;
 		cout << ++i << ". ";
-		cout << it.first << " - ";
-		auto code = itemFactory.getCodeByName(it.first);
+		cout << it.second << " - ";
+		auto code = itemFactory.getCodeByName(it.second);
 		auto price = itemFactory.getItemByCode(code)->getPrice();
 		cout << price;
-		if (it.second != -1)
-			cout << " (" << it.second << ")";
+		if (it.first != -1)
+			cout << " (" << it.first << ")";
 		cout << endl;
-		nthList.push_back(it.first);
+		nthList.push_back(it.second);
 	}
 
 	cout << "Uang anda: " << player.getMoney() << endl;
@@ -107,7 +113,7 @@ void ShopView::buyItem(Player &player) {
 			continue;
 		}
 
-		if (quantity > catalogue[selectedName]) {
+		if (catalogue[selectedName] != -1 && quantity > catalogue[selectedName]) {
 			cout << "Barang pada toko tidak cukup!" << endl;
 			continue;
 		}
