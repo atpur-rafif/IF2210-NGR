@@ -8,54 +8,11 @@ BreederView::~BreederView(){};
 BreederView *BreederView::clone() { return new BreederView(*this); }
 void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 	Breeder &breeder = *(dynamic_cast<Breeder *>(&player));
-	if (command == "TERNAK") {
-
-		string location;
-		string locationAnimal;
-		shared_ptr<BarnItem> barnItem;
-		while (true) {
-			this->printInventory(player);
-			location = this->promptItemFromInventory(player, barnItem);
-			this->printBarn(breeder);
-			locationAnimal = this->promptFieldFromBarn(breeder, "Pilih petak yang ingin ditinggali: ", true);
-			try {
-				breeder.placeAnimal(location, locationAnimal);
-				break;
-			} catch (const std::exception &e) {
-				std::cerr << e.what() << '\n';
-			}
-		}
-
-	} else if (command == "CETAK_PETERNAKAN") {
-		printBarn(breeder);
-	} else if (command == "KASIH_MAKAN") {
-		while (true) {
-			string loc;
-			string locFood;
-			shared_ptr<ProductItem> foodItem;
-			// Ini perintah kasih makannya
-			this->printBarn(breeder);
-			loc = this->promptFieldFromBarn(breeder, "Pilih petak yang ingin diberi makan: ", false);
-			breeder.giveFoodChecker(loc);
-			this->printInventory(player);
-			locFood = this->promptItemFromInventory(player, foodItem);
-			try {
-				breeder.giveFood(locFood, loc);
-				break;
-			} catch (const exception &e) {
-				cerr << e.what() << "\n";
-			}
-		}
-	} else if (command == "PANEN") {
-		string choose;
-		string total;
-		vector<pair<int, string>> listNumber;
-
-		cout << "=======================PETERNAKAN======================" << endl;
-		detail(breeder);
-	} else {
-		throw CommandNotFoundPlayerViewException();
-	}
+	if (command == "TERNAK") this->breed(breeder);
+	else if (command == "CETAK_PETERNAKAN") this->printBarn(breeder);
+	else if (command == "KASIH_MAKAN") this->feed(breeder);
+	else if (command == "PANEN") this->harvest(breeder);
+	else throw CommandNotFoundPlayerViewException();
 }
 
 void BreederView::printBarn(Breeder &breeder) {
@@ -67,9 +24,52 @@ void BreederView::printBarn(Breeder &breeder) {
 	};
 
 	CLI::printStorage("Peternakan", breeder.getBarn(), fn);
-}
+};
 
-void BreederView::detail(Breeder &breeder) {
+void BreederView::breed(Breeder &breeder) {
+	string location;
+	string locationAnimal;
+	shared_ptr<BarnItem> barnItem;
+	while (true) {
+		PlayerView::printInventory(breeder);
+		location = PlayerView::promptItemFromInventory(breeder, barnItem);
+		BreederView::printBarn(breeder);
+		locationAnimal = BreederView::promptFieldFromBarn(breeder, "Pilih petak yang ingin ditinggali: ", true);
+		try {
+			breeder.placeAnimal(location, locationAnimal);
+			break;
+		} catch (const std::exception &e) {
+			std::cerr << e.what() << '\n';
+		}
+	}
+};
+
+void BreederView::feed(Breeder &breeder) {
+	while (true) {
+		string loc;
+		string locFood;
+		shared_ptr<ProductItem> foodItem;
+		// Ini perintah kasih makannya
+		BreederView::printBarn(breeder);
+		loc = BreederView::promptFieldFromBarn(breeder, "Pilih petak yang ingin diberi makan: ", false);
+		breeder.giveFoodChecker(loc);
+		BreederView::printInventory(breeder);
+		locFood = BreederView::promptItemFromInventory(breeder, foodItem);
+		try {
+			breeder.giveFood(locFood, loc);
+			break;
+		} catch (const exception &e) {
+			cerr << e.what() << "\n";
+		}
+	}
+};
+
+void BreederView::harvest(Breeder &breeder) {
+	string choose;
+	string total;
+	vector<pair<int, string>> listNumber;
+
+	cout << "=======================PETERNAKAN======================" << endl;
 	auto &barnInventory = breeder.getBarn();
 	pair<int, int> farm_size = {barnInventory.getWidth(), barnInventory.getHeight()};
 	vector<pair<string, int>> list_item = {{"COW", 0}, {"SHP", 0}, {"RBT", 0}, {"HRS", 0}, {"SNK", 0}, {"CHK", 0}, {"DCK", 0}};
@@ -197,4 +197,4 @@ void BreederView::detail(Breeder &breeder) {
 	} else {
 		throw InvalidHarvestException();
 	}
-}
+};

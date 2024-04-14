@@ -12,7 +12,7 @@ public:
 	virtual FarmerView *clone();
 	virtual void runSpecializedPlayerCommand(Player &player, string command);
 	void printFarm(Farmer &farmer);
-	void plantingPlant(Farmer &farmer);
+	void plant(Farmer &farmer);
 	void harvest(Farmer &farmer);
 
 	string promptFieldFromFarm(Farmer &farmer) {

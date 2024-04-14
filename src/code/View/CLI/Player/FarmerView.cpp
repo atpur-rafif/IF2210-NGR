@@ -8,15 +8,10 @@ FarmerView *FarmerView::clone() { return new FarmerView(*this); }
 
 void FarmerView::runSpecializedPlayerCommand(Player &player, string command) {
 	Farmer &farmer = *(dynamic_cast<Farmer *>(&player));
-	if (command == "TANAM") {
-		this->plantingPlant(farmer);
-	} else if (command == "PANEN") {
-		this->harvest(farmer);
-	} else if (command == "CETAK_LADANG") {
-		this->printFarm(farmer);
-	} else {
-		throw CommandNotFoundPlayerViewException();
-	}
+	if (command == "TANAM") this->plant(farmer);
+	else if (command == "PANEN") this->harvest(farmer);
+	else if (command == "CETAK_LADANG") this->printFarm(farmer);
+	else throw CommandNotFoundPlayerViewException();
 }
 
 void FarmerView::printFarm(Farmer &farmer) {
@@ -30,7 +25,7 @@ void FarmerView::printFarm(Farmer &farmer) {
 	CLI::printStorage("Ladang", farmer.getFarm(), fn);
 }
 
-void FarmerView::plantingPlant(Farmer &farmer) {
+void FarmerView::plant(Farmer &farmer) {
 	while (true) {
 		cout << "Pilih tanaman dari penyimpanan" << endl;
 		this->printInventory(farmer);

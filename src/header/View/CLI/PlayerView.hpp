@@ -19,7 +19,7 @@ public:
 	void eat(Player &player);
 
 	template <class T>
-	string promptItemFromInventory(Player &player, shared_ptr<T> &item) {
+	static string promptItemFromInventory(Player &player, shared_ptr<T> &item) {
 		while (true) {
 			cout << "Location: ";
 			string location;
