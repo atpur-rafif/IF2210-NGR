@@ -10,15 +10,15 @@ PlayerView::~PlayerView(){};
 
 void PlayerView::start(Player &player) {
 	while (true) {
-		cout << player.username << "> ";
+		cout << player.getUsername() << "> ";
 		string command;
 		cin >> command;
 		if (command == "NEXT") {
-			auto list_player = player.getContext().players.getPlayers();
+			auto list_player = player.getContext().getPlayerController().getPlayers();
 			int size = list_player.size();
 			for (int i = 0; i < size; ++i) {
 				auto farmer_player = list_player.at(i).get();
-				if (farmer_player->type == FarmerType) {
+				if (farmer_player->getType() == FarmerType) {
 					Farmer &farmer = *(dynamic_cast<Farmer *>(farmer_player));
 					farmer.plantsGrow();
 				}
@@ -56,11 +56,11 @@ void PlayerView::runPlayerCommand(Player &player, string command) {
 			cout << "Player can't eat this item" << endl;
 		}
 
-		player.weight += product->getAddedWeight();
+		player.setWeight(player.getWeight() + product->getAddedWeight());
 		player.inventory.clearItem(location);
 	} else if (command == "STATUS") {
-		cout << "Money: " << player.money << endl;
-		cout << "Weight: " << player.weight << endl;
+		cout << "Money: " << player.getMoney() << endl;
+		cout << "Weight: " << player.getWeight() << endl;
 	} else if (command == "SIMPAN") {
 		cout << "Location to save: ";
 		string location;

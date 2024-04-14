@@ -70,9 +70,9 @@ void CLI::start() {
 	this->state();
 
 	while (true) {
-		shared_ptr<Player> current = this->context.players.getCurrentPlayer();
-		shared_ptr<PlayerView> view = this->getView(current->type);
+		shared_ptr<Player> current = this->context.getPlayerController().getCurrentPlayer();
+		shared_ptr<PlayerView> view = this->getView(current->getType());
 		view->start(*current);
-		this->context.players.nextPlayer();
+		this->context.getPlayerController().nextPlayer();
 	}
 }

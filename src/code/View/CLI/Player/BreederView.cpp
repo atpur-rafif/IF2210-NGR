@@ -58,7 +58,7 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 }
 
 void BreederView::printBarn(Breeder &breeder) {
-	auto &barnInventory = breeder.barn;
+	auto &barnInventory = breeder.getBarn();
 	auto width = barnInventory.getWidth();
 	auto height = barnInventory.getHeight();
 	cout << "=======================PETERNAKAN======================" << endl;
@@ -80,7 +80,7 @@ void BreederView::printBarn(Breeder &breeder) {
 }
 
 void BreederView::detail(Breeder &breeder) {
-	auto &barnInventory = breeder.barn;
+	auto &barnInventory = breeder.getBarn();
 	pair<int, int> farm_size = {barnInventory.getWidth(), barnInventory.getHeight()};
 	vector<pair<string, int>> list_item = {{"COW", 0}, {"SHP", 0}, {"RBT", 0}, {"HRS", 0}, {"SNK", 0}, {"CHK", 0}, {"DCK", 0}};
 	vector<pair<string, string>> list_item_grid;
@@ -193,7 +193,7 @@ void BreederView::detail(Breeder &breeder) {
 				string plot_input;
 				cout << "Petak ke-" << j << ": ";
 				cin >> plot_input;
-				while (pick_list.at(no_hewan - 1).second.first != breeder.barn.getItem(plot_input)->getCode()) {
+				while (pick_list.at(no_hewan - 1).second.first != breeder.getBarn().getItem(plot_input)->getCode()) {
 					cout << "Beda Hewan bang, pilih yang betul" << endl;
 					cout << "Petak ke-" << j << ": ";
 					cin >> plot_input;

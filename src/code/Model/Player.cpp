@@ -4,6 +4,15 @@
 Player::Player() {}
 Player::~Player() {}
 
+string &Player::getUsername() { return this->username; };
+int Player::getWeight() { return this->weight; };
+int Player::getMoney() { return this->money; };
+PlayerType Player::getType() { return this->type; };
+
+void Player::setUsername(string &username) { this->username = username; };
+void Player::setWeight(int weight) { this->weight = weight; };
+void Player::setMoney(int money) { this->money = money; };
+
 int Player::getTaxBracket(int taxed) {
 	if (taxed <= 6) return 5;
 	else if (taxed <= 25) return 15;
@@ -28,7 +37,7 @@ int Player::countInventoryWealth() {
 
 void Player::readInventory(istream &inputStream) {
 	auto &ctx = this->getContext();
-	auto &misc = ctx.miscConfig;
+	auto &misc = ctx.getMiscConfig();
 	this->inventory = Storage<shared_ptr<Item>>(misc.getInventoryWidth(), misc.getInventoryHeight());
 
 	int inventoryCount;
@@ -36,8 +45,8 @@ void Player::readInventory(istream &inputStream) {
 	while (inventoryCount--) {
 		string name;
 		inputStream >> name;
-		string code = ctx.itemFactory.getCodeByName(name);
-		shared_ptr<Item> item = ctx.itemFactory.createBaseItem(code);
+		string code = ctx.getItemFactory().getCodeByName(name);
+		shared_ptr<Item> item = ctx.getItemFactory().createBaseItem(code);
 		this->inventory.addItem(item);
 	}
 };

@@ -6,12 +6,16 @@
 #include "View/Config/MiscConfig.hpp"
 
 class GameContext {
-public:
-	int id;
-	GameContext();
+protected:
 	ItemFactory itemFactory;
 	MiscConfig miscConfig;
-	PlayerController players;
+	PlayerController playerController;
+
+public:
+	GameContext();
+	ItemFactory &getItemFactory();
+	MiscConfig &getMiscConfig();
+	PlayerController &getPlayerController();
 };
 
 #endif

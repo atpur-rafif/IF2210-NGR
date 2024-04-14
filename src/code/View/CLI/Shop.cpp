@@ -38,6 +38,7 @@ pair<string, int> Shop::nthItem(int n) {
 	return pair("", 0);
 }
 
+// TODO: Ignore template
 template <class T>
 void Shop::playerSellItem(Player &player) {
 	cout << "Berikut merupakan penyimpanan Anda\n     ================[ Penyimpanan ]==================\n";
@@ -61,7 +62,7 @@ void Shop::playerSellItem(Player &player) {
 			throw InvalidTypeValueException();
 		}
 
-		if ((casted->getType() == 3) && (player.type == 0 || player.type == 1)) {
+		if ((casted->getType() == 3) && (player.getType() == 0 || player.getType() == 1)) {
 			throw IllegalSalesException();
 		}
 
@@ -69,8 +70,7 @@ void Shop::playerSellItem(Player &player) {
 			shopInventory[casted->getCode()]++;
 		}
 
-		player.weight -= casted->getAddedWeight();
-		player.money += casted->getPrice();
+		player.setMoney(player.getMoney() + casted.getPrice());
 		player.inventory.clearItem(location);
 
 	} catch (const exception &err) {
@@ -84,7 +84,7 @@ void Shop::playerBuyItem(Player &player) {
 	this->printShopInventory();
 	int available = (player.inventory.getHeight() * player.inventory.getWidth()) - vec.size();
 
-	cout << "\nUang Anda : " << player.money << "\nSlot penyimpanan tersedia : " << available << "\nBarang ingin dibeli : ";
+	cout << "\nUang Anda : " << player.getMoney() << "\nSlot penyimpanan tersedia : " << available << "\nBarang ingin dibeli : ";
 
 	int select, qty;
 	cin >> select;
@@ -106,11 +106,11 @@ void Shop::playerBuyItem(Player &player) {
 		}
 
 		shared_ptr<Item> rawItem = itemFactory.createBaseItem(item.first);
-		if ((rawItem->getType() == 3) && (player.type == 2)) {
+		if ((rawItem->getType() == 3) && (player.getType() == 2)) {
 			throw IllegalPurchaseException();
 		}
 
-		cout << "Selamat Anda berhasil membeli " << qty << " " << item.first << ". Uang Anda tersisa " << player.money << " gulden.\n\nPilih slot untuk menyimpan barang yang Anda beli!\n";
+		cout << "Selamat Anda berhasil membeli " << qty << " " << item.first << ". Uang Anda tersisa " << player.getMoney() << " gulden.\n\nPilih slot untuk menyimpan barang yang Anda beli!\n";
 		PlayerView::printInventory(player);
 
 		cout << "\nPetak slot: ";

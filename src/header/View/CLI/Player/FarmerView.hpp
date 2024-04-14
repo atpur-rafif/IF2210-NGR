@@ -1,10 +1,10 @@
 #ifndef VIEW_CLI_PLAYER_FARMER_VIEW_HPP
 #define VIEW_CLI_PLAYER_FARMER_VIEW_HPP
 
-#include "View/CLI/PlayerView.hpp"
-#include "Model/Player/Farmer.hpp"
-#include "Container/Storage.hpp"
 #include "Color/pcolor.hpp"
+#include "Container/Storage.hpp"
+#include "Model/Player/Farmer.hpp"
+#include "View/CLI/PlayerView.hpp"
 
 class FarmerView : public PlayerView {
 public:
@@ -23,13 +23,11 @@ public:
 			if (location == "CANCEL")
 				throw UserCancelledPlayerViewException();
 			try {
-				auto rawItem = farmer.farm.getItem(location);
+				auto rawItem = farmer.getFarm().getItem(location);
 				if (rawItem.has_value()) {
 					cout << "Petak sudah terisi" << endl;
 					continue;
-				}
-				else
-				{
+				} else {
 					return location;
 				}
 

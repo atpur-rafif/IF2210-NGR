@@ -1,9 +1,9 @@
 #ifndef VIEW_CLI_PLAYER_BREEDER_VIEW_HPP
 #define VIEW_CLI_PLAYER_BREEDER_VIEW_HPP
 
-#include "View/CLI/PlayerView.hpp"
-#include "Model/Player/Breeder.hpp"
 #include "Color/pcolor.hpp"
+#include "Model/Player/Breeder.hpp"
+#include "View/CLI/PlayerView.hpp"
 
 class BreederView : public PlayerView {
 public:
@@ -11,62 +11,55 @@ public:
 	virtual BreederView *clone();
 	virtual void runSpecializedPlayerCommand(Player &player, string command);
 	virtual void printBarn(Breeder &breeder);
-	virtual void detail(Breeder &breeder); 
+	virtual void detail(Breeder &breeder);
 
-	string promptFieldFromBarn(Breeder& breeder, string msg, bool taruhHewan){
-		while(true){
-			cout << msg; 
-			string loc; 
-			cin >> loc; 
+	string promptFieldFromBarn(Breeder &breeder, string msg, bool taruhHewan) {
+		while (true) {
+			cout << msg;
+			string loc;
+			cin >> loc;
 
-			auto rawField = breeder.barn.getItem(loc);
-			if(loc == "CANCEL"){
+			auto rawField = breeder.getBarn().getItem(loc);
+			if (loc == "CANCEL") {
 				throw UserCancelledPlayerViewException();
 			}
-			if(taruhHewan){
-				try{
-					if(rawField.has_value()){
+			if (taruhHewan) {
+				try {
+					if (rawField.has_value()) {
 						cout << "Petak sudah terisi" << endl;
 						continue;
-					}
-					else{
+					} else {
 						return loc;
 					}
-				}catch(const exception& e){
+				} catch (const exception &e) {
 					cout << e.what() << endl;
 				}
-			}	
-			else{
-				try
-				{
-					if(!rawField.has_value()){
+			} else {
+				try {
+					if (!rawField.has_value()) {
 						cout << "Petak kosong ngapain dikasih makan" << endl;
 						continue;
-					}
-					else{
+					} else {
 						return loc;
 					}
-				}
-				catch(const std::exception& e)
-				{
+				} catch (const std::exception &e) {
 					std::cerr << e.what() << '\n';
 				}
-				
 			}
 		}
 	}
-	
+
 	static string intToString(int value) {
-    string result = "";
-    while (value >= 0) {
-        result = char((value % 26) + 'A') + result;
-        value /= 26;
-		if(value == 0){
-			break;
+		string result = "";
+		while (value >= 0) {
+			result = char((value % 26) + 'A') + result;
+			value /= 26;
+			if (value == 0) {
+				break;
+			}
+			value--;
 		}
-		value--;
-    }
-    return result;
+		return result;
 	}
 
 	static string intToCoordinate(int x, int y) {

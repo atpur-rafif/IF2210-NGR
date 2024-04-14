@@ -46,12 +46,12 @@ void Config::readConfig(
 
 	ifstream miscFile;
 	miscFile.open(dir + "/" + miscFilename);
-	miscFile >> context.miscConfig;
+	miscFile >> context.getMiscConfig();
 
-	readItemConfigFileMacro(ProductItem, dir, productItemFilename, context.itemFactory);
-	readItemConfigFileMacro(FarmItem, dir, farmItemFilename, context.itemFactory);
-	readItemConfigFileMacro(BarnItem, dir, barnItemFilename, context.itemFactory);
-	readItemConfigFileMacro(BuildingItem, dir, buildingFilename, context.itemFactory);
+	readItemConfigFileMacro(ProductItem, dir, productItemFilename, context.getItemFactory());
+	readItemConfigFileMacro(FarmItem, dir, farmItemFilename, context.getItemFactory());
+	readItemConfigFileMacro(BarnItem, dir, barnItemFilename, context.getItemFactory());
+	readItemConfigFileMacro(BuildingItem, dir, buildingFilename, context.getItemFactory());
 };
 
 void Config::readState(string dir, GameContext &context) {
@@ -63,8 +63,8 @@ void Config::readState(string dir, GameContext &context) {
 	int playerCount;
 	stateFile >> playerCount;
 	while (playerCount--) {
-		shared_ptr<Player> player = context.players.readPlayerFromStream(stateFile);
-		context.players.addPlayer(player);
+		shared_ptr<Player> player = context.getPlayerController().readPlayerFromStream(stateFile);
+		context.getPlayerController().addPlayer(player);
 	}
 }
 
@@ -73,21 +73,21 @@ void Config::readDefaultState(GameContext &context) {
 	int playerCount;
 	stateStream >> playerCount;
 	while (playerCount--) {
-		shared_ptr<Player> player = context.players.readPlayerFromStream(stateStream);
-		context.players.addPlayer(player);
+		shared_ptr<Player> player = context.getPlayerController().readPlayerFromStream(stateStream);
+		context.getPlayerController().addPlayer(player);
 	}
 }
 
 void Config::writeState(string dir, GameContext &context) {
 	ofstream outputStream;
 	outputStream.open(dir + "/" + stateFilename);
-	auto players = context.players.getPlayers();
+	auto players = context.getPlayerController().getPlayers();
 	outputStream << players.size() << endl;
 	for (auto player : players) {
-		outputStream << player->username << ' ';
-		outputStream << Player::playerTypeToString(player->type) << ' ';
-		outputStream << player->weight << ' ';
-		outputStream << player->money << endl;
+		outputStream << player->getUsername() << ' ';
+		outputStream << Player::playerTypeToString(player->getType()) << ' ';
+		outputStream << player->getWeight() << ' ';
+		outputStream << player->getMoney() << endl;
 		player->writeInventory(outputStream);
 		player->writeSpecializedConfig(outputStream);
 	}

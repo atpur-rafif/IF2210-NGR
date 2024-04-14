@@ -5,12 +5,15 @@
 #include "Model/Player.hpp"
 
 class Breeder : public Player {
-public:
+protected:
 	Storage<BarnItem> barn;
 
+public:
 	Breeder();
 	virtual Breeder *clone();
 	virtual ~Breeder();
+
+	Storage<BarnItem> &getBarn();
 
 	virtual int calculateTax();
 	int countBarnWealth();

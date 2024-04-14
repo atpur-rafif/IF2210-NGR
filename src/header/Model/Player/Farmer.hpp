@@ -14,12 +14,15 @@
 class ProductItem;
 
 class Farmer : public Player {
-public:
-	Storage<FarmItem> farm; // Ladang
+protected:
+	Storage<FarmItem> farm;
 
+public:
 	Farmer();
 	virtual Farmer *clone();
 	virtual ~Farmer();
+
+	Storage<FarmItem> &getFarm();
 
 	virtual int calculateTax();
 	int countFarmWealth();

@@ -30,7 +30,7 @@ void PlayerController::rearrangePosition() {
 	auto begin = this->players.begin();
 	auto end = begin + this->players.size();
 	sort(begin, end, [](shared_ptr<Player> a, shared_ptr<Player> b) {
-		return a->username < b->username || PlayerController::toLower(a->username) < PlayerController::toLower(b->username);
+		return a->getUsername() < b->getUsername() || PlayerController::toLower(a->getUsername()) < PlayerController::toLower(b->getUsername());
 	});
 }
 
@@ -50,8 +50,8 @@ shared_ptr<Player> PlayerController::readPlayerFromStream(istream &inputStream) 
 	inputStream >> username >> type >> weight >> money;
 	GameContext &context = this->getContext();
 
-	for (const auto &element : context.players.getPlayers()) {
-		if (element->username == username) throw UsernameAlreadyExist();
+	for (const auto &element : context.getPlayerController().getPlayers()) {
+		if (element->getUsername() == username) throw UsernameAlreadyExist();
 	}
 
 	Player *newPlayer;
@@ -61,9 +61,9 @@ shared_ptr<Player> PlayerController::readPlayerFromStream(istream &inputStream) 
 	else throw InvalidPlayerTypeException();
 
 	newPlayer->setContext(this->getContext());
-	newPlayer->username = username;
-	newPlayer->weight = weight;
-	newPlayer->money = money;
+	newPlayer->setUsername(username);
+	newPlayer->setWeight(weight);
+	newPlayer->setMoney(money);
 	newPlayer->readInventory(inputStream);
 	newPlayer->readSpecializedConfig(inputStream);
 	shared_ptr<Player> ptr{newPlayer};
@@ -71,9 +71,9 @@ shared_ptr<Player> PlayerController::readPlayerFromStream(istream &inputStream) 
 };
 
 void PlayerController::writePlayerToStream(shared_ptr<Player> player, ostream &outputStream) {
-	outputStream << player->username << ' ';
-	outputStream << Player::playerTypeToString(player->type) << ' ';
-	outputStream << player->weight << ' ';
-	outputStream << player->money << endl;
+	outputStream << player->getUsername() << ' ';
+	outputStream << Player::playerTypeToString(player->getType()) << ' ';
+	outputStream << player->getWeight() << ' ';
+	outputStream << player->getMoney() << endl;
 	player->writeInventory(outputStream);
 };

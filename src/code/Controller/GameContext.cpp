@@ -2,7 +2,10 @@
 #include <cstdlib>
 
 GameContext::GameContext() {
-	this->id = rand();
-	this->itemFactory.setContext(*this);
-	this->players.setContext(*this);
+	this->getItemFactory().setContext(*this);
+	this->getPlayerController().setContext(*this);
 }
+
+ItemFactory &GameContext::getItemFactory() { return this->itemFactory; };
+MiscConfig &GameContext::getMiscConfig() { return this->miscConfig; };
+PlayerController &GameContext::getPlayerController() { return this->playerController; };

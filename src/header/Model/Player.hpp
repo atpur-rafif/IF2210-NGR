@@ -13,16 +13,27 @@ enum PlayerType {
 };
 
 class Player : public GameObject {
-public:
+protected:
 	string username;
 	PlayerType type;
 	int weight;
 	int money;
+
+public:
 	Storage<shared_ptr<Item>> inventory;
 
 	Player();
 	virtual ~Player();
 	virtual Player *clone() = 0;
+
+	string &getUsername();
+	int getWeight();
+	int getMoney();
+	PlayerType getType();
+
+	void setUsername(string &username);
+	void setWeight(int weight);
+	void setMoney(int money);
 
 	virtual int calculateTax() = 0;
 	int countInventoryWealth();

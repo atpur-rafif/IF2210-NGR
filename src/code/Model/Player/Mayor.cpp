@@ -13,14 +13,14 @@ Mayor *Mayor::clone() { return new Mayor(*this); }
 vector<pair<shared_ptr<Player>, int>> Mayor::collectTax() {
 	vector<pair<shared_ptr<Player>, int>> result;
 	pair<shared_ptr<Player>, int> inserter;
-	auto players = this->getContext().players.getPlayers();
+	auto players = this->getContext().getPlayerController().getPlayers();
 	int size = players.size();
 	for (int i = 0; i < size; ++i) {
 		auto &income = players[i];
-		if (income->type == MayorType) continue;
+		if (income->getType() == MayorType) continue;
 		int tax = income->calculateTax();
-		income->money -= tax;
-		this->money += tax;
+		income->setMoney(income->getMoney() - tax);
+		this->setMoney(this->getMoney() + tax);
 		inserter.first = income;
 		inserter.second = tax;
 		result.push_back(inserter);
@@ -29,7 +29,7 @@ vector<pair<shared_ptr<Player>, int>> Mayor::collectTax() {
 		if (elTwo.second != elOne.second) {
 			return elTwo.second < elOne.second;
 		} else {
-			return (elTwo.first.get()->username > elOne.first.get()->username || PlayerController::toLower(elTwo.first.get()->username) > PlayerController::toLower(elOne.first.get()->username));
+			return (elTwo.first.get()->getUsername() > elOne.first.get()->getUsername() || PlayerController::toLower(elTwo.first.get()->getUsername()) > PlayerController::toLower(elOne.first.get()->getUsername()));
 		}
 	});
 	return result;
@@ -40,7 +40,7 @@ int Mayor::calculateTax() {
 }
 
 void Mayor::getRecipe(map<string, map<string, int>> &recipe) {
-	for (const auto &pair : this->getContext().itemFactory.getRepository()) {
+	for (const auto &pair : this->getContext().getItemFactory().getRepository()) {
 		if (pair.second.get()->getType() == Building) {
 			Item *base = pair.second.get();
 			BuildingItem *derived = dynamic_cast<BuildingItem *>(base);
@@ -56,11 +56,11 @@ void Mayor::getRecipe(map<string, map<string, int>> &recipe) {
 void Mayor::buildBuilding(string recipe) {
 	map<string, int> inventoryFreq = this->inventory.getItemFreq();
 	map<string, int> remainingIngredient;
-	string code = this->getContext().itemFactory.getCodeByName(recipe);
+	string code = this->getContext().getItemFactory().getCodeByName(recipe);
 	bool enoughResource = true;
 	BuildingItem build;
 	int remainingMoney;
-	this->getContext().itemFactory.createItem(code, build);
+	this->getContext().getItemFactory().createItem(code, build);
 	remainingMoney = build.getPrice() - this->money;
 	for (auto it = build.getIngredients()->cbegin(); it != build.getIngredients()->cend(); ++it) {
 		if (it->second - inventoryFreq[it->first] > 0) {
@@ -92,11 +92,11 @@ void Mayor::addPlayer(string username, string type) {
 	string specialInventoryCount = "0";
 	string inserter = username + " " + type + " " + weight + " " + money + " " + inventoryCount + " " + specialInventoryCount;
 	istringstream inputStream(inserter);
-	shared_ptr<Player> player = this->getContext().players.readPlayerFromStream(inputStream);
+	shared_ptr<Player> player = this->getContext().getPlayerController().readPlayerFromStream(inputStream);
 	this->money -= 50;
-	this->getContext().players.addPlayer(player);
+	this->getContext().getPlayerController().addPlayer(player);
 	if (this->username > username || PlayerController::toLower(this->username) > PlayerController::toLower(username)) {
-		this->getContext().players.nextPlayer();
+		this->getContext().getPlayerController().nextPlayer();
 	}
 }
 

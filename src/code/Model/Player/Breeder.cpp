@@ -7,6 +7,8 @@ Breeder::Breeder() { this->type = BreederType; }
 Breeder::~Breeder() {}
 Breeder *Breeder::clone() { return new Breeder(*this); }
 
+Storage<BarnItem> &Breeder::getBarn() { return this->barn; };
+
 int Breeder::countBarnWealth() {
 	int wealth = 0;
 	for (auto &itemPtr : this->barn.getAllItem())
@@ -25,8 +27,8 @@ int Breeder::calculateTax() {
 }
 
 void Breeder::readSpecializedConfig(istream &inputStream) {
-	auto ctx = this->getContext();
-	auto &misc = ctx.miscConfig;
+	auto &ctx = this->getContext();
+	auto &misc = ctx.getMiscConfig();
 	this->barn = Storage<BarnItem>(misc.getBarnWidth(), misc.getFarmHeight());
 	int barnCount;
 	inputStream >> barnCount;
@@ -34,9 +36,9 @@ void Breeder::readSpecializedConfig(istream &inputStream) {
 		int animalWeight;
 		string location, name;
 		inputStream >> location >> name >> animalWeight;
-		string code = ctx.itemFactory.getCodeByName(name);
+		string code = ctx.getItemFactory().getCodeByName(name);
 		BarnItem item;
-		ctx.itemFactory.createItem(code, item);
+		ctx.getItemFactory().createItem(code, item);
 		item.setWeight(animalWeight);
 		this->barn.setItem(location, item);
 	}
@@ -165,13 +167,13 @@ void Breeder::harvestAnimal(string &coordinate) {
 			throw InvalidHarvestException();
 		}
 
-		code = this->getContext().itemFactory.getProductResult(harvestedAnimal.value().getName(), "");
+		code = this->getContext().getItemFactory().getProductResult(harvestedAnimal.value().getName(), "");
 		if (code.empty()) {
 			throw InvalidBarnProductNotFoundException();
 		}
 		if (harvestedAnimal.value().getCode() == special.first || harvestedAnimal.value().getCode() == special.second) {
 			isSpecial = true;
-			code2 = this->getContext().itemFactory.getProductResult(harvestedAnimal.value().getName(), code);
+			code2 = this->getContext().getItemFactory().getProductResult(harvestedAnimal.value().getName(), code);
 			if (code2.empty()) {
 				throw InvalidBarnProductNotFoundException();
 			}
@@ -180,13 +182,13 @@ void Breeder::harvestAnimal(string &coordinate) {
 		throw InvalidFieldEmptyException();
 	}
 	ProductItem animal_product;
-	this->getContext().itemFactory.createItem(code, animal_product);
+	this->getContext().getItemFactory().createItem(code, animal_product);
 	shared_ptr<Item> newItem = make_shared<ProductItem>(animal_product);
 	this->inventory.addItem(newItem);
 	this->barn.clearItem(coordinate);
 	if (isSpecial) {
 		ProductItem animal_product2;
-		this->getContext().itemFactory.createItem(code2, animal_product2);
+		this->getContext().getItemFactory().createItem(code2, animal_product2);
 		shared_ptr<Item> newItem2 = make_shared<ProductItem>(animal_product2);
 		this->inventory.addItem(newItem2);
 		this->barn.clearItem(coordinate);

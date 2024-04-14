@@ -7,6 +7,8 @@ Farmer::Farmer() { this->type = FarmerType; }
 Farmer::~Farmer() {}
 Farmer *Farmer::clone() { return new Farmer(*this); }
 
+Storage<FarmItem> &Farmer::getFarm() { return this->farm; };
+
 int Farmer::countFarmWealth() {
 	int wealth = 0;
 	for (auto &itemPtr : this->farm.getAllItem())
@@ -26,7 +28,7 @@ int Farmer::calculateTax() {
 
 void Farmer::readSpecializedConfig(istream &inputStream) {
 	auto &ctx = this->getContext();
-	auto &misc = ctx.miscConfig;
+	auto &misc = ctx.getMiscConfig();
 	this->farm = Storage<FarmItem>(misc.getFarmWidth(), misc.getFarmHeight());
 	int farmCount;
 	inputStream >> farmCount;
@@ -34,9 +36,9 @@ void Farmer::readSpecializedConfig(istream &inputStream) {
 		int plantAge;
 		string location, name;
 		inputStream >> location >> name >> plantAge;
-		string code = ctx.itemFactory.getCodeByName(name);
+		string code = ctx.getItemFactory().getCodeByName(name);
 		FarmItem item;
-		ctx.itemFactory.createItem(code, item);
+		ctx.getItemFactory().createItem(code, item);
 		item.setAge(plantAge);
 		this->farm.setItem(location, item);
 	}
@@ -72,13 +74,13 @@ void Farmer::harvestPlant(string &coordinate) {
 	optional<FarmItem> harvested_item = this->farm.getItem(coordinate);
 	string code;
 	if (harvested_item.has_value()) {
-		code = this->getContext().itemFactory.getProductResult(harvested_item.value().getName(), "");
+		code = this->getContext().getItemFactory().getProductResult(harvested_item.value().getName(), "");
 	}
 	if (code.empty()) {
 		throw InvalidFarmProductNotFoundException();
 	}
 	ProductItem harvest_product;
-	this->getContext().itemFactory.createItem(code, harvest_product);
+	this->getContext().getItemFactory().createItem(code, harvest_product);
 	shared_ptr<Item> addedItem = make_shared<ProductItem>(harvest_product);
 	this->inventory.addItem(addedItem);
 	this->farm.clearItem(coordinate);

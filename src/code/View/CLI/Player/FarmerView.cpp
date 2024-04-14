@@ -20,7 +20,7 @@ void FarmerView::runSpecializedPlayerCommand(Player &player, string command) {
 
 void FarmerView::printFarm(Farmer &farmer) {
 	cout << "================[ Ladang ]=================" << endl;
-	auto &farmInventory = farmer.farm;
+	auto &farmInventory = farmer.getFarm();
 	auto width = farmInventory.getWidth();
 	auto height = farmInventory.getHeight();
 	for (int y = 0; y < height; y++) {
@@ -62,7 +62,7 @@ void FarmerView::plantingPlant(Farmer &farmer) {
 
 void FarmerView::harvest(Farmer &farmer) {
 	this->printFarm(farmer);
-	vector<FarmItem *> field_item = farmer.farm.getAllItem();
+	vector<FarmItem *> field_item = farmer.getFarm().getAllItem();
 	map<string, pair<int, string>> list_item;
 	list_item.insert({"TEK", {0, "- TEK: Teak Tree"}});
 	list_item.insert({"SDT", {0, "- SDT: Sandalwood Tree"}});
@@ -139,7 +139,7 @@ void FarmerView::harvest(Farmer &farmer) {
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
 				continue;
 			}
-			while (pick_list.at(no_tanaman - 1).second.first != farmer.farm.getItem(plot_input)->getCode()) {
+			while (pick_list.at(no_tanaman - 1).second.first != farmer.getFarm().getItem(plot_input)->getCode()) {
 				cout << "Beda tanaman bang, pilih yang betul" << endl;
 				cout << "Petak ke-" << j + 1 << ": ";
 				cin >> plot_input;
