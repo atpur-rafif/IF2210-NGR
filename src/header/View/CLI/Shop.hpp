@@ -9,23 +9,8 @@ using namespace std;
 
 class ShopView {
 public:
-	ItemFactory itemFactory;
-	/*
-	 * Map item's code to the amount of that item
-	 * -1 to indicate infinite amount of that item
-	 **/
-	map<string, int> shopInventory;
-
-	void initShopInventory();
-
-	pair<string, int> nthItem(int n);
-
-	template <class T>
-	void playerSellItem(Player &player);
-
-	void playerBuyItem(Player &player);
-
-	void printShopInventory();
+	static void sellItem(Player &player);
+	static void buyItem(Player &player);
 };
 
 #endif

@@ -1,151 +1,126 @@
 #include "View/CLI/Shop.hpp"
+#include "Container/Storage.hpp"
+#include "Exception/PlayerViewException.hpp"
 #include "Exception/ShopException.hpp"
 #include "Exception/StorageException.hpp"
 #include "Model/Item.hpp"
 #include <iostream>
+#include <sstream>
+#include <string>
 using namespace std;
 
-void ShopView::initShopInventory() {
-	// Plant
-	this->shopInventory["TEK"] = -1;
-	this->shopInventory["SDT"] = -1;
-	this->shopInventory["ALT"] = -1;
-	this->shopInventory["IRN"] = -1;
-	this->shopInventory["APL"] = -1;
-	this->shopInventory["ORG"] = -1;
-	this->shopInventory["BNT"] = -1;
-	this->shopInventory["GAV"] = -1;
+void ShopView::sellItem(Player &player) {
+	(void)player;
+};
 
-	// Animal
-	this->shopInventory["COW"] = -1;
-	this->shopInventory["SHP"] = -1;
-	this->shopInventory["HRS"] = -1;
-	this->shopInventory["RBT"] = -1;
-	this->shopInventory["SNK"] = -1;
-	this->shopInventory["CHK"] = -1;
-	this->shopInventory["DCK"] = -1;
-}
+void ShopView::buyItem(Player &player) {
+	auto &itemFactory = player.getContext().getItemFactory();
+	auto &shop = player.getContext().getShopController();
+	auto &inventory = player.inventory;
+	auto catalogue = shop.getCatalogue(player.getType());
 
-pair<string, int> ShopView::nthItem(int n) {
+	vector<string> nthList;
+
 	int i = 0;
-	for (const auto &[key, value] : this->shopInventory) {
-		if (i == n - 1) {
-			return pair(key, value);
-		} else if (i < n - 1) {
-			i++;
-		}
+	for (auto &it : catalogue) {
+		if (it.second == 0) continue;
+		cout << ++i << ". ";
+		cout << it.first << " - ";
+		auto code = itemFactory.getCodeByName(it.first);
+		auto price = itemFactory.getItemByCode(code)->getPrice();
+		cout << price;
+		if (it.second != -1)
+			cout << " (" << it.second << ")";
+		cout << endl;
+		nthList.push_back(it.first);
 	}
-	return pair("", 0);
-}
 
-// TODO: Ignore template
-template <class T>
-void ShopView::playerSellItem(Player &player) {
-	cout << "Berikut merupakan penyimpanan Anda\n     ================[ Penyimpanan ]==================\n";
-	// PlayerView::printInventory(player);
-	cout << "Silahkan pilih petak yang ingin Anda jual!\nPetak : ";
+	cout << "Uang anda: " << player.getMoney() << endl;
+	cout << "Slot penyimpanan tersedia: " << player.inventory.getEmptySpaceCount() << endl;
 
-	try {
-		string location;
-		cin >> location;
-		if (location == "CANCEL") {
-			throw UserCancelledPlayerViewException();
+	string selectedName;
+	int listSize = nthList.size();
+	while (true) {
+		string input;
+		cout << "Barang ingin dibeli: ";
+		cin >> input;
+		cin.ignore(INT_MAX, '\n');
+
+		if (input == "CANCEL") throw UserCancelledPlayerViewException();
+
+		int nth = stoi(input);
+		if (1 <= nth && nth <= listSize) {
+			selectedName = nthList[nth - 1];
+			break;
 		}
-
-		auto rawItem = player.inventory.getItem(location);
-		if (!rawItem.has_value()) {
-			throw InvalidItemNotFoundException();
-		}
-
-		shared_ptr<T> casted = dynamic_pointer_cast<T>(rawItem.value());
-		if (casted == NULL) {
-			throw InvalidTypeValueException();
-		}
-
-		if ((casted->getType() == 3) && (player.getType() == 0 || player.getType() == 1)) {
-			throw IllegalSalesException();
-		}
-
-		if (shopInventory[casted->getCode()] != -1) {
-			shopInventory[casted->getCode()]++;
-		}
-
-		player.setMoney(player.getMoney() + casted.getPrice());
-		player.inventory.clearItem(location);
-
-	} catch (const exception &err) {
-		cout << err.what() << "\n";
+		cout << "Pilihan tidak valid" << endl;
 	}
-}
 
-void ShopView::playerBuyItem(Player &player) {
-	vector<shared_ptr<Item> *> vec = player.inventory.getAllItem();
-	this->initShopInventory();
-	this->printShopInventory();
-	int available = (player.inventory.getHeight() * player.inventory.getWidth()) - vec.size();
+	int quantity;
+	int totalPrice;
+	string code = itemFactory.getCodeByName(selectedName);
 
-	cout << "\nUang Anda : " << player.getMoney() << "\nSlot penyimpanan tersedia : " << available << "\nBarang ingin dibeli : ";
+	while (true) {
+		string input;
+		cout << "Kuantitas: ";
+		cin >> input;
+		cin.ignore(INT_MAX, '\n');
 
-	int select, qty;
-	cin >> select;
-	cout << "\nKuantitas : ";
-	cin >> qty;
+		if (input == "CANCEL") throw UserCancelledPlayerViewException();
 
-	try {
-		pair<string, int> item = this->nthItem(select);
-		if (item == pair<string, int>("", 0)) {
-			throw InvalidSelectionException();
+		quantity = stoi(input);
+		if (quantity <= 0) {
+			cout << "Kuantitas tidak valid!" << endl;
+			continue;
 		}
 
-		if (qty > available) {
-			throw NotEnoughInventoryException();
+		if (quantity > catalogue[selectedName]) {
+			cout << "Barang pada toko tidak cukup!" << endl;
+			continue;
 		}
 
-		if (qty > item.second) {
-			throw NotEnoughItemException();
+		totalPrice = itemFactory.getItemByCode(code)->getPrice() * quantity;
+		if (totalPrice > player.getMoney()) {
+			cout << "Uang tidak cukup!" << endl;
+			continue;
 		}
 
-		shared_ptr<Item> rawItem = itemFactory.createBaseItem(item.first);
-		if ((rawItem->getType() == 3) && (player.getType() == 2)) {
-			throw IllegalPurchaseException();
-		}
-
-		cout << "Selamat Anda berhasil membeli " << qty << " " << item.first << ". Uang Anda tersisa " << player.getMoney() << " gulden.\n\nPilih slot untuk menyimpan barang yang Anda beli!\n";
-		// PlayerView::printInventory(player);
-
-		cout << "\nPetak slot: ";
-		string location;
-		cin >> location;
-		if (location == "CANCEL") {
-			throw UserCancelledPlayerViewException();
-		}
-
-		player.inventory.setItem(location, rawItem);
-		cout << "\n"
-				 << item.first << " berhasil disimpan dalam penyimpanan!\n";
-
-		if (item.second != -1) {
-			this->shopInventory[item.first]--;
-		}
-
-	} catch (const exception &err) {
-		cout << err.what() << "\n";
+		break;
 	}
-}
 
-void ShopView::printShopInventory() {
-	cout << "Selamat datang di toko!!\nBerikut merupakan hal yang dapat Anda Beli\n";
-	int i = 0;
-	for (const auto &[key, value] : this->shopInventory) {
-		if (value != 0) {
-			shared_ptr<Item> tmp = itemFactory.createBaseItem(key);
-			cout << i + 1 << ". " << tmp->getName() << " - " << tmp->getPrice() << " (" << value << ")\n";
-			++i;
-		} else if (value == -1) {
-			shared_ptr<Item> tmp = itemFactory.createBaseItem(key);
-			cout << i + 1 << ". " << tmp->getName() << " - "
-					 << "price\n";
-			++i;
+	vector<pair<int, int>> slots;
+	PlayerView::printInventory(player);
+
+	cout << "Pilih slot untuk menyimpan barang yang Anda beli!" << endl;
+	int size = slots.size();
+	while (size < quantity) {
+		try {
+			cout << "Slot ke-" << size + 1 << ": ";
+			string location;
+			cin >> location;
+			cin.ignore(INT_MAX, '\n');
+
+			if (location == "CANCEL")
+				throw UserCancelledPlayerViewException();
+
+			auto slot = inventory.decodeCoordinate(location);
+			if (inventory.getItem(slot.first, slot.second).has_value()) {
+				cout << "Slot tersebut sudah terisi" << endl;
+				continue;
+			}
+
+			slots.push_back(slot);
+		} catch (const std::exception &err) {
+			cout << err.what() << endl;
 		}
+
+		size = slots.size();
 	}
-}
+
+	player.setMoney(player.getMoney() - totalPrice);
+	cout << "Selamat Anda berhasil membeli " + to_string(quantity) + " " + selectedName + ". Uang Anda tersisa " + to_string(player.getMoney()) + " gulden." << endl;
+	for (auto &slot : slots) {
+		shared_ptr<Item> item = itemFactory.createBaseItem(code);
+		inventory.setItem(slot.first, slot.second, item);
+	}
+};

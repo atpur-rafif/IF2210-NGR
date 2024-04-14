@@ -30,42 +30,6 @@ protected:
 		return result;
 	}
 
-	static pair<int, int> decodeCoordinate(string str) {
-		int len = str.length();
-
-		string x = "";
-		string y = "";
-		for (int i = 0; i < len; ++i) {
-			auto ch = str.at(i);
-			if (
-					('A' <= ch && ch <= 'Z') ||
-					('a' <= ch && ch <= 'z')
-			) x += ch;
-			else if (
-					('0' <= ch && ch <= '9')
-			) y += ch;
-		}
-
-		if (x.length() == 0 || y.length() == 0) throw InvalidCoordinateStorageException();
-
-		return {stringToInt(x), stoi(y) - 1};
-	}
-
-	static string encodeCoordinate(int x, int y) {
-		string str = "";
-		if (x == 0) {
-			str += "A";
-		} else {
-			while (x) {
-				str += ('A' + (x % 26));
-				x /= 26;
-			}
-		}
-
-		str += to_string(y + 1);
-		return str;
-	}
-
 public:
 	Storage() : Storage(0, 0){};
 
@@ -149,6 +113,10 @@ public:
 		}
 	}
 
+	int getEmptySpaceCount() {
+		return (this->width * this->height) - this->getAllItem().size();
+	}
+
 	int getWidth() {
 		return this->width;
 	}
@@ -168,6 +136,47 @@ public:
 			++result[item.get()->getName()];
 		}
 		return result;
+	}
+
+	pair<int, int> decodeCoordinate(string str) {
+		int len = str.length();
+
+		string sx = "";
+		string sy = "";
+		for (int i = 0; i < len; ++i) {
+			auto ch = str.at(i);
+			if (
+					('A' <= ch && ch <= 'Z') ||
+					('a' <= ch && ch <= 'z')
+			) sx += ch;
+			else if (
+					('0' <= ch && ch <= '9')
+			) sy += ch;
+		}
+
+		if (sx.length() == 0 || sy.length() == 0) throw InvalidCoordinateStorageException();
+
+		int x = stringToInt(sx);
+		int y = stoi(sy) - 1;
+
+		if (x < 0 || this->width < x || y < 0 || this->height < y) throw InvalidCoordinateStorageException();
+
+		return {x, y};
+	}
+
+	string encodeCoordinate(int x, int y) {
+		string str = "";
+		if (x == 0) {
+			str += "A";
+		} else {
+			while (x) {
+				str += ('A' + (x % 26));
+				x /= 26;
+			}
+		}
+
+		str += to_string(y + 1);
+		return str;
 	}
 };
 

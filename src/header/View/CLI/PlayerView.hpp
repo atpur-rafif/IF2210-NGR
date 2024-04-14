@@ -1,10 +1,10 @@
 #ifndef VIEW_CLI_PLAYERVIEW_HPP
 #define VIEW_CLI_PLAYERVIEW_HPP
 
+#include "Controller/GameContext.hpp"
 #include "Exception/PlayerViewException.hpp"
 #include "Exception/StorageException.hpp"
 #include "Model/Player.hpp"
-#include "Controller/GameContext.hpp"
 #include "Model/Player/Farmer.hpp"
 #include <exception>
 
@@ -15,7 +15,7 @@ public:
 	void start(Player &player);
 	void runPlayerCommand(Player &player, string command);
 	virtual void runSpecializedPlayerCommand(Player &player, string command) = 0;
-	void printInventory(Player &player);
+	static void printInventory(Player &player);
 	void eat(Player &player);
 
 	template <class T>

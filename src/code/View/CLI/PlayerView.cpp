@@ -2,6 +2,7 @@
 #include "Exception/GameException.hpp"
 #include "Exception/PlayerViewException.hpp"
 #include "Model/Item//ProductItem.hpp"
+#include "View/CLI/Shop.hpp"
 #include "View/Config/Config.hpp"
 #include <iostream>
 using namespace std;
@@ -43,12 +44,8 @@ void PlayerView::start(Player &player) {
 }
 
 void PlayerView::runPlayerCommand(Player &player, string command) {
-	if (command == "TEST") {
-		auto &shop = player.getContext().getShopController();
-		for (auto item : shop.getCatalogue(player.getType())) {
-			cout << item.first << ' ' << item.second << endl;
-		}
-	} else if (command == "CETAK_PENYIMPANAN") this->printInventory(player);
+	if (command == "BELI") ShopView::buyItem(player);
+	else if (command == "CETAK_PENYIMPANAN") this->printInventory(player);
 	else if (command == "MAKAN") {
 		this->printInventory(player);
 

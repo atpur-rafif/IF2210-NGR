@@ -43,6 +43,10 @@ void ShopController::addItem(shared_ptr<Item> item, int count) {
 	if (!ShopController::infinity[item->getType()]) this->items[item->getName()] += count;
 };
 
+void ShopController::removeItem(shared_ptr<Item> item) {
+	if (!ShopController::infinity[item->getType()]) this->items[item->getName()] -= 1;
+};
+
 void ShopController::readShopFromStream(istream &inputStream) {
 	auto ctx = this->getContext();
 	auto itemFactory = ctx.getItemFactory();

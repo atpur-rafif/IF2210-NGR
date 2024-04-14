@@ -19,6 +19,7 @@ public:
 	map<string, int> getCatalogue(PlayerType type);
 	void addItem(shared_ptr<Item> item);
 	void addItem(shared_ptr<Item> item, int count);
+	void removeItem(shared_ptr<Item> item);
 
 	void readShopFromStream(istream &inputStream);
 	void writeShopToStream(ostream &outputStream);
