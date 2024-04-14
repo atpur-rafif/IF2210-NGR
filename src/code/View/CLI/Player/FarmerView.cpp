@@ -1,6 +1,7 @@
 #include "View/CLI/Player/FarmerView.hpp"
 #include "Exception/PlayerViewException.hpp"
 #include "Model/Player/Farmer.hpp"
+#include "View/CLI/CLI.hpp"
 
 FarmerView::~FarmerView(){};
 FarmerView *FarmerView::clone() { return new FarmerView(*this); }
@@ -19,28 +20,14 @@ void FarmerView::runSpecializedPlayerCommand(Player &player, string command) {
 }
 
 void FarmerView::printFarm(Farmer &farmer) {
-	cout << "================[ Ladang ]=================" << endl;
-	auto &farmInventory = farmer.getFarm();
-	auto width = farmInventory.getWidth();
-	auto height = farmInventory.getHeight();
-	for (int y = 0; y < height; y++) {
-		cout << "| ";
-		for (int x = 0; x < width; x++) {
-			auto result = farmInventory.getItem(x, y);
-			if (result.has_value()) {
-				if (result->getAge() >= result->getDurationToHarvest()) {
-					print_green(result->getCode());
+	function<string(FarmItem &)> fn = [](FarmItem &item) {
+		string color;
+		if (item.getAge() >= item.getDurationToHarvest()) color = GREEN;
+		else color = RED;
+		return color + item.getCode() + NORMAL;
+	};
 
-				} else {
-					print_red(result->getCode());
-				}
-			} else {
-				cout << "   ";
-			}
-			cout << " | ";
-		}
-		cout << endl;
-	}
+	CLI::printStorage("Ladang", farmer.getFarm(), fn);
 }
 
 void FarmerView::plantingPlant(Farmer &farmer) {

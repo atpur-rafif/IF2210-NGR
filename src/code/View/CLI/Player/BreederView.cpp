@@ -1,5 +1,6 @@
 #include "View/CLI/Player/BreederView.hpp"
 #include "Exception/PlayerViewException.hpp"
+#include "View/CLI/CLI.hpp"
 #include <algorithm>
 #include <limits>
 
@@ -58,25 +59,14 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 }
 
 void BreederView::printBarn(Breeder &breeder) {
-	auto &barnInventory = breeder.getBarn();
-	auto width = barnInventory.getWidth();
-	auto height = barnInventory.getHeight();
-	cout << "=======================PETERNAKAN======================" << endl;
-	for (int y = 0; y < height; y++) {
-		cout << "| ";
-		for (int x = 0; x < width; x++) {
-			auto result = barnInventory.getItem(x, y);
-			if (result.has_value())
-				if (result.value().getWeight() >= result.value().getWeightToHarvest()) {
-					print_green(result->getCode());
-				} else {
-					print_red(result->getCode());
-				}
-			else cout << "   ";
-			cout << " | ";
-		}
-		cout << endl;
-	}
+	function<string(BarnItem &)> fn = [](BarnItem &item) {
+		string color;
+		if (item.getWeight() >= item.getWeightToHarvest()) color = GREEN;
+		else color = RED;
+		return color + item.getCode() + NORMAL;
+	};
+
+	CLI::printStorage("Peternakan", breeder.getBarn(), fn);
 }
 
 void BreederView::detail(Breeder &breeder) {

@@ -2,8 +2,11 @@
 #include "Exception/GameException.hpp"
 #include "Exception/PlayerViewException.hpp"
 #include "Model/Item//ProductItem.hpp"
+#include "View/CLI/CLI.hpp"
 #include "View/CLI/ShopView.hpp"
 #include "View/Config/Config.hpp"
+#include <functional>
+#include <iomanip>
 #include <iostream>
 using namespace std;
 
@@ -73,17 +76,9 @@ void PlayerView::runPlayerCommand(Player &player, string command) {
 }
 
 void PlayerView::printInventory(Player &player) {
-	auto &inventory = player.inventory;
-	auto width = inventory.getWidth();
-	auto height = inventory.getHeight();
-	for (int y = 0; y < height; ++y) {
-		cout << "| ";
-		for (int x = 0; x < width; ++x) {
-			auto result = inventory.getItem(x, y);
-			if (result.has_value()) cout << result.value()->getCode();
-			else cout << "   ";
-			cout << " | ";
-		}
-		cout << endl;
-	}
+	function<string(shared_ptr<Item> &)> fn = [](shared_ptr<Item> &item) {
+		return item->getCode();
+	};
+
+	CLI::printStorage("Penyimpanan", player.inventory, fn);
 };
