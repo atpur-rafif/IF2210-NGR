@@ -126,45 +126,20 @@ void Breeder::giveFood(string &foodLocation, string &animalLocation) {
 	animal->setWeight(animal->getWeight() + itemFood->getAddedWeight());
 }
 
-/**
- * ISSUE:
- * Muncul animal di coordinate lain padahal aslinya gada, tapi pas diharvest bisa, item yang lain bisa ikut ilang
- */
 void Breeder::harvestAnimal(string &coordinate) {
-	pair<string, string> special = {"DCK", "CHK"};
-	bool isSpecial = false;
-	optional<BarnItem> harvestedAnimal = this->barn.getItem(coordinate);
-	string code;
-	string code2;
-	if (harvestedAnimal.has_value()) {
-		if (harvestedAnimal.value().getWeight() < harvestedAnimal.value().getWeightToHarvest()) {
-			throw InvalidHarvestException();
-		}
+	auto &ctx = this->getContext();
+	auto &itemFactory = ctx.getItemFactory();
 
-		code = this->getContext().getItemFactory().getProductResult(harvestedAnimal.value().getName(), "");
-		if (code.empty()) {
-			throw InvalidBarnProductNotFoundException();
-		}
-		if (harvestedAnimal.value().getCode() == special.first || harvestedAnimal.value().getCode() == special.second) {
-			isSpecial = true;
-			code2 = this->getContext().getItemFactory().getProductResult(harvestedAnimal.value().getName(), code);
-			if (code2.empty()) {
-				throw InvalidBarnProductNotFoundException();
-			}
-		}
-	} else {
+	optional<BarnItem> harvestedAnimal = this->barn.getItem(coordinate);
+	if (!harvestedAnimal.has_value())
 		throw InvalidFieldEmptyException();
-	}
-	ProductItem animal_product;
-	this->getContext().getItemFactory().createItem(code, animal_product);
-	shared_ptr<Item> newItem = make_shared<ProductItem>(animal_product);
-	this->inventory.addItem(newItem);
+
+	BarnItem &item = harvestedAnimal.value();
+	vector<string> results = itemFactory.getProductResults(item.getCode());
+
 	this->barn.clearItem(coordinate);
-	if (isSpecial) {
-		ProductItem animal_product2;
-		this->getContext().getItemFactory().createItem(code2, animal_product2);
-		shared_ptr<Item> newItem2 = make_shared<ProductItem>(animal_product2);
-		this->inventory.addItem(newItem2);
-		this->barn.clearItem(coordinate);
+	for (auto code : results) {
+		shared_ptr<Item> item = itemFactory.createBaseItem(code);
+		this->inventory.addItem(item);
 	}
 }

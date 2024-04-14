@@ -18,6 +18,7 @@ public:
 	void state();
 
 	void promptConfirmation();
+	static int promptOption(int from, int to, string msg);
 
 	template <class T>
 	static string promptStorageLocation(string message, Storage<T> storage, function<string(optional<T> &)> validator) {

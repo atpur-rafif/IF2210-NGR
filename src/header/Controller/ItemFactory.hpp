@@ -43,6 +43,20 @@ public:
 	shared_ptr<Item> &getItemByCode(string code);
 	string getCodeByName(const string name) const;
 
+	vector<string> getProductResults(string codeFrom) {
+		vector<string> results;
+		for (const auto &repo_el : this->repository) {
+			auto tempRepoItem = repo_el.second;
+			ProductItem *product = dynamic_cast<ProductItem *>(&*tempRepoItem);
+			if (product != nullptr) {
+				if (product->getOrigin() == this->repository[codeFrom]->getName()) {
+					results.push_back(product->getCode());
+				}
+			}
+		}
+		return results;
+	}
+
 	string getProductResult(string Code, string obtainedProduct) {
 		for (const auto &repo_el : this->repository) {
 			auto tempRepoItem = repo_el.second;
@@ -55,6 +69,7 @@ public:
 		}
 		return "";
 	}
+
 	map<string, shared_ptr<Item>> &getRepository();
 };
 #endif

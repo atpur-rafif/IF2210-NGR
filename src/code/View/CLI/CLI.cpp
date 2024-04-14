@@ -5,6 +5,21 @@
 #include "View/CLI/Player/MayorView.hpp"
 #include "View/Config/Config.hpp"
 
+int CLI::promptOption(int from, int to, string message) {
+	while (true) {
+		cout << message;
+		string option;
+		cin >> option;
+		if (option == "CANCEL") throw UserCancelledPlayerViewException();
+
+		int result = atoi(option.c_str());
+		if (from <= result && result <= to) {
+			return result;
+		}
+		cout << "Pilihan tidak valid" << endl;
+	}
+};
+
 CLI::CLI() {
 	this->view[FarmerType] = shared_ptr<PlayerView>{new FarmerView()};
 	this->view[BreederType] = shared_ptr<PlayerView>{new BreederView()};
