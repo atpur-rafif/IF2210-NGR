@@ -1,4 +1,4 @@
-#include "View/CLI/Shop.hpp"
+#include "View/CLI/ShopView.hpp"
 #include "Container/Storage.hpp"
 #include "Exception/PlayerViewException.hpp"
 #include "Exception/ShopException.hpp"
@@ -109,6 +109,11 @@ void ShopView::buyItem(Player &player) {
 
 		if (quantity > catalogue[selectedName]) {
 			cout << "Barang pada toko tidak cukup!" << endl;
+			continue;
+		}
+
+		if (quantity > inventory.getEmptySpaceCount()) {
+			cout << "Penyimpanan pemain tidak cukup!" << endl;
 			continue;
 		}
 

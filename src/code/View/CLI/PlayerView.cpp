@@ -2,7 +2,7 @@
 #include "Exception/GameException.hpp"
 #include "Exception/PlayerViewException.hpp"
 #include "Model/Item//ProductItem.hpp"
-#include "View/CLI/Shop.hpp"
+#include "View/CLI/ShopView.hpp"
 #include "View/Config/Config.hpp"
 #include <iostream>
 using namespace std;
