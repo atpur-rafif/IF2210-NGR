@@ -70,61 +70,35 @@ void Breeder::placeAnimal(string &locInventory, string &locField) {
 	this->inventory.clearItem(locInventory);
 }
 
-void Breeder::giveFoodChecker(string &locField) {
-	BarnItem *currAnimal = nullptr;
-	auto tempBarn = this->barn.getItem(locField);
+bool Breeder::ableToFeed(BarnItemType animal, ProductItemType product) {
+	if (animal == Omnivore && (product == AnimalProduct || product == FruitProduct)) return true;
+	else if (animal == Herbivore && product == FruitProduct) return true;
+	else if (animal == Carnivore && product == AnimalProduct) return true;
+	else return false;
+};
 
-	if (!tempBarn.has_value()) {
-		throw InvalidFieldEmptyException();
-	}
+bool Breeder::hasProductToFeed(BarnItemType type) {
+	auto items = this->inventory.getAllItem();
+	for (auto item : items) {
+		if ((*item)->getType() != Product) continue;
+		auto productType = dynamic_pointer_cast<ProductItem>(*item)->getProductItemType();
 
-	currAnimal = &tempBarn.value();
-	vector<ProductItem *> foodchecker;
-	vector<shared_ptr<Item> *> repo = this->inventory.getAllItem();
-	for (auto &itemPtr : repo) {
-		shared_ptr<Item> rawPtr = *itemPtr;
-		if (auto productItemPtr = dynamic_cast<ProductItem *>(rawPtr.get())) {
-			foodchecker.push_back(productItemPtr);
-		}
+		if (Breeder::ableToFeed(type, productType))
+			return true;
 	}
-
-	bool isFound = false;
-	if (currAnimal->getBarnItemType() == Carnivore) {
-		for (const auto &item : foodchecker) {
-			if (item->getProductItemType() == AnimalProduct) {
-				isFound = true;
-			}
-		}
-	} else if (currAnimal->getBarnItemType() == Herbivore) {
-		for (const auto &item : foodchecker) {
-			if (item->getProductItemType() == FruitProduct) {
-				isFound = true;
-			}
-		}
-
-	} else if (currAnimal->getBarnItemType() == Omnivore) {
-		for (const auto &item : foodchecker) {
-			if (item->getProductItemType() == AnimalProduct || item->getProductItemType() == FruitProduct) {
-				isFound = true;
-			}
-		}
-	}
-	if (!isFound) {
-		throw InvalidFoodNotFoundException();
-	}
+	return false;
 }
 
-void Breeder::giveFood(string &locInventory, string &locField) {
-	BarnItem *currAnimal = nullptr;
-	auto tempBarn = this->barn.getItem(locField);
+void Breeder::giveFood(string &foodLocation, string &animalLocation) {
+	BarnItem *animal = nullptr;
+	auto &tempBarn = this->barn.getItem(animalLocation);
 
 	if (!tempBarn.has_value()) {
 		throw InvalidFieldEmptyException();
 	}
 
-	currAnimal = &tempBarn.value();
-
-	auto optionalItem = this->inventory.getItem(locInventory);
+	animal = &tempBarn.value();
+	auto optionalItem = this->inventory.getItem(foodLocation);
 	if (!optionalItem.has_value()) {
 		throw InvalidItemNotFoundException();
 	}
@@ -139,17 +113,17 @@ void Breeder::giveFood(string &locInventory, string &locField) {
 		throw InvalidNotFoodException();
 	}
 
-	if (currAnimal->getBarnItemType() == Herbivore) {
+	if (animal->getBarnItemType() == Herbivore) {
 		if (itemFood->getProductItemType() != FruitProduct) {
 			throw InvalidFoodHerbivores();
 		}
-	} else if (currAnimal->getBarnItemType() == Carnivore) {
+	} else if (animal->getBarnItemType() == Carnivore) {
 		if (itemFood->getProductItemType() != AnimalProduct) {
 			throw InvalidFoodCarnivores();
 		}
 	}
-	this->inventory.clearItem(locInventory);
-	currAnimal->setWeight(currAnimal->getWeight() + itemFood->getAddedWeight());
+	this->inventory.clearItem(foodLocation);
+	animal->setWeight(animal->getWeight() + itemFood->getAddedWeight());
 }
 
 /**

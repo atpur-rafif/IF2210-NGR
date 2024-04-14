@@ -20,6 +20,27 @@ public:
 	void promptConfirmation();
 
 	template <class T>
+	static string promptStorageLocation(string message, Storage<T> storage, function<string(optional<T> &)> validator) {
+		while (true) {
+			cout << message;
+			string location;
+			cin >> location;
+			if (location == "CANCEL") throw UserCancelledPlayerViewException();
+
+			try {
+				auto &item = storage.getItem(location);
+				string err = validator(item);
+				if (err.size() == 0) {
+					return location;
+				}
+				cout << err << endl;
+			} catch (const std::exception &e) {
+				std::cerr << e.what() << '\n';
+			}
+		}
+	}
+
+	template <class T>
 	static void printStorage(string title, Storage<T> storage, function<string(T &)> toString) {
 		auto width = storage.getWidth();
 		auto height = storage.getHeight();

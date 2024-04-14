@@ -1,8 +1,8 @@
 #ifndef MODEL_ITEM_BARNITEM_HPP
 #define MODEL_ITEM_BARNITEM_HPP
 
-#include "Model/Item.hpp"
 #include "Controller/GameContext.hpp"
+#include "Model/Item.hpp"
 
 enum BarnItemType {
 	Herbivore,
@@ -15,7 +15,6 @@ private:
 	BarnItemType barnItemType;
 	int weightToHarvest;
 	int currentWeight;
-	static int p;
 	virtual void readAttributeFromStream(istream &inputStream);
 
 public:
@@ -28,6 +27,5 @@ public:
 	int getWeight();
 	void setWeight(int weight);
 };
-
 
 #endif

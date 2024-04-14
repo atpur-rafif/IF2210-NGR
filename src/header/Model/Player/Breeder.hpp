@@ -23,8 +23,10 @@ public:
 
 	void placeAnimal(string &, string &);
 	void giveFood(string &, string &);
-	void giveFoodChecker(string &);
+	bool hasProductToFeed(BarnItemType type);
 	void harvestAnimal(string &);
+
+	static bool ableToFeed(BarnItemType animal, ProductItemType product);
 };
 
 #endif

@@ -3,6 +3,7 @@
 
 #include "Exception/StorageException.hpp"
 #include <cstdlib>
+#include <functional>
 #include <iostream>
 #include <map>
 #include <optional>

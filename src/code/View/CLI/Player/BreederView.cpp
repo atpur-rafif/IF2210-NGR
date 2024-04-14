@@ -45,156 +45,46 @@ void BreederView::breed(Breeder &breeder) {
 };
 
 void BreederView::feed(Breeder &breeder) {
-	while (true) {
-		string loc;
-		string locFood;
-		shared_ptr<ProductItem> foodItem;
-		// Ini perintah kasih makannya
-		BreederView::printBarn(breeder);
-		loc = BreederView::promptFieldFromBarn(breeder, "Pilih petak yang ingin diberi makan: ", false);
-		breeder.giveFoodChecker(loc);
-		BreederView::printInventory(breeder);
-		locFood = BreederView::promptItemFromInventory(breeder, foodItem);
-		try {
-			breeder.giveFood(locFood, loc);
-			break;
-		} catch (const exception &e) {
-			cerr << e.what() << "\n";
-		}
+	auto &barn = breeder.getBarn();
+	if (barn.getFilledSpaceCount() == 0) {
+		cout << "Peternakan Anda kosong" << endl;
+		return;
+	}
+
+	function<string(optional<BarnItem> &)> animalValidator = [=](optional<BarnItem> &item) mutable {
+		if (!item.has_value()) return "Petak ini kosong!";
+		if (!breeder.hasProductToFeed(item->getBarnItemType())) return "Kamu tidak memiliki makanan untuk binatang ini!";
+		return "";
+	};
+	BreederView::printBarn(breeder);
+	string animalLocation = CLI::promptStorageLocation("Petak untuk diberi makan: ", breeder.getBarn(), animalValidator);
+	auto &animal = breeder.getBarn().getItem(animalLocation).value();
+
+	function<string(optional<shared_ptr<Item>> &)> foodValidator = [=](optional<shared_ptr<Item>> &item) mutable {
+		if (!item.has_value()) return "Petak ini kosong!";
+		if ((*item)->getType() != Product) return "Barang ini tidak bisa dimakan";
+
+		BarnItemType type = animal.getBarnItemType();
+		ProductItemType productType = dynamic_pointer_cast<ProductItem>(item.value())->getProductItemType();
+		if (!Breeder::ableToFeed(type, productType)) {
+			if (type == Herbivore) return "Ternak ini adalah vegetarian";
+			else if (type == Carnivore) return "Ternak ini adalah kanibal";
+			else if (productType == MaterialProduct) return "Ternak ini bukanlah bangunan";
+		};
+
+		return "";
+	};
+	PlayerView::printInventory(breeder);
+	string foodLocation = CLI::promptStorageLocation("Petak untuk dimakan ternak: ", breeder.inventory, foodValidator);
+
+	try {
+		breeder.giveFood(foodLocation, animalLocation);
+		cout << "Ternak " << animal.getName() << " telah diberi makan dan beratnya menjadi " << animal.getWeight() << endl;
+	} catch (const exception &e) {
+		cerr << e.what() << "\n";
 	}
 };
 
 void BreederView::harvest(Breeder &breeder) {
-	string choose;
-	string total;
-	vector<pair<int, string>> listNumber;
-
-	cout << "=======================PETERNAKAN======================" << endl;
-	auto &barnInventory = breeder.getBarn();
-	pair<int, int> farm_size = {barnInventory.getWidth(), barnInventory.getHeight()};
-	vector<pair<string, int>> list_item = {{"COW", 0}, {"SHP", 0}, {"RBT", 0}, {"HRS", 0}, {"SNK", 0}, {"CHK", 0}, {"DCK", 0}};
-	vector<pair<string, string>> list_item_grid;
-
-	for (int y = 0; y < farm_size.second; y++) {
-		cout << "| ";
-		for (int x = 0; x < farm_size.first; x++) {
-			auto item = barnInventory.getItem(x, y);
-			if (item.has_value() && item.value().getWeight() >= item.value().getWeightToHarvest()) {
-				// cout << item.value().getWeight() << " " << item.value().getWeightToHarvest();
-				list_item_grid.push_back({intToCoordinate(x, y), item->getName()});
-				for (int i = 0; i < 7; ++i) {
-					if (item->getCode() == list_item[i].first) {
-						list_item[i].second++;
-						break;
-					}
-				}
-				/**
-				 * TODO:
-				 * kasih kode hijau  kalo bisa diharvest
-				 */
-				print_green(item->getCode());
-				// cout << item->getCode();
-			} else if (item.has_value() && item->getWeight() < item->getWeightToHarvest()) {
-				/**
-				 * TODO: kasih kode merah kalo gabisa diharvest
-				 */
-				print_red(item->getCode());
-				// cout << item->getCode();
-			} else {
-				cout << "   ";
-			}
-			cout << " | ";
-		}
-		cout << endl;
-		std::sort(list_item.begin(), list_item.end(), [](const pair<string, int> &a, const pair<string, int> &b) {
-			return a.second > b.second;
-		});
-	}
-	// validasi kalo ada yang bisa dipanen
-	bool canHarvest = false;
-	for (size_t i = 0; i < list_item.size(); i++) {
-		if (list_item[i].second > 0) {
-			canHarvest = true;
-		}
-	}
-
-	// print semua gridnya
-	for (size_t i = 0; i < list_item_grid.size(); i++) {
-		cout << "- " << list_item_grid[i].first << ": " << list_item_grid[i].second << endl;
-	}
-
-	if (canHarvest) {
-		int i = 1;
-		cout << "Pilih hewan siap panen yang kamu miliki: " << endl;
-		vector<pair<int, pair<string, int>>> pick_list;
-		for (pair<string, int> item : list_item) {
-			if (item.second > 0) {
-				cout << i << ". " << item.first << "(" << item.second << " petak siap dipanen)" << endl;
-				pick_list.push_back({i++, item});
-			}
-		}
-
-		int no_hewan = 0;
-		bool invalidInput = false;
-		while (true) {
-			if (invalidInput) {
-				cout << "Periksa kembali nomor yang dipilih" << endl;
-				invalidInput = false;
-			}
-			cout << "Nomor hewan yang ingin dipanen: ";
-			cin >> no_hewan;
-			int size = pick_list.size();
-			if (cin.fail()) {
-				cout << "Input harus berupa bilangan bulat.\n";
-				cin.clear();
-				cin.ignore(numeric_limits<streamsize>::max(), '\n');
-				continue;
-			}
-			if (no_hewan > 0 && no_hewan <= size) {
-				break;
-			} else {
-				invalidInput = true;
-			}
-		}
-		int amount = 0;
-		bool isValid = false;
-		while (true) {
-			cout << "Berapa petak yang ingin dipanen: ";
-			cin >> amount;
-			if (cin.fail()) {
-				cout << "Input harus sebuah angka." << endl;
-				cin.clear();
-				cin.ignore(numeric_limits<streamsize>::max(), '\n');
-				continue;
-			}
-			if (amount <= pick_list.at(no_hewan - 1).second.second && amount >= 0) {
-				isValid = true;
-				break;
-			} else if (amount > pick_list.at(no_hewan - 1).second.second && amount >= 0) {
-				cout << "Jumlah hewan yang dapat dipanen lebih sedikit daripada yang ingin anda panen!" << endl;
-				continue;
-			} else {
-				cout << "Input tidak valid" << endl;
-				continue;
-			}
-		}
-		if (isValid) {
-			for (int j = 0; j < amount; j++) {
-				string plot_input;
-				cout << "Petak ke-" << j << ": ";
-				cin >> plot_input;
-				while (pick_list.at(no_hewan - 1).second.first != breeder.getBarn().getItem(plot_input)->getCode()) {
-					cout << "Beda Hewan bang, pilih yang betul" << endl;
-					cout << "Petak ke-" << j << ": ";
-					cin >> plot_input;
-				}
-				breeder.harvestAnimal(plot_input);
-			}
-		} else {
-			cout << "Input tidak Valid, Keluar dari perintah PANEN secara paksa";
-		}
-
-	} else {
-		throw InvalidHarvestException();
-	}
+	BreederView::printBarn(breeder);
 };
