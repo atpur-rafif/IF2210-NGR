@@ -17,7 +17,7 @@ void ProductItem::readAttributeFromStream(istream &inputStream) {
 	string type;
 	inputStream >> type;
 	if (type == "PRODUCT_MATERIAL_PLANT") this->productItemType = MaterialProduct;
-	else if (type == "PRODUCT_FRUIT_PLANT") this->productItemType = MaterialProduct;
+	else if (type == "PRODUCT_FRUIT_PLANT") this->productItemType = FruitProduct;
 	else if (type == "PRODUCT_ANIMAL") this->productItemType = AnimalProduct;
 
 	inputStream >> this->origin;
