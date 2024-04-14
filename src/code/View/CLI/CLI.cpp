@@ -66,9 +66,11 @@ void CLI::state() {
 }
 
 void CLI::start() {
-	this->config();
-	this->state();
+	// this->config();
+	// this->state();
 
+	Config::readConfig("tmp/config", this->context);
+	Config::readState("tmp/config", this->context);
 	while (true) {
 		shared_ptr<Player> current = this->context.getPlayerController().getCurrentPlayer();
 		shared_ptr<PlayerView> view = this->getView(current->getType());

@@ -24,6 +24,10 @@ string ItemFactory::getCodeByName(const string name) const {
 	return this->codeFinder(fn);
 }
 
-map<string, shared_ptr<Item>> ItemFactory::getRepository() {
+shared_ptr<Item> &ItemFactory::getItemByCode(string code) {
+	return this->repository[code];
+};
+
+map<string, shared_ptr<Item>> &ItemFactory::getRepository() {
 	return this->repository;
 }

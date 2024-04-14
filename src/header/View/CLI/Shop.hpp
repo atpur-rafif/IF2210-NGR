@@ -7,25 +7,25 @@
 #include <string>
 using namespace std;
 
-class Shop : public PlayerView {
+class ShopView {
 public:
-    ItemFactory itemFactory;
-    /*
-    * Map item's code to the amount of that item
-    * -1 to indicate infinite amount of that item
-    **/
-    map<string, int> shopInventory;
+	ItemFactory itemFactory;
+	/*
+	 * Map item's code to the amount of that item
+	 * -1 to indicate infinite amount of that item
+	 **/
+	map<string, int> shopInventory;
 
-    void initShopInventory();
+	void initShopInventory();
 
-    pair<string, int> nthItem(int n);
+	pair<string, int> nthItem(int n);
 
-    template <class T>
-    void playerSellItem(Player &player);
+	template <class T>
+	void playerSellItem(Player &player);
 
 	void playerBuyItem(Player &player);
 
-    void printShopInventory();
+	void printShopInventory();
 };
 
 #endif

@@ -8,7 +8,6 @@
 #include <functional>
 #include <map>
 #include <memory>
-
 class ItemFactory : public GameObject {
 	friend class GameContext;
 
@@ -41,6 +40,7 @@ public:
 	}
 
 	shared_ptr<Item> createBaseItem(string code) const;
+	shared_ptr<Item> &getItemByCode(string code);
 	string getCodeByName(const string name) const;
 
 	string getProductResult(string Code, string obtainedProduct) {
@@ -55,6 +55,6 @@ public:
 		}
 		return "";
 	}
-	map<string, shared_ptr<Item>> getRepository();
+	map<string, shared_ptr<Item>> &getRepository();
 };
 #endif

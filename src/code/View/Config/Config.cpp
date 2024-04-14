@@ -66,6 +66,8 @@ void Config::readState(string dir, GameContext &context) {
 		shared_ptr<Player> player = context.getPlayerController().readPlayerFromStream(stateFile);
 		context.getPlayerController().addPlayer(player);
 	}
+
+	context.getShopController().readShopFromStream(stateFile);
 }
 
 void Config::readDefaultState(GameContext &context) {

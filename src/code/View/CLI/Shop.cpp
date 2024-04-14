@@ -5,7 +5,7 @@
 #include <iostream>
 using namespace std;
 
-void Shop::initShopInventory() {
+void ShopView::initShopInventory() {
 	// Plant
 	this->shopInventory["TEK"] = -1;
 	this->shopInventory["SDT"] = -1;
@@ -26,7 +26,7 @@ void Shop::initShopInventory() {
 	this->shopInventory["DCK"] = -1;
 }
 
-pair<string, int> Shop::nthItem(int n) {
+pair<string, int> ShopView::nthItem(int n) {
 	int i = 0;
 	for (const auto &[key, value] : this->shopInventory) {
 		if (i == n - 1) {
@@ -40,9 +40,9 @@ pair<string, int> Shop::nthItem(int n) {
 
 // TODO: Ignore template
 template <class T>
-void Shop::playerSellItem(Player &player) {
+void ShopView::playerSellItem(Player &player) {
 	cout << "Berikut merupakan penyimpanan Anda\n     ================[ Penyimpanan ]==================\n";
-	PlayerView::printInventory(player);
+	// PlayerView::printInventory(player);
 	cout << "Silahkan pilih petak yang ingin Anda jual!\nPetak : ";
 
 	try {
@@ -78,7 +78,7 @@ void Shop::playerSellItem(Player &player) {
 	}
 }
 
-void Shop::playerBuyItem(Player &player) {
+void ShopView::playerBuyItem(Player &player) {
 	vector<shared_ptr<Item> *> vec = player.inventory.getAllItem();
 	this->initShopInventory();
 	this->printShopInventory();
@@ -111,7 +111,7 @@ void Shop::playerBuyItem(Player &player) {
 		}
 
 		cout << "Selamat Anda berhasil membeli " << qty << " " << item.first << ". Uang Anda tersisa " << player.getMoney() << " gulden.\n\nPilih slot untuk menyimpan barang yang Anda beli!\n";
-		PlayerView::printInventory(player);
+		// PlayerView::printInventory(player);
 
 		cout << "\nPetak slot: ";
 		string location;
@@ -133,7 +133,7 @@ void Shop::playerBuyItem(Player &player) {
 	}
 }
 
-void Shop::printShopInventory() {
+void ShopView::printShopInventory() {
 	cout << "Selamat datang di toko!!\nBerikut merupakan hal yang dapat Anda Beli\n";
 	int i = 0;
 	for (const auto &[key, value] : this->shopInventory) {

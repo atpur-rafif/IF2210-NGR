@@ -43,7 +43,12 @@ void PlayerView::start(Player &player) {
 }
 
 void PlayerView::runPlayerCommand(Player &player, string command) {
-	if (command == "CETAK_PENYIMPANAN") this->printInventory(player);
+	if (command == "TEST") {
+		auto &shop = player.getContext().getShopController();
+		for (auto item : shop.getCatalogue(player.getType())) {
+			cout << item.first << ' ' << item.second << endl;
+		}
+	} else if (command == "CETAK_PENYIMPANAN") this->printInventory(player);
 	else if (command == "MAKAN") {
 		this->printInventory(player);
 
