@@ -52,23 +52,17 @@ void MayorView::build(Mayor &mayor) {
 		cout << ")" << endl;
 	}
 
-	while (true) {
-		string name;
-		cout << "Bangunan yang ingin dibangun: ";
-		cin >> name;
-		if (name == "CANCEL") throw UserCancelledCLIException();
-
-		if (!recipes.contains(name)) {
-			cout << "Kamu tidak punya resep bangunan tersebut!";
-			continue;
-		}
+	function<pair<string, vector<string>>(string)> nameValidator = [&](string name) -> pair<string, vector<string>> {
+		if (!recipes.contains(name))
+			throw PromptException("Kamu tidak punya resep bangunan tersebut!");
 
 		auto &building = recipes[name];
 		int money = mayor.getMoney() - building->getPrice();
 		auto [locations, remaining] = mayor.checkInventory(building->getIngredients());
 
 		if (remaining.size() != 0 || money < 0) {
-			cout << "Kamu tidak punya sumber daya yang cukup! Masih memerlukan ";
+			string err = "";
+			err += "Kamu tidak punya sumber daya yang cukup! Masih memerlukan ";
 
 			vector<string> needs;
 			if (money < 0) needs.push_back(to_string(money * -1) + " GULDEN");
@@ -76,18 +70,19 @@ void MayorView::build(Mayor &mayor) {
 
 			int size = needs.size();
 			for (int i = 0; i < size; ++i) {
-				cout << needs[i];
-				if (i != size - 1) cout << ", ";
+				err += needs[i];
+				if (i != size - 1) err += ", ";
 			}
-			cout << endl;
-			continue;
+
+			throw PromptException(err);
 		}
 
-		mayor.buildBuilding(name, locations);
-		cout << name << " berhasil dibangun dan telah menjadi hak milik walikota!" << endl;
+		return {name, locations};
+	};
+	auto [name, locations] = CLI::prompt("Bangunan yang ingin dibangun: ", nameValidator);
 
-		break;
-	}
+	mayor.buildBuilding(name, locations);
+	cout << name << " berhasil dibangun dan telah menjadi hak milik walikota!" << endl;
 };
 
 void MayorView::addPlayer(Mayor &mayor) {

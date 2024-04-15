@@ -29,7 +29,9 @@ public:
 		while (true) {
 			cout << message;
 			string input;
+			cout << GREEN;
 			cin >> input;
+			cout << NORMAL;
 			cin.ignore(INT_MAX, '\n');
 			if (input == "CANCEL") throw UserCancelledCLIException();
 			try {
