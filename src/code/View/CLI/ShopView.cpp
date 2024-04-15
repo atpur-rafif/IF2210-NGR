@@ -26,8 +26,11 @@ void ShopView::sellItem(Player &player) {
 				throw PromptException("Barang tersebut tidak bisa dijual!");
 		};
 		string location = CLI::promptStorageLocation("Petak untuk dijual (CANCEL untuk berhenti): ", player.inventory, fn);
-		int price = player.inventory.getItem(location).value()->getPrice();
+
+		auto &item = player.inventory.getItem(location).value();
+		int price = item->getPrice();
 		player.setMoney(player.getMoney() + price);
+		shop.addItem(item);
 		player.inventory.clearItem(location);
 
 		cout << "Barang Anda berhasil dijual! Uang Anda bertambah " << price << " gulden!" << endl;
@@ -97,7 +100,7 @@ void ShopView::buyItem(Player &player) {
 	}
 
 	player.setMoney(player.getMoney() - totalPrice);
-	shop.removeItem(itemFactory.getItemByName(selectedName));
+	shop.removeItem(itemFactory.getItemByName(selectedName), quantity);
 	cout << "Selamat Anda berhasil membeli " + to_string(quantity) + " " + selectedName + ". Uang Anda tersisa " + to_string(player.getMoney()) + " gulden." << endl;
 	for (auto &slot : slots) {
 		shared_ptr<Item> item = itemFactory.createBaseItemByName(selectedName);
