@@ -27,9 +27,10 @@ public:
 		while (true) {
 			PlayerView::printInventory(harvester);
 			function<void(string, optional<shared_ptr<Item>> &)> inventoryValidator = [](string, optional<shared_ptr<Item>> &item) {
-				T testItem; // Temporary to make sure the same type
 				if (!item.has_value())
 					throw PromptException("Penyimpanan kosong pada lokasi tersebut");
+
+				T testItem; // Temporary to make sure the same type
 				if (item.value()->getType() != testItem.getType())
 					throw PromptException("Tipe barang tidak valid");
 			};
@@ -78,9 +79,9 @@ public:
 
 		cout << "Pilih petak yang ingin dipanen" << endl;
 		function<void(string, optional<T> &)> fn = [=](string, optional<T> &item) {
-			if (!item.has_value()) throw PromptException("Tidak ada ternak disitu");
-			else if (item->getCode() != selectedCode) throw PromptException("Ternak tersebut bukan pilihan untuk dipanen");
-			else if (!item->harvestable()) throw PromptException("Ternak tersebut belum cukup tua untuk dipanen");
+			if (!item.has_value()) throw PromptException("Tidak ada " + T::pronoun + " disitu");
+			else if (item->getCode() != selectedCode) throw PromptException(T::pronoun + "tersebut bukan pilihan untuk dipanen");
+			else if (!item->harvestable()) throw PromptException(T::pronoun + " tersebut belum cukup tua untuk dipanen");
 		};
 
 		for (int i = 0; i < count; ++i) {
