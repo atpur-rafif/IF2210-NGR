@@ -1,6 +1,7 @@
 #ifndef MODEL_ITEM_FARMITEM_HPP
 #define MODEL_ITEM_FARMITEM_HPP
 
+#include "Model/Harvestable.hpp"
 #include "Model/Item.hpp"
 
 enum FarmItemType {
@@ -8,7 +9,7 @@ enum FarmItemType {
 	Fruit
 };
 
-class FarmItem : public Item {
+class FarmItem : public Item, public Harvestable {
 private:
 	FarmItemType farmItemType;
 	int durationToHarvest;
@@ -24,6 +25,8 @@ public:
 	FarmItemType getFarmItemType();
 	int getAge();
 	void setAge(int age);
+
+	bool harvestable();
 };
 
 #endif

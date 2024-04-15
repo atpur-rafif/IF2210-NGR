@@ -3,8 +3,9 @@
 
 #include "Model/Item/BarnItem.hpp"
 #include "Model/Player.hpp"
+#include "Model/Worker.hpp"
 
-class Breeder : public Player {
+class Breeder : public Player, public Worker<BarnItem> {
 protected:
 	Storage<BarnItem> barn;
 

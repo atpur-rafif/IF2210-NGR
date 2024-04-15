@@ -13,7 +13,7 @@ enum ItemType {
 	Building
 };
 
-class Item : public GameObject {
+class Item : virtual public GameObject {
 protected:
 	int price;
 	int id;

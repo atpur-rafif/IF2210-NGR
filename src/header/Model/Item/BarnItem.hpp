@@ -2,6 +2,7 @@
 #define MODEL_ITEM_BARNITEM_HPP
 
 #include "Controller/GameContext.hpp"
+#include "Model/Harvestable.hpp"
 #include "Model/Item.hpp"
 
 enum BarnItemType {
@@ -10,7 +11,7 @@ enum BarnItemType {
 	Omnivore
 };
 
-class BarnItem : public Item {
+class BarnItem : public Item, public Harvestable {
 private:
 	BarnItemType barnItemType;
 	int weightToHarvest;
@@ -26,6 +27,8 @@ public:
 	BarnItemType getBarnItemType();
 	int getWeight();
 	void setWeight(int weight);
+
+	bool harvestable();
 };
 
 #endif

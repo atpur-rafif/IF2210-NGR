@@ -8,10 +8,11 @@
 #include "Model/Item/FarmItem.hpp"
 #include "Model/Item/ProductItem.hpp"
 #include "Model/Player.hpp"
+#include "Model/Worker.hpp"
 
 class ProductItem;
 
-class Farmer : public Player {
+class Farmer : public Player, public Worker<FarmItem> {
 protected:
 	Storage<FarmItem> farm;
 
