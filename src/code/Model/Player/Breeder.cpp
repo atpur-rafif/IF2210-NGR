@@ -26,6 +26,9 @@ int Breeder::calculateTax() {
 	return tax;
 }
 
+void Breeder::placeAnimal(string &locInventory, string &locField) { this->place(locInventory, locField); }
+void Breeder::harvestAnimal(string &coordinate) { this->harvest(coordinate); }
+
 bool Breeder::ableToFeed(BarnItemType animal, ProductItemType product) {
 	if (animal == Omnivore && (product == AnimalProduct || product == FruitProduct)) return true;
 	else if (animal == Herbivore && product == FruitProduct) return true;
@@ -74,36 +77,4 @@ void Breeder::giveFood(string &foodLocation, string &animalLocation) {
 
 	this->inventory.clearItem(foodLocation);
 	animal->setWeight(animal->getWeight() + product->getAddedWeight());
-}
-
-void Breeder::placeAnimal(string &locInventory, string &locField) {
-	auto opt = this->inventory.getItem(locInventory);
-	if (!opt.has_value())
-		throw GameException("Empty inventory slot when breeding");
-
-	shared_ptr<Item> item = opt.value();
-	BarnItem *newAnimal = dynamic_cast<BarnItem *>(item.get());
-	if (newAnimal == nullptr)
-		throw GameException("Can't put non barn item to barn");
-
-	this->field.setItem(locField, *newAnimal);
-	this->inventory.clearItem(locInventory);
-}
-
-void Breeder::harvestAnimal(string &coordinate) {
-	auto &ctx = this->getContext();
-	auto &itemFactory = ctx.getItemFactory();
-
-	optional<BarnItem> harvestedAnimal = this->field.getItem(coordinate);
-	if (!harvestedAnimal.has_value())
-		throw GameException("Empty animal slot when harvesting");
-
-	BarnItem &item = harvestedAnimal.value();
-	vector<string> results = itemFactory.getProductResults(item.getName());
-
-	this->field.clearItem(coordinate);
-	for (auto name : results) {
-		shared_ptr<Item> item = itemFactory.createBaseItemByName(name);
-		this->inventory.addItem(item);
-	}
 }

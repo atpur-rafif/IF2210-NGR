@@ -3,9 +3,10 @@
 
 #include "Color/pcolor.hpp"
 #include "Model/Player/Breeder.hpp"
+#include "View/CLI/HarvesterView.hpp"
 #include "View/CLI/PlayerView.hpp"
 
-class BreederView : public PlayerView {
+class BreederView : public HarvesterView {
 public:
 	virtual ~BreederView();
 	virtual BreederView *clone();

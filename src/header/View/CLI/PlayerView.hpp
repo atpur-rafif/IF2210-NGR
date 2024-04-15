@@ -12,6 +12,7 @@ class PlayerView {
 public:
 	virtual ~PlayerView();
 	virtual PlayerView *clone() = 0;
+
 	void start(Player &player);
 	void runPlayerCommand(Player &player, string command);
 	virtual void runSpecializedPlayerCommand(Player &player, string command) = 0;

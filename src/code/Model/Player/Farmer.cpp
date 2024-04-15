@@ -27,38 +27,8 @@ int Farmer::calculateTax() {
 	return tax;
 }
 
-void Farmer::plant(string &inventoryLocation, string &fieldLocation) {
-	auto opt = this->inventory.getItem(inventoryLocation);
-	if (!opt.has_value())
-		throw GameException("Empty inventory slot when planting");
-
-	shared_ptr<Item> item = opt.value();
-	FarmItem *newPlant = dynamic_cast<FarmItem *>(item.get());
-	if (newPlant == nullptr)
-		throw GameException("Can't plant non farm item");
-
-	this->field.setItem(fieldLocation, *newPlant);
-	this->inventory.clearItem(inventoryLocation);
-}
-
-void Farmer::harvestPlant(string &coordinate) {
-	auto &itemFactory = this->getContext().getItemFactory();
-	optional<FarmItem> &opt = this->field.getItem(coordinate);
-	if (!opt.has_value())
-		throw GameException("Empty farm slot given when harvesting");
-
-	auto &item = opt.value();
-
-	vector<string> results = itemFactory.getProductResults(item.getName());
-	if (results.size() == 0)
-		throw GameException("Plant doesn't have any product result");
-
-	for (auto &name : results) {
-		shared_ptr<Item> item = itemFactory.createBaseItemByName(name);
-		this->inventory.addItem(item);
-	}
-	this->field.clearItem(coordinate);
-}
+void Farmer::plant(string &inventoryLocation, string &fieldLocation) { this->place(inventoryLocation, fieldLocation); }
+void Farmer::harvestPlant(string &coordinate) { this->harvest(coordinate); }
 
 void Farmer::plantsGrow() {
 	for (FarmItem *plant : this->field.getAllItem()) {

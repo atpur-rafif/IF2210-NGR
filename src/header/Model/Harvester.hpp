@@ -12,7 +12,11 @@ protected:
 	Storage<T> field;
 
 public:
-	void place(string &inventoryLocation, string &fieldLocation) {
+	Storage<T> &getField() {
+		return this->field;
+	};
+
+	void place(string inventoryLocation, string fieldLocation) {
 		auto opt = this->inventory.getItem(inventoryLocation);
 		if (!opt.has_value())
 			throw GameException("Empty inventory slot");
@@ -29,10 +33,25 @@ public:
 		this->inventory.clearItem(inventoryLocation);
 	}
 
-	void harvest(){};
+	void harvest(string coordinate) {
+		auto &ctx = this->getContext();
+		auto &itemFactory = ctx.getItemFactory();
 
-	Storage<T> &getField() {
-		return this->field;
+		optional<T> harvestedAnimal = this->field.getItem(coordinate);
+		if (!harvestedAnimal.has_value())
+			throw GameException("Empty slot when harvesting");
+
+		T &item = harvestedAnimal.value();
+		vector<string> results = itemFactory.getProductResults(item.getName());
+
+		if (this->inventory.getEmptySpaceCount() < (int)results.size())
+			throw GameException("Inventory full when harvesting");
+
+		this->field.clearItem(coordinate);
+		for (auto name : results) {
+			shared_ptr<Item> item = itemFactory.createBaseItemByName(name);
+			this->inventory.addItem(item);
+		}
 	};
 
 	void readFieldFromStream(istream &inputStream) {

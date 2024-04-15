@@ -1,6 +1,7 @@
 #include "View/CLI/Player/BreederView.hpp"
 #include "Exception/CLIException.hpp"
 #include "View/CLI/CLI.hpp"
+#include "View/CLI/HarvesterView.hpp"
 #include <algorithm>
 #include <limits>
 
@@ -83,6 +84,7 @@ void BreederView::feed(Breeder &breeder) {
 };
 
 void BreederView::harvest(Breeder &breeder) {
+	// HarvesterView::harvestG(breeder);
 	BreederView::printBarn(breeder);
 	map<string, int> harvestables;
 	for (auto item : breeder.getField().getAllItem()) {
