@@ -1,9 +1,6 @@
 #include "View/CLI/Player/MayorView.hpp"
-#include "Exception/DowncastException.hpp"
-#include "Exception/ItemFactoryException.hpp"
-#include "Exception/PlayerControllerException.hpp"
-#include "Exception/PlayerException.hpp"
-#include "Exception/PlayerViewException.hpp"
+#include "Exception/CLIException.hpp"
+#include "Model/Item/BuildingItem.hpp"
 #include "Model/Player.hpp"
 #include "Model/Player/Mayor.hpp"
 
@@ -15,7 +12,7 @@ void MayorView::runSpecializedPlayerCommand(Player &player, string command) {
 	if (command == "PUNGUT_PAJAK") this->collectTax(mayor);
 	else if (command == "BANGUN") this->build(mayor);
 	else if (command == "TAMBAH_PEMAIN") this->addPlayer(mayor);
-	else throw CommandNotFoundPlayerViewException();
+	else throw CommandNotFoundCLIException();
 }
 
 void MayorView::collectTax(Mayor &mayor) {
@@ -34,57 +31,72 @@ void MayorView::collectTax(Mayor &mayor) {
 };
 
 void MayorView::build(Mayor &mayor) {
-	map<string, map<string, int>> recipe;
-	mayor.getRecipe(recipe);
+	auto &items = mayor.getContext().getItemFactory().getRepository();
 
-	string buildingName;
-	int i = 1;
-	for (auto it = recipe.cbegin(); it != recipe.cend(); ++it) {
-		cout << i++ << ". " << it->first << " (";
-		for (auto it2 = it->second.cbegin(); it2 != it->second.cend(); ++it2) {
-			if (it2 == it->second.cbegin()) {
-				cout << it->second.at("GULDEN") << " GULDEN";
-				if (it->second.cbegin() != (it->second.cend())) cout << ", ";
-			}
-			if (it2->first != "GULDEN") {
-				cout << it2->second << " ";
-				cout << it2->first;
-				if (it2 != prev(it->second.cend())) cout << ", ";
-				else cout << ")" << endl;
-			}
-		}
+	map<string, shared_ptr<BuildingItem>> recipes;
+	for (auto &[_, item] : items) {
+		shared_ptr<BuildingItem> building = dynamic_pointer_cast<BuildingItem>(item);
+		if (building == nullptr) continue;
+		recipes[building->getName()] = building;
 	}
-	cout << "Bangunan yang ingin dibangun: ";
-	cin >> buildingName;
-	try {
-		mayor.buildBuilding(buildingName);
-		cout << buildingName << " berhasil dibangun dan telah menjadi hak milik walikota!" << endl;
-	} catch (const InvalidDowncastException &e) {
-		cout << "Kamu tidak punya resep bangunan tersebut!" << endl;
-	} catch (const ItemNotFoundException &e) {
-		cout << "Kamu tidak punya resep bangunan tersebut!" << endl;
-	} catch (const NotEnoughResourceException &e) {
-		cout << "Kamu tidak punya sumber daya yang cukup! Masih memerlukan " << e.what() << "!" << endl;
+
+	cout << "Resep bangunan yang ada adalah sebagai berikut:" << endl;
+	int i = 0;
+	for (auto &[name, building] : recipes) {
+		cout << ++i << ". " << name << " (" << building->getPrice() << " GULDEN";
+		for (auto &[ingredient, count] : building->getIngredients()) {
+			cout << ", " << ingredient << " " << count;
+		}
+		cout << ")" << endl;
+	}
+
+	while (true) {
+		string name;
+		cout << "Bangunan yang ingin dibangun: ";
+		cin >> name;
+		if (name == "CANCEL") throw UserCancelledCLIException();
+
+		if (!recipes.contains(name)) {
+			cout << "Kamu tidak punya resep bangunan tersebut!";
+			continue;
+		}
+
+		auto &building = recipes[name];
+		int money = mayor.getMoney() - building->getPrice();
+		auto [locations, remaining] = mayor.checkInventory(building->getIngredients());
+
+		if (remaining.size() != 0 || money < 0) {
+			cout << "Kamu tidak punya sumber daya yang cukup! Masih memerlukan ";
+
+			vector<string> needs;
+			if (money < 0) needs.push_back(to_string(money * -1) + " GULDEN");
+			for (auto &[ingredient, count] : remaining) needs.push_back(to_string(count) + " " + ingredient);
+
+			int size = needs.size();
+			for (int i = 0; i < size; ++i) {
+				cout << needs[i];
+				if (i != size - 1) cout << ", ";
+			}
+			cout << endl;
+			continue;
+		}
+
+		mayor.buildBuilding(name, locations);
+		cout << name << " berhasil dibangun dan telah menjadi hak milik walikota!" << endl;
+
+		break;
 	}
 };
 
 void MayorView::addPlayer(Mayor &mayor) {
-	try {
-		mayor.isEnoughMoney();
-		string username;
-		string type;
-		cout << "Masukkan jenis pemain: ";
-		cin >> type;
-		cout << "Masukkan nama pemain: ";
-		cin >> username;
-		mayor.addPlayer(username, type);
-		cout << "Pemain baru ditambahkan!" << endl;
-		cout << "Selamat datang " << username << " di kota ini!" << endl;
-	} catch (const InvalidPlayerTypeException &e) {
-		cout << "Jenis pemain tidak valid!" << endl;
-	} catch (const NotEnoughResourceException &e) {
-		cout << "Uang tidak cukup!" << endl;
-	} catch (const UsernameAlreadyExist &e) {
-		cout << "Sudah ada pemain dengan nama tersebut!" << endl;
-	}
+	mayor.isEnoughMoney();
+	string username;
+	string type;
+	cout << "Masukkan jenis pemain: ";
+	cin >> type;
+	cout << "Masukkan nama pemain: ";
+	cin >> username;
+	mayor.addPlayer(username, type);
+	cout << "Pemain baru ditambahkan!" << endl;
+	cout << "Selamat datang " << username << " di kota ini!" << endl;
 };

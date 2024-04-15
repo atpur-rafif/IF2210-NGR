@@ -1,6 +1,5 @@
 #include "Model/Player/Breeder.hpp"
 #include "Controller/GameContext.hpp"
-#include "Exception/ItemFactoryException.hpp"
 #include <cmath>
 
 Breeder::Breeder() { this->type = BreederType; }
@@ -53,18 +52,15 @@ void Breeder::writeSpecializedConfig(ostream &outputStream) {
 };
 
 void Breeder::placeAnimal(string &locInventory, string &locField) {
-	auto itemOptional = this->inventory.getItem(locInventory);
-	if (!itemOptional.has_value()) {
-		throw InvalidItemNotFoundException();
-	}
-	shared_ptr<Item> item = itemOptional.value();
-	if (item->getType() != Barn) {
-		throw InvalidTypeValueException();
-	}
+	auto opt = this->inventory.getItem(locInventory);
+	if (!opt.has_value())
+		throw GameException("Empty inventory slot when breeding");
+
+	shared_ptr<Item> item = opt.value();
 	BarnItem *newAnimal = dynamic_cast<BarnItem *>(item.get());
-	if (newAnimal == NULL) {
-		throw InvalidDowncastException();
-	}
+	if (newAnimal == nullptr)
+		throw GameException("Can't put non barn item to barn");
+
 	this->barn.setItem(locField, *newAnimal);
 	this->inventory.clearItem(locInventory);
 }
@@ -89,40 +85,34 @@ bool Breeder::hasProductToFeed(BarnItemType type) {
 }
 
 void Breeder::giveFood(string &foodLocation, string &animalLocation) {
-	BarnItem *animal = nullptr;
 	auto &tempBarn = this->barn.getItem(animalLocation);
 
-	if (!tempBarn.has_value()) {
-		throw InvalidFieldEmptyException();
-	}
+	if (!tempBarn.has_value())
+		throw GameException("Empty animal slot when giving food");
 
-	animal = &tempBarn.value();
-	auto optionalItem = this->inventory.getItem(foodLocation);
-	if (!optionalItem.has_value()) {
-		throw InvalidItemNotFoundException();
-	}
-	shared_ptr<Item> itemFoodTemp = optionalItem.value();
-	ProductItem *itemFood = dynamic_cast<ProductItem *>(itemFoodTemp.get());
+	auto opt = this->inventory.getItem(foodLocation);
+	if (!opt.has_value())
+		throw GameException("Empty inventory slot when giving food");
 
-	if (!itemFood) {
-		throw InvalidNotFoodException();
-	}
+	shared_ptr<Item> food = opt.value();
+	ProductItem *product = dynamic_cast<ProductItem *>(food.get());
+	BarnItem *animal = &tempBarn.value();
 
-	if (itemFood->getProductItemType() == MaterialProduct) {
-		throw InvalidNotFoodException();
-	}
+	if (product == nullptr)
+		throw GameException("Invalid item type when giving food");
 
-	if (animal->getBarnItemType() == Herbivore) {
-		if (itemFood->getProductItemType() != FruitProduct) {
-			throw InvalidFoodHerbivores();
-		}
-	} else if (animal->getBarnItemType() == Carnivore) {
-		if (itemFood->getProductItemType() != AnimalProduct) {
-			throw InvalidFoodCarnivores();
-		}
-	}
+	if (product->getProductItemType() == MaterialProduct)
+		throw GameException("Animal can't eat material product");
+
+	auto animalType = animal->getBarnItemType();
+	auto productType = product->getProductItemType();
+	if (animalType == Herbivore && productType != FruitProduct)
+		throw GameException("Herbivore can't eat non fruit product");
+	if (animalType == Carnivore && productType != AnimalProduct)
+		throw GameException("Carnivore can't eat non animal product");
+
 	this->inventory.clearItem(foodLocation);
-	animal->setWeight(animal->getWeight() + itemFood->getAddedWeight());
+	animal->setWeight(animal->getWeight() + product->getAddedWeight());
 }
 
 void Breeder::harvestAnimal(string &coordinate) {
@@ -131,7 +121,7 @@ void Breeder::harvestAnimal(string &coordinate) {
 
 	optional<BarnItem> harvestedAnimal = this->barn.getItem(coordinate);
 	if (!harvestedAnimal.has_value())
-		throw InvalidFieldEmptyException();
+		throw GameException("Empty animal slot when harvesting");
 
 	BarnItem &item = harvestedAnimal.value();
 	vector<string> results = itemFactory.getProductResults(item.getName());

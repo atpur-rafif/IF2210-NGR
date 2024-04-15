@@ -1,12 +1,11 @@
 #include "Controller/ItemFactory.hpp"
-#include "Exception/ItemFactoryException.hpp"
 
 ItemFactory::ItemFactory(){};
 
 string ItemFactory::codeFinder(function<bool(shared_ptr<Item>)> &lambda) const {
 	for (const auto &[code, item] : this->repository)
 		if (lambda(item)) return item->getCode();
-	throw ItemNotFoundException();
+	throw GameException("Item not found using codeFinder");
 }
 
 // TODO: Validate if not exist

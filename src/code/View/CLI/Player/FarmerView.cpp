@@ -1,5 +1,5 @@
 #include "View/CLI/Player/FarmerView.hpp"
-#include "Exception/PlayerViewException.hpp"
+#include "Exception/CLIException.hpp"
 #include "Model/Player/Farmer.hpp"
 #include "View/CLI/CLI.hpp"
 
@@ -11,7 +11,7 @@ void FarmerView::runSpecializedPlayerCommand(Player &player, string command) {
 	if (command == "TANAM") this->plant(farmer);
 	else if (command == "PANEN") this->harvest(farmer);
 	else if (command == "CETAK_LADANG") this->printFarm(farmer);
-	else throw CommandNotFoundPlayerViewException();
+	else throw CommandNotFoundCLIException();
 }
 
 void FarmerView::printFarm(Farmer &farmer) {

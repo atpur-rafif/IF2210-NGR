@@ -1,6 +1,5 @@
 #include "Controller/PlayerController.hpp"
 #include "Controller/GameContext.hpp"
-#include "Exception/PlayerControllerException.hpp"
 #include "Model/Player/Breeder.hpp"
 #include "Model/Player/Farmer.hpp"
 #include "Model/Player/Mayor.hpp"
@@ -51,14 +50,14 @@ shared_ptr<Player> PlayerController::readPlayerFromStream(istream &inputStream) 
 	GameContext &context = this->getContext();
 
 	for (const auto &element : context.getPlayerController().getPlayers()) {
-		if (element->getUsername() == username) throw UsernameAlreadyExist();
+		if (element->getUsername() == username) throw GameException("Username \"" + username + "\" already exist");
 	}
 
 	Player *newPlayer;
 	if (type == "Petani") newPlayer = new Farmer();
 	else if (type == "Peternak") newPlayer = new Breeder();
 	else if (type == "Walikota") newPlayer = new Mayor();
-	else throw InvalidPlayerTypeException();
+	else throw GameException("Invalid player type \"" + type + "\" found");
 
 	newPlayer->setContext(this->getContext());
 	newPlayer->setUsername(username);

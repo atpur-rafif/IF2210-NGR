@@ -25,7 +25,7 @@ public:
 
 			auto rawField = breeder.getBarn().getItem(loc);
 			if (loc == "CANCEL") {
-				throw UserCancelledPlayerViewException();
+				throw UserCancelledCLIException();
 			}
 			if (taruhHewan) {
 				try {

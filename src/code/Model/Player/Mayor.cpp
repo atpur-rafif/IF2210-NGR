@@ -1,6 +1,6 @@
 #include "Model/Player/Mayor.hpp"
 #include "Controller/GameContext.hpp"
-#include "Exception/PlayerException.hpp"
+#include "Exception/GameException.hpp"
 #include "Model/Item/BuildingItem.hpp"
 #include <sstream>
 
@@ -39,68 +39,72 @@ int Mayor::calculateTax() {
 	return 0;
 }
 
-void Mayor::getRecipe(map<string, map<string, int>> &recipe) {
-	for (const auto &pair : this->getContext().getItemFactory().getRepository()) {
-		if (pair.second.get()->getType() == Building) {
-			Item *base = pair.second.get();
-			BuildingItem *derived = dynamic_cast<BuildingItem *>(base);
-			auto ingredients = derived->getIngredients();
-			for (auto it = ingredients->begin(); it != ingredients->end(); ++it) {
-				recipe[pair.second.get()->getName()][it->first] = it->second;
-			}
-			recipe[pair.second.get()->getName()]["GULDEN"] = derived->getPrice();
-		}
+void Mayor::buildBuilding(string name, vector<string> &ingredientLocation) {
+	auto &itemFactory = this->getContext().getItemFactory();
+	auto building = dynamic_pointer_cast<BuildingItem>(itemFactory.getItemByName(name));
+	if (building == nullptr)
+		throw GameException("Parameter " + name + " isn't a building");
+
+	if (building->getPrice() > this->getMoney())
+		throw GameException("Insufficient funds when building");
+
+	auto &counter = building->getIngredients();
+	for (auto &location : ingredientLocation) {
+		auto &opt = this->inventory.getItem(location);
+		if (!opt.has_value())
+			throw GameException("Empty supplied location when building");
+
+		auto itemName = opt.value()->getName();
+		if (!counter.contains(itemName)) throw GameException("Supplied ingredient include unused item");
+		if (counter[itemName] == 1) counter.erase(itemName);
+		else counter[itemName] -= 1;
+
+		this->inventory.clearItem(location);
 	}
+
+	if (counter.size() != 0)
+		throw GameException("Insufficient supplied ingredient location");
+
+	shared_ptr<Item> newBuilding = itemFactory.createBaseItemByName(building->getName());
+	this->inventory.addItem(newBuilding);
 }
 
-void Mayor::buildBuilding(string recipe) {
-	map<string, int> inventoryFreq = this->inventory.getItemFreq();
-	map<string, int> remainingIngredient;
-	bool enoughResource = true;
-	BuildingItem build;
-	int remainingMoney;
-	this->getContext().getItemFactory().createItemByName(recipe, build);
-	remainingMoney = build.getPrice() - this->money;
-	for (auto it = build.getIngredients()->cbegin(); it != build.getIngredients()->cend(); ++it) {
-		if (it->second - inventoryFreq[it->first] > 0) {
-			remainingIngredient[it->first] = it->second - inventoryFreq[it->first];
-			if (remainingIngredient[it->first] > 0) enoughResource = false;
-		}
-	}
-	if (!enoughResource || remainingMoney > 0) {
-		throw NotEnoughResourceException(remainingIngredient, remainingMoney);
-	} else {
-		for (auto it = build.getIngredients()->cbegin(); it != build.getIngredients()->cend(); ++it) {
-			for (int i = 0; i < it->second; i++) {
-				this->inventory.removeItem(it->first);
-			}
-		}
-		shared_ptr<Item> buildPtr = make_shared<BuildingItem>(build);
-		this->inventory.addItem(buildPtr);
-		this->money -= build.getPrice();
-	}
-}
+pair<vector<string>, map<string, int>> Mayor::checkInventory(map<string, int> items) {
+	vector<string> locations;
+	(void)items;
+	for (auto &[coordinate, item] : this->inventory.getAllItemWithCoordinate()) {
+		auto name = (*item)->getName();
+		if (!items.contains(name)) continue;
 
+		locations.push_back(coordinate);
+
+		if (items[name] == 1) items.erase(name);
+		else items[name] -= 1;
+	}
+
+	return {locations, items};
+};
+
+const int startWeight = 0;
+const int startMoney = 50;
 void Mayor::addPlayer(string username, string type) {
-	transform(next(type.begin()), type.end(), next(type.begin()), ::tolower);
-	transform(type.begin(), next(type.begin()), type.begin(), ::toupper);
-	if (type == "Walikota") throw "Invalid player type";
-	string weight = "0";
-	string money = "50";
-	string inventoryCount = "0";
-	string specialInventoryCount = "0";
-	string inserter = username + " " + type + " " + weight + " " + money + " " + inventoryCount + " " + specialInventoryCount;
-	istringstream inputStream(inserter);
-	shared_ptr<Player> player = this->getContext().getPlayerController().readPlayerFromStream(inputStream);
-	this->money -= 50;
-	this->getContext().getPlayerController().addPlayer(player);
+	auto &playerController = this->getContext().getPlayerController();
+	if (startMoney > this->getMoney()) throw GameException("Insufficient funds when creating new player");
+	this->money -= startMoney;
+
+	string stream = username + " " + type + " " + to_string(startWeight) + " " + to_string(startMoney) + " 0 0"; // Last part for empty inventory
+	istringstream inputStream(stream);
+	shared_ptr<Player> player = playerController.readPlayerFromStream(inputStream);
+	playerController.addPlayer(player);
+
+	// TODO: Create util for string
 	if (this->username > username || PlayerController::toLower(this->username) > PlayerController::toLower(username)) {
 		this->getContext().getPlayerController().nextPlayer();
 	}
 }
 
 void Mayor::isEnoughMoney() {
-	if (this->money < MINIMUM_MONEY) throw NotEnoughResourceException();
+	if (this->money < MINIMUM_MONEY) throw GameException("Not enought money");
 }
 
 void Mayor::readSpecializedConfig(istream &inputStream) {

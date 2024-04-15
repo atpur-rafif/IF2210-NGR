@@ -1,7 +1,6 @@
 #include "View/CLI/ShopView.hpp"
 #include "Container/Storage.hpp"
-#include "Exception/PlayerViewException.hpp"
-#include "Exception/ShopException.hpp"
+#include "Exception/CLIException.hpp"
 #include "Exception/StorageException.hpp"
 #include "Model/Item.hpp"
 #include <cstdio>
@@ -19,7 +18,7 @@ void ShopView::sellItem(Player &player) {
 		string location;
 		cin >> location;
 		cin.ignore(INT_MAX, '\n');
-		if (location == "CANCEL") throw UserCancelledPlayerViewException();
+		if (location == "CANCEL") throw UserCancelledCLIException();
 
 		try {
 			auto &opt = player.inventory.getItem(location);
@@ -84,7 +83,7 @@ void ShopView::buyItem(Player &player) {
 		cin >> input;
 		cin.ignore(INT_MAX, '\n');
 
-		if (input == "CANCEL") throw UserCancelledPlayerViewException();
+		if (input == "CANCEL") throw UserCancelledCLIException();
 
 		int nth = atoi(input.c_str());
 		if (1 <= nth && nth <= listSize) {
@@ -103,7 +102,7 @@ void ShopView::buyItem(Player &player) {
 		cin >> input;
 		cin.ignore(INT_MAX, '\n');
 
-		if (input == "CANCEL") throw UserCancelledPlayerViewException();
+		if (input == "CANCEL") throw UserCancelledCLIException();
 
 		quantity = atoi(input.c_str());
 		if (quantity <= 0) {
@@ -143,7 +142,7 @@ void ShopView::buyItem(Player &player) {
 			cin.ignore(INT_MAX, '\n');
 
 			if (location == "CANCEL")
-				throw UserCancelledPlayerViewException();
+				throw UserCancelledCLIException();
 
 			auto slot = inventory.decodeCoordinate(location);
 			if (inventory.getItem(slot.first, slot.second).has_value()) {

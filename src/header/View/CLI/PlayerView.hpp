@@ -2,7 +2,7 @@
 #define VIEW_CLI_PLAYERVIEW_HPP
 
 #include "Controller/GameContext.hpp"
-#include "Exception/PlayerViewException.hpp"
+#include "Exception/CLIException.hpp"
 #include "Exception/StorageException.hpp"
 #include "Model/Player.hpp"
 #include "Model/Player/Farmer.hpp"
@@ -26,7 +26,7 @@ public:
 			cin >> location;
 
 			if (location == "CANCEL")
-				throw UserCancelledPlayerViewException();
+				throw UserCancelledCLIException();
 
 			try {
 				auto rawItem = player.inventory.getItem(location);

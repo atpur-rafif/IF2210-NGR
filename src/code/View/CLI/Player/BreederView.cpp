@@ -1,5 +1,5 @@
 #include "View/CLI/Player/BreederView.hpp"
-#include "Exception/PlayerViewException.hpp"
+#include "Exception/CLIException.hpp"
 #include "View/CLI/CLI.hpp"
 #include <algorithm>
 #include <limits>
@@ -12,7 +12,7 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 	else if (command == "CETAK_PETERNAKAN") this->printBarn(breeder);
 	else if (command == "KASIH_MAKAN") this->feed(breeder);
 	else if (command == "PANEN") this->harvest(breeder);
-	else throw CommandNotFoundPlayerViewException();
+	else throw CommandNotFoundCLIException();
 }
 
 void BreederView::printBarn(Breeder &breeder) {

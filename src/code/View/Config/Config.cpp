@@ -1,5 +1,5 @@
 #include "View/Config/Config.hpp"
-#include "Exception/ConfigException.hpp"
+#include "Exception/FileException.hpp"
 #include "Model/Item.hpp"
 #include "Model/Item/BarnItem.hpp"
 #include "Model/Item/BuildingItem.hpp"
@@ -29,7 +29,7 @@ string Config::defaultState =
 		ifstream fileStream;                                          \
 		fileStream.open(dir + "/" + filename);                        \
 		if (!fileStream)                                              \
-			throw FileNotFoundConfigException(filename);                \
+			throw FileNotFoundFileException(filename);                  \
 		while (fileStream.peek() != EOF) {                            \
 			type element;                                               \
 			fileStream >> element >> ws;                                \
@@ -42,7 +42,7 @@ void Config::readConfig(
 		GameContext &context
 ) {
 	if (!filesystem::is_directory(dir))
-		throw InvalidDirectoryConfigException();
+		throw InvalidDirectoryFileException();
 
 	ifstream miscFile;
 	miscFile.open(dir + "/" + miscFilename);
@@ -56,7 +56,7 @@ void Config::readConfig(
 
 void Config::readState(string dir, GameContext &context) {
 	if (!filesystem::is_directory(dir))
-		throw InvalidDirectoryConfigException();
+		throw InvalidDirectoryFileException();
 
 	ifstream stateFile;
 	stateFile.open(dir + "/" + stateFilename);

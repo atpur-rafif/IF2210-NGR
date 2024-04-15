@@ -21,7 +21,7 @@ public:
 			string location;
 			cin >> location;
 			if (location == "CANCEL")
-				throw UserCancelledPlayerViewException();
+				throw UserCancelledCLIException();
 			try {
 				auto rawItem = farmer.getFarm().getItem(location);
 				if (rawItem.has_value()) {

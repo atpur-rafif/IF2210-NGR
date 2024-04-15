@@ -1,6 +1,6 @@
 #include "View/CLI/PlayerView.hpp"
+#include "Exception/CLIException.hpp"
 #include "Exception/GameException.hpp"
-#include "Exception/PlayerViewException.hpp"
 #include "Model/Item//ProductItem.hpp"
 #include "View/CLI/CLI.hpp"
 #include "View/CLI/ShopView.hpp"
@@ -34,13 +34,13 @@ void PlayerView::start(Player &player) {
 			try {
 				this->runPlayerCommand(player, command);
 				continue;
-			} catch (const CommandNotFoundPlayerViewException &_) {
+			} catch (const CommandNotFoundCLIException &_) {
 			} catch (...) {
 				throw;
 			}
 			this->runSpecializedPlayerCommand(player, command);
 			continue;
-		} catch (const GameException &err) {
+		} catch (const CLIException &err) {
 			cout << err.what() << endl;
 		}
 	}
@@ -72,7 +72,7 @@ void PlayerView::runPlayerCommand(Player &player, string command) {
 		string location;
 		cin >> location;
 		Config::writeState(location, player.getContext());
-	} else throw CommandNotFoundPlayerViewException();
+	} else throw CommandNotFoundCLIException();
 }
 
 void PlayerView::printInventory(Player &player) {

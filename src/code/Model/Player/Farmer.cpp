@@ -51,37 +51,37 @@ void Farmer::writeSpecializedConfig(ostream &outputStream) {
 		outputStream << it.first << ' ' << item->getName() << ' ' << item->getAge() << endl;
 	}
 };
-void Farmer::plant(string &invLocation, string &fieldLocation) {
-	auto inv_item = this->inventory.getItem(invLocation);
-	if (!inv_item.has_value()) {
-		throw InvalidItemNotFoundException();
-	}
-	shared_ptr<Item> item = inv_item.value();
-	if (item->getType() != Farm) {
-		throw InvalidTypeValueException();
-	}
-	FarmItem *selected_plant = dynamic_cast<FarmItem *>(item.get());
-	if (selected_plant == NULL) {
-		throw InvalidDowncastException();
-	}
-	selected_plant->setAge(0);
-	this->farm.setItem(fieldLocation, *selected_plant);
-	this->inventory.clearItem(invLocation);
+
+void Farmer::plant(string &inventoryLocation, string &fieldLocation) {
+	auto opt = this->inventory.getItem(inventoryLocation);
+	if (!opt.has_value())
+		throw GameException("Empty inventory slot when planting");
+
+	shared_ptr<Item> item = opt.value();
+	FarmItem *newPlant = dynamic_cast<FarmItem *>(item.get());
+	if (newPlant == nullptr)
+		throw GameException("Can't plant non farm item");
+
+	this->farm.setItem(fieldLocation, *newPlant);
+	this->inventory.clearItem(inventoryLocation);
 }
 
 void Farmer::harvestPlant(string &coordinate) {
-	optional<FarmItem> harvested_item = this->farm.getItem(coordinate);
-	string code;
-	if (harvested_item.has_value()) {
-		code = this->getContext().getItemFactory().getProductResult(harvested_item.value().getName(), "");
+	auto &itemFactory = this->getContext().getItemFactory();
+	optional<FarmItem> &opt = this->farm.getItem(coordinate);
+	if (!opt.has_value())
+		throw GameException("Empty farm slot given when harvesting");
+
+	auto &item = opt.value();
+
+	vector<string> results = itemFactory.getProductResults(item.getName());
+	if (results.size() == 0)
+		throw GameException("Plant doesn't have any product result");
+
+	for (auto &name : results) {
+		shared_ptr<Item> item = itemFactory.createBaseItemByName(name);
+		this->inventory.addItem(item);
 	}
-	if (code.empty()) {
-		throw InvalidFarmProductNotFoundException();
-	}
-	ProductItem harvest_product;
-	this->getContext().getItemFactory().createItemByName(code, harvest_product);
-	shared_ptr<Item> addedItem = make_shared<ProductItem>(harvest_product);
-	this->inventory.addItem(addedItem);
 	this->farm.clearItem(coordinate);
 }
 

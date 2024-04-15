@@ -1,5 +1,5 @@
 #include "View/CLI/CLI.hpp"
-#include "Exception/PlayerViewException.hpp"
+#include "Exception/CLIException.hpp"
 #include "View/CLI/Player/BreederView.hpp"
 #include "View/CLI/Player/FarmerView.hpp"
 #include "View/CLI/Player/MayorView.hpp"
@@ -10,7 +10,7 @@ int CLI::promptOption(int from, int to, string message) {
 		cout << message;
 		string option;
 		cin >> option;
-		if (option == "CANCEL") throw UserCancelledPlayerViewException();
+		if (option == "CANCEL") throw UserCancelledCLIException();
 
 		int result = atoi(option.c_str());
 		if (from <= result && result <= to) {
@@ -28,7 +28,7 @@ CLI::CLI() {
 
 shared_ptr<PlayerView> CLI::getView(PlayerType type) {
 	if (this->view.find(type) == this->view.end())
-		throw ViewNotImplementedPlayerViewException();
+		throw GameException("Unimplemented view");
 	return this->view[type];
 };
 

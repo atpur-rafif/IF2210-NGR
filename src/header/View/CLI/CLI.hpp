@@ -26,7 +26,7 @@ public:
 			cout << message;
 			string location;
 			cin >> location;
-			if (location == "CANCEL") throw UserCancelledPlayerViewException();
+			if (location == "CANCEL") throw UserCancelledCLIException();
 
 			try {
 				auto &item = storage.getItem(location);

@@ -131,19 +131,6 @@ public:
 		return this->height;
 	}
 
-	map<string, int> getItemFreq() {
-		vector<T> vec;
-		map<string, int> result;
-		for (int i = 0; i < this->width * this->height; ++i) {
-			if (this->storage[i].has_value())
-				vec.push_back(this->storage[i].value());
-		}
-		for (auto const &item : vec) {
-			++result[item.get()->getName()];
-		}
-		return result;
-	}
-
 	pair<int, int> decodeCoordinate(string str) {
 		int len = str.length();
 

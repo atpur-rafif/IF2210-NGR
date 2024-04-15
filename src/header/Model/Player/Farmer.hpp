@@ -3,8 +3,6 @@
 
 #include "Controller/GameContext.hpp"
 #include "Controller/ItemFactory.hpp"
-#include "Exception/DowncastException.hpp"
-#include "Exception/ItemFactoryException.hpp"
 #include "Exception/StorageException.hpp"
 #include "Model/GameObject.hpp"
 #include "Model/Item/FarmItem.hpp"

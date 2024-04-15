@@ -1,6 +1,5 @@
 #ifndef ITEM_FACTORY_HPP
 #define ITEM_FACTORY_HPP
-#include "Exception/DowncastException.hpp"
 #include "Exception/StorageException.hpp"
 #include "Model/GameObject.hpp"
 #include "Model/Item.hpp"
@@ -8,6 +7,8 @@
 #include <functional>
 #include <map>
 #include <memory>
+
+// TODO: Create iterator, like filter or so
 class ItemFactory : public GameObject {
 	friend class GameContext;
 
@@ -34,7 +35,7 @@ public:
 			result = *ptr;
 			result.setContext(this->getContext());
 		} else {
-			throw InvalidDowncastException();
+			throw GameException("Can't create specified item because type mismatch");
 		}
 	}
 
