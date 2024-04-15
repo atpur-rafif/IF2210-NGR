@@ -26,6 +26,13 @@ string Player::playerTypeToString(int type) {
 	return typeString[type];
 }
 
+optional<PlayerType> Player::stringToPlayerType(string type) {
+	if (type == "Petani") return {FarmerType};
+	else if (type == "Peternak") return {BreederType};
+	else if (type == "Walikota") return {MayorType};
+	return {};
+};
+
 int Player::countInventoryWealth() {
 	vector<shared_ptr<Item> *> items = this->inventory.getAllItem();
 

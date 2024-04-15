@@ -15,12 +15,15 @@ public:
 	vector<pair<shared_ptr<Player>, int>> collectTax();
 
 	void buildBuilding(string name, vector<string> &ingredientLocation);
-	void addPlayer(string name, string type);
+	void addPlayer(string name, PlayerType type);
 	void isEnoughMoney();
 	pair<vector<string>, map<string, int>> checkInventory(map<string, int> items);
 
 	virtual void readSpecializedConfig(istream &inputStream);
 	virtual void writeSpecializedConfig(ostream &outputStream);
+
+	static int newPlayerMoney;
+	static int newPlayerWeight;
 };
 
 #endif

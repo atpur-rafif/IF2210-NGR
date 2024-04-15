@@ -40,6 +40,7 @@ public:
 
 	static int getTaxBracket(int taxed);
 	static string playerTypeToString(int type);
+	static optional<PlayerType> stringToPlayerType(string type);
 
 	void readInventory(istream &inputStream);
 	void writeInventory(ostream &outputStream);

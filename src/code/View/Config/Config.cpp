@@ -69,7 +69,6 @@ void Config::readState(string dir, GameContext &context) {
 
 	context.getShopController().readShopFromStream(stateFile);
 }
-
 void Config::readDefaultState(GameContext &context) {
 	istringstream stateStream(Config::defaultState);
 	int playerCount;

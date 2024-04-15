@@ -25,6 +25,14 @@ shared_ptr<Player> PlayerController::getCurrentPlayer() {
 	return this->players.at(this->currentPlayerIndex);
 };
 
+bool PlayerController::validateNewUsername(string name) {
+	for (auto &player : this->players)
+		if (player->getUsername() == name) return false;
+	return true;
+};
+
+bool PlayerController::hasMayor() { return this->mayor; }
+
 void PlayerController::rearrangePosition() {
 	auto begin = this->players.begin();
 	auto end = begin + this->players.size();
@@ -36,6 +44,7 @@ void PlayerController::rearrangePosition() {
 void PlayerController::addPlayer(shared_ptr<Player> player) {
 	this->players.push_back(player);
 	player->setContext(this->getContext());
+	if (player->getType() == MayorType) this->mayor = true;
 	this->rearrangePosition();
 };
 
@@ -45,19 +54,21 @@ vector<shared_ptr<Player>> PlayerController::getPlayers() {
 
 shared_ptr<Player> PlayerController::readPlayerFromStream(istream &inputStream) {
 	int weight, money;
-	string username, type;
-	inputStream >> username >> type >> weight >> money;
-	GameContext &context = this->getContext();
+	string username, typeString;
+	inputStream >> username >> typeString >> weight >> money;
 
-	for (const auto &element : context.getPlayerController().getPlayers()) {
-		if (element->getUsername() == username) throw GameException("Username \"" + username + "\" already exist");
-	}
+	if (!this->validateNewUsername(username))
+		throw GameException("Username \"" + username + "\" already exist");
 
-	Player *newPlayer;
-	if (type == "Petani") newPlayer = new Farmer();
-	else if (type == "Peternak") newPlayer = new Breeder();
-	else if (type == "Walikota") newPlayer = new Mayor();
-	else throw GameException("Invalid player type \"" + type + "\" found");
+	auto opt = Player::stringToPlayerType(typeString);
+	if (!opt.has_value())
+		throw GameException("Invalid player type");
+
+	auto type = opt.value();
+	Player *newPlayer = nullptr;
+	if (type == FarmerType) newPlayer = new Farmer();
+	else if (type == BreederType) newPlayer = new Breeder();
+	else if (type == MayorType) newPlayer = new Mayor();
 
 	newPlayer->setContext(this->getContext());
 	newPlayer->setUsername(username);

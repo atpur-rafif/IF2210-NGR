@@ -4,7 +4,8 @@
 #include "Model/Item/BuildingItem.hpp"
 #include <sstream>
 
-#define MINIMUM_MONEY 50
+int Mayor::newPlayerMoney = 50;
+int Mayor::newPlayerWeight = 0;
 
 Mayor::Mayor() { this->type = MayorType; }
 Mayor::~Mayor() {}
@@ -85,14 +86,16 @@ pair<vector<string>, map<string, int>> Mayor::checkInventory(map<string, int> it
 	return {locations, items};
 };
 
-const int startWeight = 0;
-const int startMoney = 50;
-void Mayor::addPlayer(string username, string type) {
+void Mayor::addPlayer(string username, PlayerType type) {
 	auto &playerController = this->getContext().getPlayerController();
-	if (startMoney > this->getMoney()) throw GameException("Insufficient funds when creating new player");
-	this->money -= startMoney;
+	if (Mayor::newPlayerMoney > this->getMoney())
+		throw GameException("Insufficient funds when creating new player");
+	this->money -= Mayor::newPlayerMoney;
 
-	string stream = username + " " + type + " " + to_string(startWeight) + " " + to_string(startMoney) + " 0 0"; // Last part for empty inventory
+	if (type == MayorType && playerController.hasMayor())
+		throw GameException("Only one player can be Mayor");
+
+	string stream = username + " " + Player::playerTypeToString(type) + " " + to_string(Mayor::newPlayerWeight) + " " + to_string(Mayor::newPlayerMoney) + " 0 0"; // Last part for empty inventory
 	istringstream inputStream(stream);
 	shared_ptr<Player> player = playerController.readPlayerFromStream(inputStream);
 	playerController.addPlayer(player);
@@ -101,10 +104,6 @@ void Mayor::addPlayer(string username, string type) {
 	if (this->username > username || PlayerController::toLower(this->username) > PlayerController::toLower(username)) {
 		this->getContext().getPlayerController().nextPlayer();
 	}
-}
-
-void Mayor::isEnoughMoney() {
-	if (this->money < MINIMUM_MONEY) throw GameException("Not enought money");
 }
 
 void Mayor::readSpecializedConfig(istream &inputStream) {

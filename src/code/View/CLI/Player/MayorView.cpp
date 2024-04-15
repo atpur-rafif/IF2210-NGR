@@ -1,8 +1,10 @@
 #include "View/CLI/Player/MayorView.hpp"
 #include "Exception/CLIException.hpp"
+#include "Exception/PromptException.hpp"
 #include "Model/Item/BuildingItem.hpp"
 #include "Model/Player.hpp"
 #include "Model/Player/Mayor.hpp"
+#include "View/CLI/CLI.hpp"
 
 MayorView::~MayorView(){};
 MayorView *MayorView::clone() { return new MayorView(*this); }
@@ -89,14 +91,34 @@ void MayorView::build(Mayor &mayor) {
 };
 
 void MayorView::addPlayer(Mayor &mayor) {
-	mayor.isEnoughMoney();
-	string username;
-	string type;
-	cout << "Masukkan jenis pemain: ";
-	cin >> type;
-	cout << "Masukkan nama pemain: ";
-	cin >> username;
+	auto &playerController = mayor.getContext().getPlayerController();
+
+	if (mayor.getMoney() < Mayor::newPlayerMoney) {
+		cout << "Kamu tidak memiliki cukup uang!" << endl;
+		return;
+	}
+
+	function<PlayerType(string)> typeValidator = [&](string type) {
+		auto opt = Player::stringToPlayerType(type);
+		if (!opt.has_value())
+			throw PromptException("Tipe pemain tidak valid!");
+
+		auto value = opt.value();
+		if (value == MayorType && playerController.hasMayor())
+			throw PromptException("Hanya boleh ada satu Walikota dalam permainan");
+
+		return value;
+	};
+	PlayerType type = CLI::prompt("Tipe pemain: ", typeValidator);
+
+	function<string(string)> usernameValidator = [&](string input) {
+		if (!playerController.validateNewUsername(input))
+			throw PromptException("Nama tersebut telah digunakan");
+
+		return input;
+	};
+	string username = CLI::prompt("Masukkan nama pemain: ", usernameValidator);
+
 	mayor.addPlayer(username, type);
-	cout << "Pemain baru ditambahkan!" << endl;
 	cout << "Selamat datang " << username << " di kota ini!" << endl;
 };
