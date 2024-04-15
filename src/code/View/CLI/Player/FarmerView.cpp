@@ -46,7 +46,7 @@ void FarmerView::harvest(Farmer &farmer) {
 	FarmerView::printFarm(farmer);
 	map<string, int> harvestables;
 	for (auto item : farmer.getFarm().getAllItem()) {
-		if (item->getAge() > item->getDurationToHarvest()) {
+		if (item->getAge() >= item->getDurationToHarvest()) {
 			harvestables[item->getCode()] += 1;
 		}
 	}

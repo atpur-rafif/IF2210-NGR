@@ -86,7 +86,7 @@ void BreederView::harvest(Breeder &breeder) {
 	BreederView::printBarn(breeder);
 	map<string, int> harvestables;
 	for (auto item : breeder.getBarn().getAllItem()) {
-		if (item->getWeight() > item->getWeightToHarvest()) {
+		if (item->getWeight() >= item->getWeightToHarvest()) {
 			harvestables[item->getCode()] += 1;
 		}
 	}
