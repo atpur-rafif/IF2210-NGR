@@ -11,7 +11,7 @@ void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 	Breeder &breeder = *(dynamic_cast<Breeder *>(&player));
 	if (command == "TERNAK") this->place(breeder);
 	else if (command == "CETAK_PETERNAKAN") this->printField(breeder);
-	else if (command == "KASIH_MAKAN") this->place(breeder);
+	else if (command == "KASIH_MAKAN") this->feed(breeder);
 	else if (command == "PANEN") this->harvest(breeder);
 	else throw CommandNotFoundCLIException();
 }
