@@ -3,6 +3,7 @@
 #include "Exception/CLIException.hpp"
 #include "Exception/StorageException.hpp"
 #include "Model/Item.hpp"
+#include <climits>
 #include <cstdio>
 #include <iostream>
 #include <sstream>
