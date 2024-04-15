@@ -4,6 +4,7 @@
 #include "Color/pcolor.hpp"
 #include "View/CLI/CLI.hpp"
 #include "View/CLI/PlayerView.hpp"
+#include <functional>
 
 class HarvesterView : public PlayerView {
 public:
@@ -16,26 +17,51 @@ public:
 			return color + item.getCode() + NORMAL;
 		};
 
-		CLI::printStorage("Ladang", harvester.getField(), fn);
+		CLI::printStorage(T::fieldName, harvester.getField(), fn);
 	}
 
 	template <class T>
-	static void feedG(Harvester<T> &harvester) {
-		(void)harvester;
+	static void place(Harvester<T> &harvester) {
+		string inventoryLocation;
+		string fieldLocation;
+		while (true) {
+			PlayerView::printInventory(harvester);
+			function<void(optional<shared_ptr<Item>> &)> inventoryValidator = [](optional<shared_ptr<Item>> &item) {
+				T testItem; // Temporary to make sure the same type
+				if (!item.has_value())
+					throw PromptException("Penyimpanan kosong pada lokasi tersebut");
+				if (item.value()->getType() != testItem.getType())
+					throw PromptException("Tipe barang tidak valid");
+			};
+			inventoryLocation = CLI::promptStorageLocation("Pilih barang sebagai " + T::pronoun + ": ", harvester.inventory, inventoryValidator);
+
+			HarvesterView::printField(harvester);
+			function<void(optional<T> &)> fieldValidator = [](optional<T> &harvestable) {
+				if (harvestable.has_value()) throw PromptException("Tidak bisa menggunakan petak yang sudah ditempati");
+			};
+			fieldLocation = CLI::promptStorageLocation("Pilih petak yang ingin diletakan " + T::pronoun + ": ", harvester.getField(), fieldValidator);
+
+			try {
+				harvester.place(inventoryLocation, fieldLocation);
+				break;
+			} catch (const std::exception &e) {
+				std::cerr << e.what() << '\n';
+			}
+		}
 	};
 
 	template <class T>
-	static void harvestG(Harvester<T> &harvester) {
+	static void harvest(Harvester<T> &harvester) {
 		HarvesterView::printField(harvester);
 		map<string, int> harvestables;
 		for (auto item : harvester.getField().getAllItem()) {
-			if (item->getWeight() >= item->getWeightToHarvest()) {
+			if (item->harvestable()) {
 				harvestables[item->getCode()] += 1;
 			}
 		}
 
 		if (harvestables.size() == 0) {
-			cout << "Tidak ada ternak yang bisa dipanen" << endl;
+			cout << "Tidak ada " << T::pronoun << " yang bisa dipanen" << endl;
 			return;
 		}
 
@@ -59,7 +85,7 @@ public:
 
 		for (int i = 0; i < count; ++i) {
 			string harvestLocation = CLI::promptStorageLocation("Petak ke-" + to_string(i + 1) + " dipanen: ", harvester.getField(), fn);
-			harvester.harvestAnimal(harvestLocation);
+			harvester.harvest(harvestLocation);
 		}
 	};
 };

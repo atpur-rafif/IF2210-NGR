@@ -23,6 +23,7 @@ public:
 
 	virtual void readSpecializedConfig(istream &inputStream);
 	virtual void writeSpecializedConfig(ostream &outputStream);
+
 	void plant(string &invLocation, string &fieldLocation);
 	void harvestPlant(string &coordinate);
 	void plantsGrow();

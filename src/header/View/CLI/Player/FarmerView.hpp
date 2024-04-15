@@ -12,31 +12,6 @@ public:
 	virtual ~FarmerView();
 	virtual FarmerView *clone();
 	virtual void runSpecializedPlayerCommand(Player &player, string command);
-	void printFarm(Farmer &farmer);
-	void plant(Farmer &farmer);
-	void harvest(Farmer &farmer);
-
-	string promptFieldFromFarm(Farmer &farmer) {
-		while (true) {
-			cout << "Petak: ";
-			string location;
-			cin >> location;
-			if (location == "CANCEL")
-				throw UserCancelledCLIException();
-			try {
-				auto rawItem = farmer.getField().getItem(location);
-				if (rawItem.has_value()) {
-					cout << "Petak sudah terisi" << endl;
-					continue;
-				} else {
-					return location;
-				}
-
-			} catch (const exception &err) {
-				cout << err.what() << endl;
-			}
-		}
-	}
 };
 
 #endif

@@ -31,6 +31,9 @@ public:
 	bool harvestable();
 	void readHarvestState(istream &inputStream);
 	void writeHarvestState(ostream &outputStream);
+
+	inline static const string fieldName = "Peternakan";
+	inline static const string pronoun = "Ternak";
 };
 
 #endif
