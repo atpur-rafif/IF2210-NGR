@@ -26,7 +26,7 @@ public:
 		string fieldLocation;
 		while (true) {
 			PlayerView::printInventory(harvester);
-			function<void(optional<shared_ptr<Item>> &)> inventoryValidator = [](optional<shared_ptr<Item>> &item) {
+			function<void(string, optional<shared_ptr<Item>> &)> inventoryValidator = [](string, optional<shared_ptr<Item>> &item) {
 				T testItem; // Temporary to make sure the same type
 				if (!item.has_value())
 					throw PromptException("Penyimpanan kosong pada lokasi tersebut");
@@ -36,7 +36,7 @@ public:
 			inventoryLocation = CLI::promptStorageLocation("Pilih barang sebagai " + T::pronoun + ": ", harvester.inventory, inventoryValidator);
 
 			HarvesterView::printField(harvester);
-			function<void(optional<T> &)> fieldValidator = [](optional<T> &harvestable) {
+			function<void(string, optional<T> &)> fieldValidator = [](string, optional<T> &harvestable) {
 				if (harvestable.has_value()) throw PromptException("Tidak bisa menggunakan petak yang sudah ditempati");
 			};
 			fieldLocation = CLI::promptStorageLocation("Pilih petak yang ingin diletakan " + T::pronoun + ": ", harvester.getField(), fieldValidator);
@@ -77,7 +77,7 @@ public:
 		int count = CLI::promptOption(1, harvestables[selectedCode], "Berapa petak yang ingin dipanen: ");
 
 		cout << "Pilih petak yang ingin dipanen" << endl;
-		function<void(optional<T> &)> fn = [=](optional<T> &item) {
+		function<void(string, optional<T> &)> fn = [=](string, optional<T> &item) {
 			if (!item.has_value()) throw PromptException("Tidak ada ternak disitu");
 			else if (item->getCode() != selectedCode) throw PromptException("Ternak tersebut bukan pilihan untuk dipanen");
 			else if (!item->harvestable()) throw PromptException("Ternak tersebut belum cukup tua untuk dipanen");

@@ -41,12 +41,12 @@ public:
 	}
 
 	template <class T>
-	static string promptStorageLocation(string message, Storage<T> storage, function<void(optional<T> &)> validator) {
+	static string promptStorageLocation(string message, Storage<T> storage, function<void(string, optional<T> &)> validator) {
 		function<string(string)> fn = [=](string location) mutable {
 			if (!storage.isCoordinateValid(location))
 				throw PromptException("Koordinat tidak valid");
 			auto &item = storage.getItem(location);
-			validator(item);
+			validator(location, item);
 			return location;
 		};
 		return CLI::prompt(message, fn);

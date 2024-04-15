@@ -45,16 +45,20 @@ map<string, int> ShopController::getCatalogue(PlayerType playerType) {
 	return list;
 };
 
-void ShopController::addItem(shared_ptr<Item> item) {
+void ShopController::addItem(shared_ptr<Item> &item) {
 	this->addItem(item, 1);
 };
 
-void ShopController::addItem(shared_ptr<Item> item, int count) {
+void ShopController::addItem(shared_ptr<Item> &item, int count) {
 	if (!ShopController::infinity[item->getType()]) this->items[item->getName()] += count;
 };
 
-void ShopController::removeItem(shared_ptr<Item> item) {
-	if (!ShopController::infinity[item->getType()]) this->items[item->getName()] -= 1;
+void ShopController::removeItem(shared_ptr<Item> &item) {
+	this->removeItem(item, 1);
+};
+
+void ShopController::removeItem(shared_ptr<Item> &item, int count) {
+	if (!ShopController::infinity[item->getType()]) this->items[item->getName()] -= count;
 };
 
 void ShopController::readShopFromStream(istream &inputStream) {

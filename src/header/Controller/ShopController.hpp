@@ -19,9 +19,10 @@ protected:
 public:
 	map<string, int> getCatalogue(PlayerType type);
 	bool getAccepted(PlayerType playerType, ItemType itemType);
-	void addItem(shared_ptr<Item> item);
-	void addItem(shared_ptr<Item> item, int count);
-	void removeItem(shared_ptr<Item> item);
+	void addItem(shared_ptr<Item> &item);
+	void addItem(shared_ptr<Item> &item, int count);
+	void removeItem(shared_ptr<Item> &item);
+	void removeItem(shared_ptr<Item> &item, int count);
 
 	void readShopFromStream(istream &inputStream);
 	void writeShopToStream(ostream &outputStream);

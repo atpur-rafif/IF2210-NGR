@@ -1,8 +1,10 @@
 #include "View/CLI/ShopView.hpp"
 #include "Container/Storage.hpp"
 #include "Exception/CLIException.hpp"
+#include "Exception/PromptException.hpp"
 #include "Exception/StorageException.hpp"
 #include "Model/Item.hpp"
+#include "View/CLI/CLI.hpp"
 #include <climits>
 #include <cstdio>
 #include <iostream>
@@ -15,34 +17,21 @@ void ShopView::sellItem(Player &player) {
 	auto &shop = player.getContext().getShopController();
 
 	while (true) {
-		cout << "Petak untuk dijual (CANCEL untuk berhenti): ";
-		string location;
-		cin >> location;
-		cin.ignore(INT_MAX, '\n');
-		if (location == "CANCEL") throw UserCancelledCLIException();
-
-		try {
-			auto &opt = player.inventory.getItem(location);
-			if (!opt.has_value()) {
-				cout << "Slot penyimpanan tersebut kosong" << endl;
-				continue;
-			}
+		function<void(string, optional<shared_ptr<Item>> &)> fn = [&](string, optional<shared_ptr<Item>> &opt) mutable {
+			if (!opt.has_value())
+				throw PromptException("Tidak bisa menjual petak kosong!");
 
 			auto &item = opt.value();
-			if (!shop.getAccepted(player.getType(), item->getType())) {
-				cout << "Barang tidak bisa dijual" << endl;
-				continue;
-			}
+			if (!shop.getAccepted(player.getType(), item->getType()))
+				throw PromptException("Barang tersebut tidak bisa dijual!");
+		};
+		string location = CLI::promptStorageLocation("Petak untuk dijual (CANCEL untuk berhenti): ", player.inventory, fn);
+		int price = player.inventory.getItem(location).value()->getPrice();
+		player.setMoney(player.getMoney() + price);
+		player.inventory.clearItem(location);
 
-			int price = item->getPrice();
-			player.setMoney(player.getMoney() + price);
-			player.inventory.clearItem(location);
-
-			cout << "Barang Anda berhasil dijual! Uang Anda bertambah " << price << " gulden!" << endl;
-			PlayerView::printInventory(player);
-		} catch (const std::exception &err) {
-			cout << err.what() << endl;
-		}
+		cout << "Barang Anda berhasil dijual! Uang Anda bertambah " << price << " gulden!" << endl;
+		PlayerView::printInventory(player);
 	}
 };
 
@@ -76,94 +65,42 @@ void ShopView::buyItem(Player &player) {
 	cout << "Uang anda: " << player.getMoney() << endl;
 	cout << "Slot penyimpanan tersedia: " << player.inventory.getEmptySpaceCount() << endl;
 
-	string selectedName;
 	int listSize = nthList.size();
-	while (true) {
-		string input;
-		cout << "Barang ingin dibeli: ";
-		cin >> input;
-		cin.ignore(INT_MAX, '\n');
+	string selectedName = nthList[CLI::promptOption(1, listSize, "Barang yang ingin dibeli: ") - 1];
 
-		if (input == "CANCEL") throw UserCancelledCLIException();
+	function<pair<int, int>(string)> validator = [&](string input) -> pair<int, int> {
+		int quantity = atoi(input.c_str());
+		if (quantity < 0) throw PromptException("Kuantitas tidak valid!");
+		if (catalogue[selectedName] != -1 && quantity > catalogue[selectedName]) throw PromptException("Barang pada toko tidak cukup!");
+		if (quantity > inventory.getEmptySpaceCount()) throw PromptException("Penyimpanan pemain tidak cukup!");
 
-		int nth = atoi(input.c_str());
-		if (1 <= nth && nth <= listSize) {
-			selectedName = nthList[nth - 1];
-			break;
-		}
-		cout << "Pilihan tidak valid" << endl;
-	}
+		int totalPrice = itemFactory.getItemByName(selectedName)->getPrice() * quantity;
+		if (totalPrice > player.getMoney()) throw PromptException("Uang pemain tidak cukup!");
 
-	int quantity;
-	int totalPrice;
+		return {quantity, totalPrice};
+	};
+	auto [quantity, totalPrice] = CLI::prompt("Kuantitas: ", validator);
 
-	while (true) {
-		string input;
-		cout << "Kuantitas: ";
-		cin >> input;
-		cin.ignore(INT_MAX, '\n');
-
-		if (input == "CANCEL") throw UserCancelledCLIException();
-
-		quantity = atoi(input.c_str());
-		if (quantity <= 0) {
-			cout << "Kuantitas tidak valid!" << endl;
-			continue;
-		}
-
-		if (catalogue[selectedName] != -1 && quantity > catalogue[selectedName]) {
-			cout << "Barang pada toko tidak cukup!" << endl;
-			continue;
-		}
-
-		if (quantity > inventory.getEmptySpaceCount()) {
-			cout << "Penyimpanan pemain tidak cukup!" << endl;
-			continue;
-		}
-
-		totalPrice = itemFactory.getItemByName(selectedName)->getPrice() * quantity;
-		if (totalPrice > player.getMoney()) {
-			cout << "Uang tidak cukup!" << endl;
-			continue;
-		}
-
-		break;
-	}
-
-	vector<pair<int, int>> slots;
+	set<string> slots;
 	PlayerView::printInventory(player);
 
 	cout << "Pilih slot untuk menyimpan barang yang Anda beli!" << endl;
-	int size = slots.size();
-	while (size < quantity) {
-		try {
-			cout << "Slot ke-" << size + 1 << ": ";
-			string location;
-			cin >> location;
-			cin.ignore(INT_MAX, '\n');
+	for (int i = 0; i < quantity; ++i) {
+		function<void(string, optional<shared_ptr<Item>> &)> fn = [&](string input, optional<shared_ptr<Item>> &item) {
+			if (item.has_value())
+				throw PromptException("Tidak bisa memilih petak yang sudah digunakan!");
 
-			if (location == "CANCEL")
-				throw UserCancelledCLIException();
-
-			auto slot = inventory.decodeCoordinate(location);
-			if (inventory.getItem(slot.first, slot.second).has_value()) {
-				cout << "Slot tersebut sudah terisi" << endl;
-				continue;
-			}
-
-			slots.push_back(slot);
-		} catch (const std::exception &err) {
-			cout << err.what() << endl;
-		}
-
-		size = slots.size();
+			if (slots.contains(input))
+				throw PromptException("Petak tersebut sudah dipilih!");
+		};
+		slots.insert(CLI::promptStorageLocation("Petak ke-" + to_string(i + 1) + ": ", player.inventory, fn));
 	}
 
 	player.setMoney(player.getMoney() - totalPrice);
+	shop.removeItem(itemFactory.getItemByName(selectedName));
 	cout << "Selamat Anda berhasil membeli " + to_string(quantity) + " " + selectedName + ". Uang Anda tersisa " + to_string(player.getMoney()) + " gulden." << endl;
 	for (auto &slot : slots) {
 		shared_ptr<Item> item = itemFactory.createBaseItemByName(selectedName);
-		inventory.setItem(slot.first, slot.second, item);
+		inventory.setItem(slot, item);
 	}
-	PlayerView::printInventory(player);
 };

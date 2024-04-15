@@ -23,7 +23,7 @@ void BreederView::feed(Breeder &breeder) {
 		return;
 	}
 
-	function<void(optional<BarnItem> &)> animalValidator = [&](optional<BarnItem> &item) mutable {
+	function<void(string, optional<BarnItem> &)> animalValidator = [&](string, optional<BarnItem> &item) mutable {
 		if (!item.has_value()) throw PromptException("Petak ini kosong!");
 		if (!breeder.hasProductToFeed(item->getBarnItemType())) throw PromptException("Kamu tidak memiliki makanan untuk binatang ini!");
 	};
@@ -31,7 +31,7 @@ void BreederView::feed(Breeder &breeder) {
 	string animalLocation = CLI::promptStorageLocation("Petak untuk diberi makan: ", breeder.getField(), animalValidator);
 	auto &animal = breeder.getField().getItem(animalLocation).value();
 
-	function<void(optional<shared_ptr<Item>> &)> foodValidator = [=](optional<shared_ptr<Item>> &item) mutable {
+	function<void(string, optional<shared_ptr<Item>> &)> foodValidator = [=](string, optional<shared_ptr<Item>> &item) mutable {
 		if (!item.has_value()) throw PromptException("Petak ini kosong!");
 		if ((*item)->getType() != Product) throw PromptException("Barang ini tidak bisa dimakan");
 
