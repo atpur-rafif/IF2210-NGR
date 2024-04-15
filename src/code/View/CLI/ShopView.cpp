@@ -70,7 +70,7 @@ void ShopView::buyItem(Player &player) {
 
 	function<pair<int, int>(string)> validator = [&](string input) -> pair<int, int> {
 		int quantity = atoi(input.c_str());
-		if (quantity < 0) throw PromptException("Kuantitas tidak valid!");
+		if (quantity <= 0) throw PromptException("Kuantitas tidak valid!");
 		if (catalogue[selectedName] != -1 && quantity > catalogue[selectedName]) throw PromptException("Barang pada toko tidak cukup!");
 		if (quantity > inventory.getEmptySpaceCount()) throw PromptException("Penyimpanan pemain tidak cukup!");
 
