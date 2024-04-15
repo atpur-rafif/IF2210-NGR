@@ -9,7 +9,7 @@ enum FarmItemType {
 	Fruit
 };
 
-class FarmItem : public Item, public Harvestable {
+class FarmItem : public Harvestable {
 private:
 	FarmItemType farmItemType;
 	int durationToHarvest;
@@ -27,6 +27,8 @@ public:
 	void setAge(int age);
 
 	bool harvestable();
+	void readHarvestState(istream &inputStream);
+	void writeHarvestState(ostream &outputStream);
 };
 
 #endif

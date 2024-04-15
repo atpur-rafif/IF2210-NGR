@@ -23,7 +23,7 @@ public:
 			if (location == "CANCEL")
 				throw UserCancelledCLIException();
 			try {
-				auto rawItem = farmer.getFarm().getItem(location);
+				auto rawItem = farmer.getField().getItem(location);
 				if (rawItem.has_value()) {
 					cout << "Petak sudah terisi" << endl;
 					continue;

@@ -12,7 +12,7 @@ enum PlayerType {
 	MayorType
 };
 
-class Player : virtual public GameObject {
+class Player : public GameObject {
 protected:
 	string username;
 	PlayerType type;

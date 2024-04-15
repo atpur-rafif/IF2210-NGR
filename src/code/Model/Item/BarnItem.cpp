@@ -9,7 +9,10 @@ BarnItemType BarnItem::getBarnItemType() { return this->barnItemType; }
 int BarnItem::getWeightToHarvest() { return this->weightToHarvest; }
 int BarnItem::getWeight() { return this->currentWeight; }
 void BarnItem::setWeight(int weight) { this->currentWeight = weight; }
+
 bool BarnItem::harvestable() { return this->getWeight() >= this->getWeightToHarvest(); }
+void BarnItem::readHarvestState(istream &inputStream) { inputStream >> this->currentWeight; }
+void BarnItem::writeHarvestState(ostream &outputStream) { outputStream << this->currentWeight; };
 
 void BarnItem::readAttributeFromStream(istream &inputStream) {
 	string type;

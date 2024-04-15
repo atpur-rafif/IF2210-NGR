@@ -7,11 +7,12 @@ Farmer::Farmer() { this->type = FarmerType; }
 Farmer::~Farmer() {}
 Farmer *Farmer::clone() { return new Farmer(*this); }
 
-Storage<FarmItem> &Farmer::getFarm() { return this->farm; };
+void Farmer::readSpecializedConfig(istream &inputStream) { this->readFieldFromStream(inputStream); }
+void Farmer::writeSpecializedConfig(ostream &outputStream) { this->writeFieldToStream(outputStream); };
 
 int Farmer::countFarmWealth() {
 	int wealth = 0;
-	for (auto &itemPtr : this->farm.getAllItem())
+	for (auto &itemPtr : this->field.getAllItem())
 		wealth += itemPtr->getPrice();
 	return wealth;
 }
@@ -26,32 +27,6 @@ int Farmer::calculateTax() {
 	return tax;
 }
 
-void Farmer::readSpecializedConfig(istream &inputStream) {
-	auto &ctx = this->getContext();
-	auto &misc = ctx.getMiscConfig();
-	this->farm = Storage<FarmItem>(misc.getFarmWidth(), misc.getFarmHeight());
-	int farmCount;
-	inputStream >> farmCount;
-	while (farmCount--) {
-		int plantAge;
-		string location, name;
-		inputStream >> location >> name >> plantAge;
-		FarmItem item;
-		ctx.getItemFactory().createItemByName(name, item);
-		item.setAge(plantAge);
-		this->farm.setItem(location, item);
-	}
-};
-
-void Farmer::writeSpecializedConfig(ostream &outputStream) {
-	auto farmItems = this->farm.getAllItemWithCoordinate();
-	outputStream << farmItems.size() << endl;
-	for (auto it : farmItems) {
-		auto item = it.second;
-		outputStream << it.first << ' ' << item->getName() << ' ' << item->getAge() << endl;
-	}
-};
-
 void Farmer::plant(string &inventoryLocation, string &fieldLocation) {
 	auto opt = this->inventory.getItem(inventoryLocation);
 	if (!opt.has_value())
@@ -62,13 +37,13 @@ void Farmer::plant(string &inventoryLocation, string &fieldLocation) {
 	if (newPlant == nullptr)
 		throw GameException("Can't plant non farm item");
 
-	this->farm.setItem(fieldLocation, *newPlant);
+	this->field.setItem(fieldLocation, *newPlant);
 	this->inventory.clearItem(inventoryLocation);
 }
 
 void Farmer::harvestPlant(string &coordinate) {
 	auto &itemFactory = this->getContext().getItemFactory();
-	optional<FarmItem> &opt = this->farm.getItem(coordinate);
+	optional<FarmItem> &opt = this->field.getItem(coordinate);
 	if (!opt.has_value())
 		throw GameException("Empty farm slot given when harvesting");
 
@@ -82,11 +57,11 @@ void Farmer::harvestPlant(string &coordinate) {
 		shared_ptr<Item> item = itemFactory.createBaseItemByName(name);
 		this->inventory.addItem(item);
 	}
-	this->farm.clearItem(coordinate);
+	this->field.clearItem(coordinate);
 }
 
 void Farmer::plantsGrow() {
-	for (FarmItem *plant : this->farm.getAllItem()) {
+	for (FarmItem *plant : this->field.getAllItem()) {
 		plant->setAge(plant->getAge() + 1);
 	}
 }

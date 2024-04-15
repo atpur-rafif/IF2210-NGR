@@ -80,6 +80,7 @@ void Config::readDefaultState(GameContext &context) {
 	}
 }
 
+// TODO: Fix file writer bug
 void Config::writeState(string dir, GameContext &context) {
 	ofstream outputStream;
 	outputStream.open(dir + "/" + stateFilename);

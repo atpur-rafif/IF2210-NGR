@@ -11,7 +11,7 @@ enum BarnItemType {
 	Omnivore
 };
 
-class BarnItem : public Item, public Harvestable {
+class BarnItem : public Harvestable {
 private:
 	BarnItemType barnItemType;
 	int weightToHarvest;
@@ -29,6 +29,8 @@ public:
 	void setWeight(int weight);
 
 	bool harvestable();
+	void readHarvestState(istream &inputStream);
+	void writeHarvestState(ostream &outputStream);
 };
 
 #endif

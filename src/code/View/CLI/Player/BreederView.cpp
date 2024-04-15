@@ -23,20 +23,20 @@ void BreederView::printBarn(Breeder &breeder) {
 		return color + item.getCode() + NORMAL;
 	};
 
-	CLI::printStorage("Peternakan", breeder.getBarn(), fn);
+	CLI::printStorage("Peternakan", breeder.getField(), fn);
 };
 
 void BreederView::breed(Breeder &breeder) {
-	string location;
-	string locationAnimal;
+	string inventoryLocation;
+	string fieldLocation;
 	shared_ptr<BarnItem> barnItem;
 	while (true) {
 		PlayerView::printInventory(breeder);
-		location = PlayerView::promptItemFromInventory(breeder, barnItem);
+		inventoryLocation = PlayerView::promptItemFromInventory(breeder, barnItem);
 		BreederView::printBarn(breeder);
-		locationAnimal = BreederView::promptFieldFromBarn(breeder, "Pilih petak yang ingin ditinggali: ", true);
+		fieldLocation = BreederView::promptFieldFromBarn(breeder, "Pilih petak yang ingin ditinggali: ", true);
 		try {
-			breeder.placeAnimal(location, locationAnimal);
+			breeder.place(inventoryLocation, fieldLocation);
 			break;
 		} catch (const std::exception &e) {
 			std::cerr << e.what() << '\n';
@@ -45,19 +45,19 @@ void BreederView::breed(Breeder &breeder) {
 };
 
 void BreederView::feed(Breeder &breeder) {
-	auto &barn = breeder.getBarn();
+	auto &barn = breeder.getField();
 	if (barn.getFilledSpaceCount() == 0) {
 		cout << "Peternakan Anda kosong" << endl;
 		return;
 	}
 
-	function<void(optional<BarnItem> &)> animalValidator = [=](optional<BarnItem> &item) mutable {
+	function<void(optional<BarnItem> &)> animalValidator = [&](optional<BarnItem> &item) mutable {
 		if (!item.has_value()) throw PromptException("Petak ini kosong!");
 		if (!breeder.hasProductToFeed(item->getBarnItemType())) throw PromptException("Kamu tidak memiliki makanan untuk binatang ini!");
 	};
 	BreederView::printBarn(breeder);
-	string animalLocation = CLI::promptStorageLocation("Petak untuk diberi makan: ", breeder.getBarn(), animalValidator);
-	auto &animal = breeder.getBarn().getItem(animalLocation).value();
+	string animalLocation = CLI::promptStorageLocation("Petak untuk diberi makan: ", breeder.getField(), animalValidator);
+	auto &animal = breeder.getField().getItem(animalLocation).value();
 
 	function<void(optional<shared_ptr<Item>> &)> foodValidator = [=](optional<shared_ptr<Item>> &item) mutable {
 		if (!item.has_value()) throw PromptException("Petak ini kosong!");
@@ -85,7 +85,7 @@ void BreederView::feed(Breeder &breeder) {
 void BreederView::harvest(Breeder &breeder) {
 	BreederView::printBarn(breeder);
 	map<string, int> harvestables;
-	for (auto item : breeder.getBarn().getAllItem()) {
+	for (auto item : breeder.getField().getAllItem()) {
 		if (item->getWeight() >= item->getWeightToHarvest()) {
 			harvestables[item->getCode()] += 1;
 		}
@@ -115,7 +115,7 @@ void BreederView::harvest(Breeder &breeder) {
 	};
 
 	for (int i = 0; i < count; ++i) {
-		string harvestLocation = CLI::promptStorageLocation("Petak ke-" + to_string(i + 1) + " dipanen: ", breeder.getBarn(), fn);
+		string harvestLocation = CLI::promptStorageLocation("Petak ke-" + to_string(i + 1) + " dipanen: ", breeder.getField(), fn);
 		breeder.harvestAnimal(harvestLocation);
 	}
 };

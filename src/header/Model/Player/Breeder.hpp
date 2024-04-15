@@ -1,22 +1,17 @@
 #ifndef MODEL_PLAYER_BREEDER_HPP
 #define MODEL_PLAYER_BREEDER_HPP
 
+#include "Model/Harvester.hpp"
 #include "Model/Item/BarnItem.hpp"
 #include "Model/Player.hpp"
-#include "Model/Worker.hpp"
 
-class Breeder : public Player, public Worker<BarnItem> {
-protected:
-	Storage<BarnItem> barn;
-
+class Breeder : public Harvester<BarnItem> {
 public:
 	Breeder();
 	virtual Breeder *clone();
 	virtual ~Breeder();
 
-	Storage<BarnItem> &getBarn();
-
-	virtual int calculateTax();
+	int calculateTax();
 	int countBarnWealth();
 
 	virtual void readSpecializedConfig(istream &inputStream);

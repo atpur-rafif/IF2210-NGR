@@ -23,7 +23,7 @@ public:
 			string loc;
 			cin >> loc;
 
-			auto rawField = breeder.getBarn().getItem(loc);
+			auto rawField = breeder.getField().getItem(loc);
 			if (loc == "CANCEL") {
 				throw UserCancelledCLIException();
 			}

@@ -5,25 +5,20 @@
 #include "Controller/ItemFactory.hpp"
 #include "Exception/StorageException.hpp"
 #include "Model/GameObject.hpp"
+#include "Model/Harvester.hpp"
 #include "Model/Item/FarmItem.hpp"
 #include "Model/Item/ProductItem.hpp"
 #include "Model/Player.hpp"
-#include "Model/Worker.hpp"
 
 class ProductItem;
 
-class Farmer : public Player, public Worker<FarmItem> {
-protected:
-	Storage<FarmItem> farm;
-
+class Farmer : public Harvester<FarmItem> {
 public:
 	Farmer();
 	virtual Farmer *clone();
 	virtual ~Farmer();
 
-	Storage<FarmItem> &getFarm();
-
-	virtual int calculateTax();
+	int calculateTax();
 	int countFarmWealth();
 
 	virtual void readSpecializedConfig(istream &inputStream);

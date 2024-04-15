@@ -22,7 +22,7 @@ void FarmerView::printFarm(Farmer &farmer) {
 		return color + item.getCode() + NORMAL;
 	};
 
-	CLI::printStorage("Ladang", farmer.getFarm(), fn);
+	CLI::printStorage("Ladang", farmer.getField(), fn);
 }
 
 void FarmerView::plant(Farmer &farmer) {
@@ -45,7 +45,7 @@ void FarmerView::plant(Farmer &farmer) {
 void FarmerView::harvest(Farmer &farmer) {
 	FarmerView::printFarm(farmer);
 	map<string, int> harvestables;
-	for (auto item : farmer.getFarm().getAllItem()) {
+	for (auto item : farmer.getField().getAllItem()) {
 		if (item->getAge() >= item->getDurationToHarvest()) {
 			harvestables[item->getCode()] += 1;
 		}
@@ -75,7 +75,7 @@ void FarmerView::harvest(Farmer &farmer) {
 	};
 
 	for (int i = 0; i < count; ++i) {
-		string harvestLocation = CLI::promptStorageLocation("Petak ke-" + to_string(i + 1) + " dipanen: ", farmer.getFarm(), fn);
+		string harvestLocation = CLI::promptStorageLocation("Petak ke-" + to_string(i + 1) + " dipanen: ", farmer.getField(), fn);
 		farmer.harvestPlant(harvestLocation);
 	}
 }

@@ -6,11 +6,12 @@ Breeder::Breeder() { this->type = BreederType; }
 Breeder::~Breeder() {}
 Breeder *Breeder::clone() { return new Breeder(*this); }
 
-Storage<BarnItem> &Breeder::getBarn() { return this->barn; };
+void Breeder::readSpecializedConfig(istream &inputStream) { this->readFieldFromStream(inputStream); }
+void Breeder::writeSpecializedConfig(ostream &outputStream) { this->writeFieldToStream(outputStream); };
 
 int Breeder::countBarnWealth() {
 	int wealth = 0;
-	for (auto &itemPtr : this->barn.getAllItem())
+	for (auto &itemPtr : this->field.getAllItem())
 		wealth += itemPtr->getPrice();
 	return wealth;
 }
@@ -23,46 +24,6 @@ int Breeder::calculateTax() {
 	int tax = max((int)round((taxed * bracket) / 100.0), 0);
 	if (this->money < tax) tax = this->money;
 	return tax;
-}
-
-void Breeder::readSpecializedConfig(istream &inputStream) {
-	auto &ctx = this->getContext();
-	auto &misc = ctx.getMiscConfig();
-	this->barn = Storage<BarnItem>(misc.getBarnWidth(), misc.getFarmHeight());
-	int barnCount;
-	inputStream >> barnCount;
-	while (barnCount--) {
-		int animalWeight;
-		string location, name;
-		inputStream >> location >> name >> animalWeight;
-		BarnItem item;
-		ctx.getItemFactory().createItemByName(name, item);
-		item.setWeight(animalWeight);
-		this->barn.setItem(location, item);
-	}
-}
-
-void Breeder::writeSpecializedConfig(ostream &outputStream) {
-	auto barnItems = this->barn.getAllItemWithCoordinate();
-	outputStream << barnItems.size() << endl;
-	for (auto it : barnItems) {
-		auto item = it.second;
-		outputStream << it.first << ' ' << item->getName() << ' ' << item->getWeight() << endl;
-	}
-};
-
-void Breeder::placeAnimal(string &locInventory, string &locField) {
-	auto opt = this->inventory.getItem(locInventory);
-	if (!opt.has_value())
-		throw GameException("Empty inventory slot when breeding");
-
-	shared_ptr<Item> item = opt.value();
-	BarnItem *newAnimal = dynamic_cast<BarnItem *>(item.get());
-	if (newAnimal == nullptr)
-		throw GameException("Can't put non barn item to barn");
-
-	this->barn.setItem(locField, *newAnimal);
-	this->inventory.clearItem(locInventory);
 }
 
 bool Breeder::ableToFeed(BarnItemType animal, ProductItemType product) {
@@ -85,7 +46,7 @@ bool Breeder::hasProductToFeed(BarnItemType type) {
 }
 
 void Breeder::giveFood(string &foodLocation, string &animalLocation) {
-	auto &tempBarn = this->barn.getItem(animalLocation);
+	auto &tempBarn = this->field.getItem(animalLocation);
 
 	if (!tempBarn.has_value())
 		throw GameException("Empty animal slot when giving food");
@@ -115,18 +76,32 @@ void Breeder::giveFood(string &foodLocation, string &animalLocation) {
 	animal->setWeight(animal->getWeight() + product->getAddedWeight());
 }
 
+void Breeder::placeAnimal(string &locInventory, string &locField) {
+	auto opt = this->inventory.getItem(locInventory);
+	if (!opt.has_value())
+		throw GameException("Empty inventory slot when breeding");
+
+	shared_ptr<Item> item = opt.value();
+	BarnItem *newAnimal = dynamic_cast<BarnItem *>(item.get());
+	if (newAnimal == nullptr)
+		throw GameException("Can't put non barn item to barn");
+
+	this->field.setItem(locField, *newAnimal);
+	this->inventory.clearItem(locInventory);
+}
+
 void Breeder::harvestAnimal(string &coordinate) {
 	auto &ctx = this->getContext();
 	auto &itemFactory = ctx.getItemFactory();
 
-	optional<BarnItem> harvestedAnimal = this->barn.getItem(coordinate);
+	optional<BarnItem> harvestedAnimal = this->field.getItem(coordinate);
 	if (!harvestedAnimal.has_value())
 		throw GameException("Empty animal slot when harvesting");
 
 	BarnItem &item = harvestedAnimal.value();
 	vector<string> results = itemFactory.getProductResults(item.getName());
 
-	this->barn.clearItem(coordinate);
+	this->field.clearItem(coordinate);
 	for (auto name : results) {
 		shared_ptr<Item> item = itemFactory.createBaseItemByName(name);
 		this->inventory.addItem(item);
