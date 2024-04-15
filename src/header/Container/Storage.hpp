@@ -131,6 +131,15 @@ public:
 		return this->height;
 	}
 
+	bool isCoordinateValid(string str) {
+		try {
+			decodeCoordinate(str);
+			return true;
+		} catch (const InvalidCoordinateStorageException &) {
+			return false;
+		}
+	}
+
 	pair<int, int> decodeCoordinate(string str) {
 		int len = str.length();
 

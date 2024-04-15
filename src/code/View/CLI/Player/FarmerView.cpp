@@ -68,11 +68,10 @@ void FarmerView::harvest(Farmer &farmer) {
 	int count = CLI::promptOption(1, harvestables[selectedCode], "Berapa petak yang ingin dipanen: ");
 
 	cout << "Pilih petak yang ingin dipanen" << endl;
-	function<string(optional<FarmItem> &)> fn = [=](optional<FarmItem> &item) {
-		if (!item.has_value()) return "Tidak ada tanaman disitu";
-		else if (item->getCode() != selectedCode) return "Tanaman tersebut bukan pilihan untuk dipanen";
-		else if (item->getAge() < item->getDurationToHarvest()) return "Ternak tersebut belum cukup tua untuk dipanen";
-		return "";
+	function<void(optional<FarmItem> &)> fn = [=](optional<FarmItem> &item) {
+		if (!item.has_value()) throw PromptException("Tidak ada tanaman disitu");
+		else if (item->getCode() != selectedCode) throw PromptException("Tanaman tersebut bukan pilihan untuk dipanen");
+		else if (item->getAge() < item->getDurationToHarvest()) throw PromptException("Ternak tersebut belum cukup tua untuk dipanen");
 	};
 
 	for (int i = 0; i < count; ++i) {

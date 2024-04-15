@@ -6,18 +6,13 @@
 #include "View/Config/Config.hpp"
 
 int CLI::promptOption(int from, int to, string message) {
-	while (true) {
-		cout << message;
-		string option;
-		cin >> option;
-		if (option == "CANCEL") throw UserCancelledCLIException();
-
-		int result = atoi(option.c_str());
-		if (from <= result && result <= to) {
+	function<int(string)> fn = [=](string input) {
+		int result = atoi(input.c_str());
+		if (from <= result && result <= to)
 			return result;
-		}
-		cout << "Pilihan tidak valid" << endl;
-	}
+		else throw PromptException("Pilihan tidak valid");
+	};
+	return CLI::prompt(message, fn);
 };
 
 CLI::CLI() {

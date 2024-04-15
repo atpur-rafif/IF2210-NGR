@@ -1,4 +1,4 @@
-CCX=g++-13
+CCX=g++
 
 SRC=src
 OUT=bin

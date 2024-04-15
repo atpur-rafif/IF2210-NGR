@@ -51,28 +51,25 @@ void BreederView::feed(Breeder &breeder) {
 		return;
 	}
 
-	function<string(optional<BarnItem> &)> animalValidator = [=](optional<BarnItem> &item) mutable {
-		if (!item.has_value()) return "Petak ini kosong!";
-		if (!breeder.hasProductToFeed(item->getBarnItemType())) return "Kamu tidak memiliki makanan untuk binatang ini!";
-		return "";
+	function<void(optional<BarnItem> &)> animalValidator = [=](optional<BarnItem> &item) mutable {
+		if (!item.has_value()) throw PromptException("Petak ini kosong!");
+		if (!breeder.hasProductToFeed(item->getBarnItemType())) throw PromptException("Kamu tidak memiliki makanan untuk binatang ini!");
 	};
 	BreederView::printBarn(breeder);
 	string animalLocation = CLI::promptStorageLocation("Petak untuk diberi makan: ", breeder.getBarn(), animalValidator);
 	auto &animal = breeder.getBarn().getItem(animalLocation).value();
 
-	function<string(optional<shared_ptr<Item>> &)> foodValidator = [=](optional<shared_ptr<Item>> &item) mutable {
-		if (!item.has_value()) return "Petak ini kosong!";
-		if ((*item)->getType() != Product) return "Barang ini tidak bisa dimakan";
+	function<void(optional<shared_ptr<Item>> &)> foodValidator = [=](optional<shared_ptr<Item>> &item) mutable {
+		if (!item.has_value()) throw PromptException("Petak ini kosong!");
+		if ((*item)->getType() != Product) throw PromptException("Barang ini tidak bisa dimakan");
 
 		BarnItemType type = animal.getBarnItemType();
 		ProductItemType productType = dynamic_pointer_cast<ProductItem>(item.value())->getProductItemType();
 		if (!Breeder::ableToFeed(type, productType)) {
-			if (type == Herbivore) return "Ternak ini adalah vegetarian";
-			else if (type == Carnivore) return "Ternak ini adalah kanibal";
-			else if (productType == MaterialProduct) return "Ternak ini bukanlah bangunan";
+			if (type == Herbivore) throw PromptException("Ternak ini adalah vegetarian");
+			else if (type == Carnivore) throw PromptException("Ternak ini adalah kanibal");
+			else if (productType == MaterialProduct) throw PromptException("Ternak ini bukanlah bangunan");
 		};
-
-		return "";
 	};
 	PlayerView::printInventory(breeder);
 	string foodLocation = CLI::promptStorageLocation("Petak untuk dimakan ternak: ", breeder.inventory, foodValidator);
@@ -111,11 +108,10 @@ void BreederView::harvest(Breeder &breeder) {
 	int count = CLI::promptOption(1, harvestables[selectedCode], "Berapa petak yang ingin dipanen: ");
 
 	cout << "Pilih petak yang ingin dipanen" << endl;
-	function<string(optional<BarnItem> &)> fn = [=](optional<BarnItem> &item) {
-		if (!item.has_value()) return "Tidak ada ternak disitu";
-		else if (item->getCode() != selectedCode) return "Ternak tersebut bukan pilihan untuk dipanen";
-		else if (item->getWeight() < item->getWeightToHarvest()) return "Ternak tersebut belum cukup tua untuk dipanen";
-		return "";
+	function<void(optional<BarnItem> &)> fn = [=](optional<BarnItem> &item) {
+		if (!item.has_value()) throw PromptException("Tidak ada ternak disitu");
+		else if (item->getCode() != selectedCode) throw PromptException("Ternak tersebut bukan pilihan untuk dipanen");
+		else if (item->getWeight() < item->getWeightToHarvest()) throw PromptException("Ternak tersebut belum cukup tua untuk dipanen");
 	};
 
 	for (int i = 0; i < count; ++i) {

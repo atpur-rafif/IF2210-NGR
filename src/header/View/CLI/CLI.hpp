@@ -1,9 +1,12 @@
 #ifndef VIEW_CLI_HPP
 #define VIEW_CLI_HPP
 
+#include "Color/pcolor.hpp"
 #include "Controller/GameContext.hpp"
+#include "Exception/PromptException.hpp"
 #include "Model/Player.hpp"
 #include "View/CLI/PlayerView.hpp"
+#include <climits>
 #include <iomanip>
 
 class CLI {
@@ -20,25 +23,33 @@ public:
 	void promptConfirmation();
 	static int promptOption(int from, int to, string msg);
 
+	// Transformer will throw PromptException when error, and return value_type when succeed
 	template <class T>
-	static string promptStorageLocation(string message, Storage<T> storage, function<string(optional<T> &)> validator) {
+	static T prompt(string message, function<T(string)> transformer) {
 		while (true) {
 			cout << message;
-			string location;
-			cin >> location;
-			if (location == "CANCEL") throw UserCancelledCLIException();
-
+			string input;
+			cin >> input;
+			cin.ignore(INT_MAX, '\n');
+			if (input == "CANCEL") throw UserCancelledCLIException();
 			try {
-				auto &item = storage.getItem(location);
-				string err = validator(item);
-				if (err.size() == 0) {
-					return location;
-				}
-				cout << err << endl;
-			} catch (const std::exception &e) {
-				std::cerr << e.what() << '\n';
+				return transformer(input);
+			} catch (const PromptException &err) {
+				cout << RED << err.what() << NORMAL << endl;
 			}
 		}
+	}
+
+	template <class T>
+	static string promptStorageLocation(string message, Storage<T> storage, function<void(optional<T> &)> validator) {
+		function<string(string)> fn = [=](string location) mutable {
+			if (!storage.isCoordinateValid(location))
+				throw PromptException("Koordinat tidak valid");
+			auto &item = storage.getItem(location);
+			validator(item);
+			return location;
+		};
+		return CLI::prompt(message, fn);
 	}
 
 	template <class T>
