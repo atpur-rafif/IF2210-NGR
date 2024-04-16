@@ -15,8 +15,11 @@ public:
 		set<string> inserted;
 		vector<pair<string, string>> items;
 		for (auto &item : field.getAllItem()) {
-			if (!inserted.contains(item->getName()))
-				items.push_back({item->getCode(), item->getName()});
+			auto code = item->getCode();
+			if (!inserted.contains(code)) {
+				items.push_back({code, item->getName()});
+				inserted.insert(code);
+			}
 		}
 		sort(items.begin(), items.end());
 
@@ -30,11 +33,11 @@ public:
 		CLI::printStorage(T::fieldName, field, fn);
 
 		cout << endl
+				 << "Total petak kosong: " << field.getEmptySpaceCount() << endl
 				 << "Legenda: " << endl;
 		for (auto &[code, name] : items) {
 			cout << " - " << code << ": " << name << endl;
 		}
-		cout << endl;
 	}
 
 	template <class T>
@@ -59,12 +62,8 @@ public:
 			};
 			fieldLocation = CLI::promptStorageLocation("Pilih petak yang ingin diletakan " + T::pronoun + ": ", harvester.getField(), fieldValidator);
 
-			try {
-				harvester.place(inventoryLocation, fieldLocation);
-				break;
-			} catch (const std::exception &e) {
-				std::cerr << e.what() << '\n';
-			}
+			harvester.place(inventoryLocation, fieldLocation);
+			cout << "Berhasil meletakan " << T::fieldName << endl;
 		}
 	};
 
@@ -92,18 +91,32 @@ public:
 		}
 
 		string selectedCode = nthCode[CLI::promptOption(1, i, "Nomor hewan yang ingin dipanen: ") - 1];
+
+		auto &itemFactory = harvester.getContext().getItemFactory();
+		string name = itemFactory.getNameByCode(selectedCode);
+		auto results = itemFactory.getProductResults(name);
+
+		cout << "Hasil yang akan dipanen adalah ";
+		int size = results.size();
+		for (int i = 0; i < size; ++i) {
+			cout << results[i];
+			if (i != size - 1) cout << ", ";
+		}
+		cout << endl;
+
 		int count = CLI::promptOption(1, harvestables[selectedCode], "Berapa petak yang ingin dipanen: ");
 
 		cout << "Pilih petak yang ingin dipanen" << endl;
 		function<void(string, optional<T> &)> fn = [=](string, optional<T> &item) {
 			if (!item.has_value()) throw PromptException("Tidak ada " + T::pronoun + " disitu");
-			else if (item->getCode() != selectedCode) throw PromptException(T::pronoun + "tersebut bukan pilihan untuk dipanen");
+			else if (item->getCode() != selectedCode) throw PromptException(T::pronoun + " tersebut bukan pilihan untuk dipanen");
 			else if (!item->harvestable()) throw PromptException(T::pronoun + " tersebut belum cukup tua untuk dipanen");
 		};
 
 		for (int i = 0; i < count; ++i) {
-			string harvestLocation = CLI::promptStorageLocation("Petak ke-" + to_string(i + 1) + " dipanen: ", harvester.getField(), fn);
+			string harvestLocation = CLI::promptStorageLocation("Petak ke-" + to_string(i + 1) + ": ", harvester.getField(), fn);
 			harvester.harvest(harvestLocation);
+			cout << "Panen ke-" << i + 1 << " berhasil" << endl;
 		}
 	};
 };

@@ -46,10 +46,6 @@ void BreederView::feed(Breeder &breeder) {
 	PlayerView::printInventory(breeder);
 	string foodLocation = CLI::promptStorageLocation("Petak untuk dimakan ternak: ", breeder.inventory, foodValidator);
 
-	try {
-		breeder.giveFood(foodLocation, animalLocation);
-		cout << "Ternak " << animal.getName() << " telah diberi makan dan beratnya menjadi " << animal.getWeight() << endl;
-	} catch (const exception &e) {
-		cerr << e.what() << "\n";
-	}
+	breeder.giveFood(foodLocation, animalLocation);
+	cout << "Ternak " << animal.getName() << " telah diberi makan dan beratnya menjadi " << animal.getWeight() << endl;
 };

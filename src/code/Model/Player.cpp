@@ -27,9 +27,9 @@ string Player::playerTypeToString(int type) {
 }
 
 optional<PlayerType> Player::stringToPlayerType(string type) {
-	if (type == "Petani") return {FarmerType};
-	else if (type == "Peternak") return {BreederType};
-	else if (type == "Walikota") return {MayorType};
+	if (PlayerController::toLower(type) == "petani") return {FarmerType};
+	else if (PlayerController::toLower(type) == "peternak") return {BreederType};
+	else if (PlayerController::toLower(type) == "walikota") return {MayorType};
 	return {};
 };
 
@@ -70,7 +70,7 @@ void Player::readInventory(istream &inputStream) {
 		string name;
 		inputStream >> name;
 		shared_ptr<Item> item = ctx.getItemFactory().createBaseItemByName(name);
-		this->inventory+item;
+		this->inventory + item;
 	}
 };
 

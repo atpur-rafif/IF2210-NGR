@@ -15,7 +15,7 @@ class ItemFactory : public GameObject {
 protected:
 	ItemFactory();
 	map<string, shared_ptr<Item>> repository;
-	string codeFinder(function<bool(shared_ptr<Item>)> &lambda) const;
+	string nameFinder(function<bool(shared_ptr<Item>)> &lambda) const;
 
 public:
 	// Add new item from derived class, without the need to upcast
@@ -42,6 +42,7 @@ public:
 	// Creating base item (shared pointer to Item)
 	shared_ptr<Item> createBaseItemByName(string name) const;
 	shared_ptr<Item> &getItemByName(string name);
+	string getNameByCode(string code);
 
 	vector<string> getProductResults(string name) {
 		vector<string> results;

@@ -91,6 +91,7 @@ void PlayerView::eat(Player &player) {
 	};
 	string location = CLI::promptStorageLocation("Petak untuk dimakan: ", player.inventory, fn);
 	player.eat(location);
+	cout << "Kamu berhasil makan, dan berat badanmu menjadi " << player.getWeight() << endl;
 }
 
 void PlayerView::save(Player &player) {
@@ -113,15 +114,17 @@ void PlayerView::runPlayerCommand(Player &player, string command) {
 }
 
 void PlayerView::printInventory(Player &player) {
-	auto &field = player.inventory;
+	auto &inventory = player.inventory;
 
 	set<string> inserted;
 	vector<pair<string, string>> items;
-	for (auto &item : field.getAllItem()) {
+	for (auto &item : inventory.getAllItem()) {
 		auto name = (*item)->getName();
 		auto code = (*item)->getCode();
-		if (!inserted.contains(name))
+		if (!inserted.contains(code)) {
 			items.push_back({code, name});
+			inserted.insert(code);
+		}
 	}
 	sort(items.begin(), items.end());
 
@@ -132,9 +135,9 @@ void PlayerView::printInventory(Player &player) {
 	CLI::printStorage("Penyimpanan", player.inventory, fn);
 
 	cout << endl
+			 << "Total petak kosong: " << inventory.getEmptySpaceCount() << endl
 			 << "Legenda: " << endl;
 	for (auto &[code, name] : items) {
 		cout << " - " << code << ": " << name << endl;
 	}
-	cout << endl;
 };

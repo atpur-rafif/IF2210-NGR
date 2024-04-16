@@ -19,38 +19,6 @@ public:
 	static void printInventory(Player &player);
 	static void eat(Player &player);
 	static void save(Player &player);
-
-	template <class T>
-	static string promptItemFromInventory(Player &player, shared_ptr<T> &item) {
-		while (true) {
-			cout << "Location: ";
-			string location;
-			cin >> location;
-
-			if (location == "CANCEL")
-				throw UserCancelledCLIException();
-
-			try {
-				auto rawItem = player.inventory.getItem(location);
-				if (!rawItem.has_value()) {
-					cout << "Item doesn't exist at this location" << endl;
-					continue;
-				}
-
-				shared_ptr<T> casted = dynamic_pointer_cast<T>(rawItem.value());
-				if (casted == NULL) {
-					cout << "Invalid item type" << endl;
-					continue;
-				};
-
-				item = casted;
-				return location;
-
-			} catch (const exception &err) {
-				cout << err.what() << endl;
-			}
-		}
-	};
 };
 
 #endif
