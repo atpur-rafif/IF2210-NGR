@@ -34,6 +34,7 @@ public:
 			cout << NORMAL;
 			cin.ignore(INT_MAX, '\n');
 			if (input == "CANCEL") throw UserCancelledCLIException();
+			if (input == "EXIT") throw ExitCLIException();
 			try {
 				return transformer(input);
 			} catch (const PromptException &err) {

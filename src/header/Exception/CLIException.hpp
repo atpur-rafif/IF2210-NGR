@@ -19,4 +19,9 @@ public:
 	UserCancelledCLIException();
 };
 
+class ExitCLIException : public CLIException {
+public:
+	ExitCLIException();
+};
+
 #endif

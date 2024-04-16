@@ -28,63 +28,61 @@ shared_ptr<PlayerView> CLI::getView(PlayerType type) {
 };
 
 void CLI::config() {
-	while (true) {
-		string dir;
-		cout << "Config directory: ";
-		cin >> dir;
+	function<void(string)> fn = [&](string input) {
 		try {
-			Config::readConfig(dir, this->context);
-			cout << "Config loaded" << endl;
-			break;
+			Config::readConfig(input, this->context);
+			cout << "Konfigurasi berhasil dimuat" << endl;
 		} catch (const std::exception &e) {
-			cout << e.what() << endl;
+			throw PromptException(e.what());
 		}
-	}
+	};
+	CLI::prompt("Konfigurasi direktori: ", fn);
 }
 
 void CLI::state() {
-	cout << "State option:" << endl;
-	cout << "1. Use default state" << endl;
-	cout << "2. Read from file" << endl;
-	cout << "> ";
+	cout << "Pilihan state:" << endl;
+	cout << "1. Gunakan default" << endl;
+	cout << "2. Baca dari file" << endl;
 
-	string prompt;
-	while (true) {
-		cin >> prompt;
-		if (prompt == "1") {
-			Config::readDefaultState(this->context);
-			cout << "Using default state" << endl;
-			break;
-		} else if (prompt == "2") {
-			while (true) {
-				string dir;
-				cout << "State directory: ";
-				cin >> dir;
-				try {
-					Config::readState(dir, this->context);
-					cout << "State loaded" << endl;
-					break;
-				} catch (const std::exception &e) {
-					cout << e.what() << endl;
-				}
+	int option = CLI::promptOption(1, 2, "> ");
+	if (option == 1) {
+		Config::readDefaultState(this->context);
+		cout << "Menggunakan state default" << endl;
+	} else if (option == 2) {
+		function<void(string)> fn = [&](string input) {
+			try {
+				Config::readState(input, this->context);
+				cout << "State berhasil dimuat" << endl;
+			} catch (const std::exception &e) {
+				throw PromptException(e.what());
 			}
-			break;
-		} else {
-			cout << "Invalid option" << endl;
-		}
+		};
+		CLI::prompt("Konfigurasi direktori: ", fn);
 	}
 }
 
 void CLI::start() {
-	this->config();
-	this->state();
+	cout << "Perintah CANCEL untuk menghentikan sebuah perintah" << endl;
+	cout << "Perintah EXIT untuk keluar dari permainan" << endl;
 
-	// Config::readConfig("example", this->context);
-	// Config::readState("example", this->context);
-	while (true) {
-		shared_ptr<Player> current = this->context.getPlayerController().getCurrentPlayer();
-		shared_ptr<PlayerView> view = this->getView(current->getType());
-		view->start(*current);
-		this->context.getPlayerController().nextPlayer();
+	try {
+		this->config();
+		this->state();
+	} catch (const CLIException &err) {
+		cout << err.what() << endl;
+		return;
 	}
+
+	while (true) {
+		try {
+			shared_ptr<Player> current = this->context.getPlayerController().getCurrentPlayer();
+			shared_ptr<PlayerView> view = this->getView(current->getType());
+			view->start(*current);
+			this->context.getPlayerController().nextPlayer();
+		} catch (const ExitCLIException &) {
+			break;
+		}
+	}
+
+	cout << "Permainan berakhir!";
 }
