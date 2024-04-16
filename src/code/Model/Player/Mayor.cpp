@@ -97,7 +97,6 @@ void Mayor::addPlayer(string username, PlayerType type) {
 	shared_ptr<Player> player = playerController.readPlayerFromStream(inputStream);
 	playerController.addPlayer(player);
 
-	// TODO: Create util for string
 	if (this->username > username || PlayerController::toLower(this->username) > PlayerController::toLower(username)) {
 		this->getContext().getPlayerController().nextPlayer();
 	}

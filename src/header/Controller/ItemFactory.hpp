@@ -8,7 +8,6 @@
 #include <map>
 #include <memory>
 
-// TODO: Create iterator, like filter or so
 class ItemFactory : public GameObject {
 	friend class GameContext;
 

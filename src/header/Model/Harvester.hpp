@@ -6,7 +6,6 @@
 #include "Model/GameObject.hpp"
 #include "Model/Player.hpp"
 
-// TODO: Add constraint
 template <class T>
 class Harvester : public Player {
 protected:
@@ -51,7 +50,7 @@ public:
 		this->field.clearItem(coordinate);
 		for (auto name : results) {
 			shared_ptr<Item> item = itemFactory.createBaseItemByName(name);
-			this->inventory+item;
+			this->inventory + item;
 		}
 	};
 

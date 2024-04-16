@@ -8,7 +8,6 @@ string ItemFactory::nameFinder(function<bool(shared_ptr<Item>)> &lambda) const {
 	throw GameException("Item not found using codeFinder");
 }
 
-// TODO: Validate if not exist
 shared_ptr<Item> ItemFactory::createBaseItemByName(string name) const {
 	shared_ptr<Item> item{this->repository.at(name)->clone()};
 	item->setContext(this->getContext());
