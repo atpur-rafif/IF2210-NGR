@@ -36,7 +36,7 @@ public:
 	ItemType getType();
 
 	friend istream &operator>>(istream &inputStream, Item &item);
-	friend Storage<shared_ptr<Item>> &operator+(Storage<shared_ptr<Item>> &inventory,shared_ptr<Item> &item);
+	friend void operator+(Storage<shared_ptr<Item>> &inventory,shared_ptr<Item> &item);
 };
 
 #endif
