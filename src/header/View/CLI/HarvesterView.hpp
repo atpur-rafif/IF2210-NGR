@@ -80,7 +80,7 @@ public:
 			return;
 		}
 
-		cout << "Pilih hewan siap panen yang kamu miliki" << endl;
+		cout << "Pilih " << T::pronoun << " siap panen yang kamu miliki" << endl;
 		int i = 0;
 		string nthCode[harvestables.size()];
 		for (auto it : harvestables) {
@@ -88,7 +88,7 @@ public:
 			cout << '\t' << ++i << ". " << it.first << " (" << it.second << " petak siap panen)" << endl;
 		}
 
-		string selectedCode = nthCode[CLI::promptOption(1, i, "Nomor hewan yang ingin dipanen: ") - 1];
+		string selectedCode = nthCode[CLI::promptOption(1, i, "Nomor " + T::pronoun + " yang ingin dipanen: ") - 1];
 
 		auto &itemFactory = harvester.getContext().getItemFactory();
 		string name = itemFactory.getNameByCode(selectedCode);
