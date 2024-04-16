@@ -62,7 +62,7 @@ public:
 		fieldLocation = CLI::promptStorageLocation("Pilih petak yang ingin diletakan " + T::pronoun + ": ", harvester.getField(), fieldValidator);
 
 		harvester.place(inventoryLocation, fieldLocation);
-		cout << "Berhasil meletakan " << T::fieldName << endl;
+		cout << "Berhasil meletakan " << T::pronoun << endl;
 	};
 
 	template <class T>
