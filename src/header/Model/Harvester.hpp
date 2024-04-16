@@ -1,8 +1,8 @@
 #ifndef MODEL_HARVESTER_HPP
 #define MODEL_HARVESTER_HPP
 
-#include "Controller/GameContext.hpp"
 #include "Container/Storage.hpp"
+#include "Controller/GameContext.hpp"
 #include "Model/GameObject.hpp"
 #include "Model/Player.hpp"
 
@@ -57,8 +57,6 @@ public:
 
 	void readFieldFromStream(istream &inputStream) {
 		auto &ctx = this->getContext();
-		auto &misc = ctx.getMiscConfig();
-		this->field = Storage<T>(misc.getBarnWidth(), misc.getFarmHeight());
 		int barnCount;
 		inputStream >> barnCount;
 		while (barnCount--) {

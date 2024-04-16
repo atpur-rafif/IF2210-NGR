@@ -7,7 +7,11 @@ Farmer::Farmer() { this->type = FarmerType; }
 Farmer::~Farmer() {}
 Farmer *Farmer::clone() { return new Farmer(*this); }
 
-void Farmer::readSpecializedConfig(istream &inputStream) { this->readFieldFromStream(inputStream); }
+void Farmer::readSpecializedConfig(istream &inputStream) {
+	auto &misc = this->getContext().getMiscConfig();
+	this->field = Storage<FarmItem>(misc.getFarmWidth(), misc.getFarmHeight());
+	this->readFieldFromStream(inputStream);
+}
 void Farmer::writeSpecializedConfig(ostream &outputStream) { this->writeFieldToStream(outputStream); };
 
 int Farmer::countFarmWealth() {
