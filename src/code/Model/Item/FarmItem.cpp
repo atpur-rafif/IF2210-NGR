@@ -1,6 +1,6 @@
 #include "Model/Item/FarmItem.hpp"
 
-FarmItem::FarmItem() { this->type = Farm; }
+FarmItem::FarmItem() : currentAge(0) { this->type = Farm; }
 FarmItem::~FarmItem() {}
 FarmItem *FarmItem::clone() const { return new FarmItem(*this); }
 

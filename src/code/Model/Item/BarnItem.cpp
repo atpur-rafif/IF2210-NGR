@@ -1,6 +1,6 @@
 #include "Model/Item/BarnItem.hpp"
 
-BarnItem::BarnItem() { this->type = Barn; }
+BarnItem::BarnItem() : currentWeight(0) { this->type = Barn; }
 BarnItem::~BarnItem() {}
 BarnItem *BarnItem::clone() const { return new BarnItem(*this); }
 
