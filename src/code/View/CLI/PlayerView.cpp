@@ -19,7 +19,7 @@ void PlayerView::start(Player &player) {
 			return input;
 		};
 
-		string prompt = player.getUsername() + ">";
+		string prompt = player.getUsername() + "> ";
 		string command;
 		try {
 			command = CLI::prompt(prompt, fn);
