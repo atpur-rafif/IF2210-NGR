@@ -14,6 +14,7 @@ PlayerView::~PlayerView(){};
 
 void PlayerView::start(Player &player) {
 	while (true) {
+		player.getContext().getPlayerController().checkWinner();
 		function<string(string)> fn = [](string input) {
 			return input;
 		};
@@ -42,7 +43,6 @@ void PlayerView::start(Player &player) {
 				throw;
 			}
 			this->runSpecializedPlayerCommand(player, command);
-			player.getContext().getPlayerController().checkWinner();
 			continue;
 		} catch (const CLIException &err) {
 			cout << err.what() << endl;

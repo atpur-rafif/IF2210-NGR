@@ -21,7 +21,7 @@ string PlayerController::toLower(string textInput) {
 void PlayerController::checkWinner() {
 	auto &miscConfig = this->getContext().getMiscConfig();
 	for (auto &player : this->getPlayers()) {
-		if (player->getMoney() > miscConfig.getTargetMoney() && player->getWeight() > miscConfig.getTargetWeight()) {
+		if (player->getMoney() >= miscConfig.getTargetMoney() && player->getWeight() >= miscConfig.getTargetWeight()) {
 			throw EndGameException("=== Selamat, pemain " + player->getUsername() + " menang ===");
 		}
 	}
