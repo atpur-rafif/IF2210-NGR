@@ -44,7 +44,7 @@ void CLI::state() {
 	cout << "1. Gunakan default" << endl;
 	cout << "2. Baca dari file" << endl;
 
-	int option = CLI::promptOption(1, 2, "> ");
+	int option = CLI::promptOption(1, 2, "Masukan piliihan: ");
 	if (option == 1) {
 		Config::readDefaultState(this->context);
 		cout << "Menggunakan state default" << endl;
@@ -57,7 +57,7 @@ void CLI::state() {
 				throw PromptException(e.what());
 			}
 		};
-		CLI::prompt("Konfigurasi direktori: ", fn);
+		CLI::prompt("Lokasi state file: ", fn);
 	}
 }
 
@@ -73,15 +73,17 @@ void CLI::start() {
 		return;
 	}
 
-	while (true) {
-		try {
+	try {
+		while (true) {
+			this->context.getPlayerController().checkWinner();
 			shared_ptr<Player> current = this->context.getPlayerController().getCurrentPlayer();
 			shared_ptr<PlayerView> view = this->getView(current->getType());
 			view->start(*current);
 			this->context.getPlayerController().nextPlayer();
-		} catch (const ExitCLIException &) {
-			break;
 		}
+	} catch (const ExitCLIException &) {
+	} catch (const EndGameException &err) {
+		cout << err.what() << endl;
 	}
 
 	cout << "Permainan berakhir!";

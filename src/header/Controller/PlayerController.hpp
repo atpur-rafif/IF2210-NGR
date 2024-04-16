@@ -27,6 +27,7 @@ public:
 
 	shared_ptr<Player> readPlayerFromStream(istream &inputStream);
 	void writePlayerToStream(shared_ptr<Player> player, ostream &outputStream);
+	void checkWinner();
 
 	static string toLower(string text);
 };

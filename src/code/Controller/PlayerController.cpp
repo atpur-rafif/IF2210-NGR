@@ -1,5 +1,6 @@
 #include "Controller/PlayerController.hpp"
 #include "Controller/GameContext.hpp"
+#include "Exception/GameException.hpp"
 #include "Model/Player/Breeder.hpp"
 #include "Model/Player/Farmer.hpp"
 #include "Model/Player/Mayor.hpp"
@@ -16,6 +17,15 @@ string PlayerController::toLower(string textInput) {
 	transform(text.begin(), text.end(), text.begin(), ::tolower);
 	return text;
 }
+
+void PlayerController::checkWinner() {
+	auto &miscConfig = this->getContext().getMiscConfig();
+	for (auto &player : this->getPlayers()) {
+		if (player->getMoney() > miscConfig.getTargetMoney() && player->getWeight() > miscConfig.getTargetWeight()) {
+			throw EndGameException("=== Selamat, pemain " + player->getUsername() + " menang ===");
+		}
+	}
+};
 
 void PlayerController::nextPlayer() {
 	this->currentPlayerIndex = (this->currentPlayerIndex + 1) % this->players.size();

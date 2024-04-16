@@ -17,6 +17,7 @@ void PlayerView::start(Player &player) {
 		cout << player.getUsername() << "> ";
 		string command;
 		cin >> command;
+
 		if (command == "NEXT") {
 			auto list_player = player.getContext().getPlayerController().getPlayers();
 			int size = list_player.size();
@@ -39,6 +40,7 @@ void PlayerView::start(Player &player) {
 				throw;
 			}
 			this->runSpecializedPlayerCommand(player, command);
+			player.getContext().getPlayerController().checkWinner();
 			continue;
 		} catch (const CLIException &err) {
 			cout << err.what() << endl;
@@ -46,33 +48,57 @@ void PlayerView::start(Player &player) {
 	}
 }
 
+void PlayerView::eat(Player &player) {
+	auto items = player.inventory.getAllItem();
+	bool found = false;
+	for (auto item : items) {
+		if ((*item)->getType() != Product) continue;
+
+		shared_ptr<ProductItem> product = dynamic_pointer_cast<ProductItem>(*item);
+		if (product->getProductItemType() != MaterialProduct) {
+			found = true;
+			break;
+		}
+	}
+
+	if (!found) {
+		cout << "Kamu tidak memiliki barang yang bisa dimakan!" << endl;
+		return;
+	}
+
+	PlayerView::printInventory(player);
+	function<void(string, optional<shared_ptr<Item>> &)> fn = [](string, optional<shared_ptr<Item>> &opt) {
+		if (!opt.has_value())
+			throw PromptException("Tidak bisa memakan petak kosong");
+
+		shared_ptr<ProductItem> product = dynamic_pointer_cast<ProductItem>(opt.value());
+		if (product == nullptr)
+			throw PromptException("Barang yang dipilih tidak bisa dimakan");
+
+		if (product->getProductItemType() == MaterialProduct)
+			throw PromptException("Tidak bisa memakan material");
+	};
+	string location = CLI::promptStorageLocation("Petak untuk dimakan: ", player.inventory, fn);
+	player.eat(location);
+}
+
+void PlayerView::save(Player &player) {
+	cout << "Location to save: ";
+	string location;
+	cin >> location;
+	Config::writeState(location, player.getContext());
+}
+
 void PlayerView::runPlayerCommand(Player &player, string command) {
 	if (command == "BELI") ShopView::buyItem(player);
 	else if (command == "JUAL") ShopView::sellItem(player);
 	else if (command == "CETAK_PENYIMPANAN") this->printInventory(player);
-	else if (command == "MAKAN") {
-		this->printInventory(player);
-
-		string location;
-		shared_ptr<ProductItem> product;
-		while (true) {
-			location = this->promptItemFromInventory(player, product);
-			ProductItemType type = product->getProductItemType();
-			if (type == AnimalProduct || type == FruitProduct) break;
-			cout << "Player can't eat this item" << endl;
-		}
-
-		player.setWeight(player.getWeight() + product->getAddedWeight());
-		player.inventory.clearItem(location);
-	} else if (command == "STATUS") {
+	else if (command == "MAKAN") this->eat(player);
+	else if (command == "STATUS") {
 		cout << "Money: " << player.getMoney() << endl;
 		cout << "Weight: " << player.getWeight() << endl;
-	} else if (command == "SIMPAN") {
-		cout << "Location to save: ";
-		string location;
-		cin >> location;
-		Config::writeState(location, player.getContext());
-	} else throw CommandNotFoundCLIException();
+	} else if (command == "SIMPAN") this->save(player);
+	else throw CommandNotFoundCLIException();
 }
 
 void PlayerView::printInventory(Player &player) {

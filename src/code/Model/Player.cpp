@@ -42,6 +42,23 @@ int Player::countInventoryWealth() {
 	return wealth;
 }
 
+void Player::eat(string location) {
+	auto &inventory = this->inventory;
+	auto &opt = inventory.getItem(location);
+
+	if (!opt.has_value())
+		throw GameException("Can't eat empty slot");
+
+	shared_ptr<ProductItem> product = dynamic_pointer_cast<ProductItem>(opt.value());
+	if (product == nullptr)
+		throw GameException("Can't eat non product item");
+
+	if (product->getProductItemType() == MaterialProduct) throw GameException("Can't eat material");
+
+	this->setWeight(this->getWeight() + product->getAddedWeight());
+	inventory.clearItem(location);
+};
+
 void Player::readInventory(istream &inputStream) {
 	auto &ctx = this->getContext();
 	auto &misc = ctx.getMiscConfig();

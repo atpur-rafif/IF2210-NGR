@@ -17,7 +17,8 @@ public:
 	void runPlayerCommand(Player &player, string command);
 	virtual void runSpecializedPlayerCommand(Player &player, string command) = 0;
 	static void printInventory(Player &player);
-	void eat(Player &player);
+	static void eat(Player &player);
+	static void save(Player &player);
 
 	template <class T>
 	static string promptItemFromInventory(Player &player, shared_ptr<T> &item) {

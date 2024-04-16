@@ -35,6 +35,7 @@ public:
 	void setWeight(int weight);
 	void setMoney(int money);
 
+	void eat(string location);
 	virtual int calculateTax() = 0;
 	int countInventoryWealth();
 

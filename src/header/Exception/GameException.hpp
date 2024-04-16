@@ -12,4 +12,9 @@ public:
 	GameException(string error);
 };
 
+class EndGameException : public GameException {
+public:
+	EndGameException(string reason);
+};
+
 #endif
