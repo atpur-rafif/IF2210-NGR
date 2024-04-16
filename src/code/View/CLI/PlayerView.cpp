@@ -32,20 +32,20 @@ void PlayerView::start(Player &player) {
       return;
     }
 
-    try {
-      try {
-        this->runPlayerCommand(player, command);
-        continue;
-      } catch (const CommandNotFoundCLIException &_) {
-      } catch (...) {
-        throw;
-      }
-      this->runSpecializedPlayerCommand(player, command);
-      continue;
-    } catch (const UserCancelledCLIException &err) {
-      cout << err.what() << endl;
-    }
-  }
+		try {
+			try {
+				this->runPlayerCommand(player, command);
+				continue;
+			} catch (const CommandNotFoundCLIException &_) {
+			} catch (...) {
+				throw;
+			}
+			this->runSpecializedPlayerCommand(player, command);
+			continue;
+		} catch (const UserCancelledCLIException &err) {
+			cout << err.what() << endl;
+		}
+	}
 }
 
 void PlayerView::eat(Player &player) {
