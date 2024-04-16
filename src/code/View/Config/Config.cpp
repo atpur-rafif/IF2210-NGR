@@ -54,12 +54,17 @@ void Config::readConfig(
 	readItemConfigFileMacro(BuildingItem, dir, buildingFilename, context.getItemFactory());
 };
 
-void Config::readState(string dir, GameContext &context) {
-	if (!filesystem::is_directory(dir))
+void Config::readState(string location, GameContext &context) {
+	filesystem::path path(filesystem::absolute(location));
+
+	if (!filesystem::is_directory(path.parent_path().string()))
 		throw InvalidDirectoryFileException();
 
+	if (!filesystem::is_regular_file(location))
+		throw FileNotFoundFileException(path.filename().string());
+
 	ifstream stateFile;
-	stateFile.open(dir + "/" + stateFilename);
+	stateFile.open(location);
 	int playerCount;
 	stateFile >> playerCount;
 	while (playerCount--) {
@@ -79,10 +84,13 @@ void Config::readDefaultState(GameContext &context) {
 	}
 }
 
-// TODO: Fix file writer bug
-void Config::writeState(string dir, GameContext &context) {
+void Config::writeState(string location, GameContext &context) {
+	filesystem::path path(filesystem::absolute(location));
+	filesystem::create_directory(path.parent_path().string());
+
 	ofstream outputStream;
-	outputStream.open(dir + "/" + stateFilename);
+	outputStream.open(location);
+	filesystem::is_regular_file(location);
 	auto players = context.getPlayerController().getPlayers();
 	outputStream << players.size() << endl;
 	for (auto player : players) {
