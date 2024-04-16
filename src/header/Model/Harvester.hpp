@@ -51,7 +51,7 @@ public:
 		this->field.clearItem(coordinate);
 		for (auto name : results) {
 			shared_ptr<Item> item = itemFactory.createBaseItemByName(name);
-			this->inventory = this->inventory+item;
+			this->inventory+item;
 		}
 	};
 
