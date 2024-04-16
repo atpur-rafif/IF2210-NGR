@@ -81,7 +81,7 @@ void CLI::start() {
 			view->start(*current);
 			this->context.getPlayerController().nextPlayer();
 		}
-	} catch (const ExitCLIException &) {
+	} catch (const CLIException &) {
 	} catch (const EndGameException &err) {
 		cout << err.what() << endl;
 	}

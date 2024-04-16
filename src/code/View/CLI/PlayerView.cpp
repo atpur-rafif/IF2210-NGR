@@ -14,9 +14,11 @@ PlayerView::~PlayerView(){};
 
 void PlayerView::start(Player &player) {
 	while (true) {
-		cout << player.getUsername() << "> ";
-		string command;
-		cin >> command;
+		function<string(string)> fn = [](string input) {
+			return input;
+		};
+		string prompt = player.getUsername() + ">";
+		string command = CLI::prompt(prompt, fn);
 
 		if (command == "NEXT") {
 			auto list_player = player.getContext().getPlayerController().getPlayers();
