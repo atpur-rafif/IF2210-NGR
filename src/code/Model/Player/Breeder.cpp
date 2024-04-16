@@ -6,7 +6,11 @@ Breeder::Breeder() { this->type = BreederType; }
 Breeder::~Breeder() {}
 Breeder *Breeder::clone() { return new Breeder(*this); }
 
-void Breeder::readSpecializedConfig(istream &inputStream) { this->readFieldFromStream(inputStream); }
+void Breeder::readSpecializedConfig(istream &inputStream) {
+	auto &misc = this->getContext().getMiscConfig();
+	this->field = Storage<BarnItem>(misc.getBarnWidth(), misc.getBarnHeight());
+	this->readFieldFromStream(inputStream);
+}
 void Breeder::writeSpecializedConfig(ostream &outputStream) { this->writeFieldToStream(outputStream); };
 
 int Breeder::countBarnWealth() {
