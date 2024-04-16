@@ -82,6 +82,7 @@ void PlayerView::eat(Player &player) {
 	};
 	string location = CLI::promptStorageLocation("Petak untuk dimakan: ", player.inventory, fn);
 	player.eat(location);
+	player.getContext().getPlayerController().checkWinner();
 }
 
 void PlayerView::save(Player &player) {
