@@ -44,7 +44,7 @@ void PlayerView::start(Player &player) {
 			}
 			this->runSpecializedPlayerCommand(player, command);
 			continue;
-		} catch (const CLIException &err) {
+		} catch (const UserCancelledCLIException &err) {
 			cout << err.what() << endl;
 		}
 	}
