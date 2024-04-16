@@ -1,6 +1,7 @@
 #ifndef MODEL_HARVESTER_HPP
 #define MODEL_HARVESTER_HPP
 
+#include "Controller/GameContext.hpp"
 #include "Container/Storage.hpp"
 #include "Model/GameObject.hpp"
 #include "Model/Player.hpp"
