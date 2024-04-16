@@ -2,6 +2,8 @@
 #define MODEL_ITEM_HPP
 
 #include "Model/GameObject.hpp"
+#include "Container/Storage.hpp"
+#include <memory>
 #include <iostream>
 #include <string>
 using namespace std;
@@ -34,6 +36,7 @@ public:
 	ItemType getType();
 
 	friend istream &operator>>(istream &inputStream, Item &item);
+	friend Storage<shared_ptr<Item>> &operator+(Storage<shared_ptr<Item>> &inventory,shared_ptr<Item> &item);
 };
 
 #endif

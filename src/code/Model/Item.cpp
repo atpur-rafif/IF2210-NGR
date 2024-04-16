@@ -17,3 +17,8 @@ istream &operator>>(istream &inputStream, Item &item) {
 	inputStream >> item.price;
 	return inputStream;
 }
+
+Storage<shared_ptr<Item>> &operator+(Storage<shared_ptr<Item>> &inventory,shared_ptr<Item> &item){
+	inventory.addItem(item);
+	return inventory;
+}
