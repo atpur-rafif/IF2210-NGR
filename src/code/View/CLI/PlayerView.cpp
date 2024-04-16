@@ -18,7 +18,7 @@ void PlayerView::start(Player &player) {
 		function<string(string)> fn = [](string input) {
 			return input;
 		};
-		string prompt = player.getUsername() + ">";
+		string prompt = player.getUsername() + "> ";
 		string command = CLI::prompt(prompt, fn);
 
 		if (command == "NEXT") {
