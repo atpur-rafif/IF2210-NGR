@@ -90,7 +90,10 @@ void Config::writeState(string location, GameContext &context) {
 
 	ofstream outputStream;
 	outputStream.open(location);
-	filesystem::is_regular_file(location);
+
+	if(!filesystem::is_regular_file(location))
+		throw FileNotFoundFileException(location);
+	
 	auto players = context.getPlayerController().getPlayers();
 	outputStream << players.size() << endl;
 	for (auto player : players) {
