@@ -113,9 +113,28 @@ void PlayerView::runPlayerCommand(Player &player, string command) {
 }
 
 void PlayerView::printInventory(Player &player) {
+	auto &field = player.inventory;
+
+	set<string> inserted;
+	vector<pair<string, string>> items;
+	for (auto &item : field.getAllItem()) {
+		auto name = (*item)->getName();
+		auto code = (*item)->getCode();
+		if (!inserted.contains(name))
+			items.push_back({code, name});
+	}
+	sort(items.begin(), items.end());
+
 	function<string(shared_ptr<Item> &)> fn = [](shared_ptr<Item> &item) {
 		return item->getCode();
 	};
 
 	CLI::printStorage("Penyimpanan", player.inventory, fn);
+
+	cout << endl
+			 << "Legenda: " << endl;
+	for (auto &[code, name] : items) {
+		cout << " - " << code << ": " << name << endl;
+	}
+	cout << endl;
 };

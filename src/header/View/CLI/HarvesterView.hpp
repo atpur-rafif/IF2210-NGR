@@ -10,6 +10,16 @@ class HarvesterView : public PlayerView {
 public:
 	template <class T>
 	static void printField(Harvester<T> &harvester) {
+		auto &field = harvester.getField();
+
+		set<string> inserted;
+		vector<pair<string, string>> items;
+		for (auto &item : field.getAllItem()) {
+			if (!inserted.contains(item->getName()))
+				items.push_back({item->getCode(), item->getName()});
+		}
+		sort(items.begin(), items.end());
+
 		function<string(T &)> fn = [](T &item) {
 			string color;
 			if (item.harvestable()) color = GREEN;
@@ -17,7 +27,14 @@ public:
 			return color + item.getCode() + NORMAL;
 		};
 
-		CLI::printStorage(T::fieldName, harvester.getField(), fn);
+		CLI::printStorage(T::fieldName, field, fn);
+
+		cout << endl
+				 << "Legenda: " << endl;
+		for (auto &[code, name] : items) {
+			cout << " - " << code << ": " << name << endl;
+		}
+		cout << endl;
 	}
 
 	template <class T>
