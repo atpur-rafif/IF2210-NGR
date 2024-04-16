@@ -44,27 +44,25 @@ public:
 	static void place(Harvester<T> &harvester) {
 		string inventoryLocation;
 		string fieldLocation;
-		while (true) {
-			PlayerView::printInventory(harvester);
-			function<void(string, optional<shared_ptr<Item>> &)> inventoryValidator = [](string, optional<shared_ptr<Item>> &item) {
-				if (!item.has_value())
-					throw PromptException("Penyimpanan kosong pada lokasi tersebut");
+		PlayerView::printInventory(harvester);
+		function<void(string, optional<shared_ptr<Item>> &)> inventoryValidator = [](string, optional<shared_ptr<Item>> &item) {
+			if (!item.has_value())
+				throw PromptException("Penyimpanan kosong pada lokasi tersebut");
 
-				T testItem; // Temporary to make sure the same type
-				if (item.value()->getType() != testItem.getType())
-					throw PromptException("Tipe barang tidak valid");
-			};
-			inventoryLocation = CLI::promptStorageLocation("Pilih barang sebagai " + T::pronoun + ": ", harvester.inventory, inventoryValidator);
+			T testItem; // Temporary to make sure the same type
+			if (item.value()->getType() != testItem.getType())
+				throw PromptException("Tipe barang tidak valid");
+		};
+		inventoryLocation = CLI::promptStorageLocation("Pilih barang sebagai " + T::pronoun + ": ", harvester.inventory, inventoryValidator);
 
-			HarvesterView::printField(harvester);
-			function<void(string, optional<T> &)> fieldValidator = [](string, optional<T> &harvestable) {
-				if (harvestable.has_value()) throw PromptException("Tidak bisa menggunakan petak yang sudah ditempati");
-			};
-			fieldLocation = CLI::promptStorageLocation("Pilih petak yang ingin diletakan " + T::pronoun + ": ", harvester.getField(), fieldValidator);
+		HarvesterView::printField(harvester);
+		function<void(string, optional<T> &)> fieldValidator = [](string, optional<T> &harvestable) {
+			if (harvestable.has_value()) throw PromptException("Tidak bisa menggunakan petak yang sudah ditempati");
+		};
+		fieldLocation = CLI::promptStorageLocation("Pilih petak yang ingin diletakan " + T::pronoun + ": ", harvester.getField(), fieldValidator);
 
-			harvester.place(inventoryLocation, fieldLocation);
-			cout << "Berhasil meletakan " << T::fieldName << endl;
-		}
+		harvester.place(inventoryLocation, fieldLocation);
+		cout << "Berhasil meletakan " << T::fieldName << endl;
 	};
 
 	template <class T>
