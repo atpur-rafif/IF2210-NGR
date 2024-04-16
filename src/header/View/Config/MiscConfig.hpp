@@ -11,16 +11,28 @@ protected:
 	MiscConfig();
 	int targetMoney;
 	int targetWeight;
-	pair<int, int> inventorySize;
-	pair<int, int> farmSize;
-	pair<int, int> barnSize;
+
+	int inventoryWidth;
+	int inventoryHeight;
+
+	int farmWidth;
+	int farmHeight;
+
+	int barnWidth;
+	int barnHeight;
 
 public:
 	int getTargetMoney();
 	int getTargetWeight();
-	pair<int, int> getInventorySize();
-	pair<int, int> getFarmSize();
-	pair<int, int> getBarnSize();
+
+	int getInventoryWidth();
+	int getFarmWidth();
+	int getBarnWidth();
+
+	int getInventoryHeight();
+	int getFarmHeight();
+	int getBarnHeight();
+
 	friend istream &operator>>(istream &inputStream, MiscConfig &miscConfig);
 };
 

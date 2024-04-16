@@ -5,8 +5,8 @@ BuildingItem::BuildingItem() { this->type = Building; }
 BuildingItem::~BuildingItem() {}
 BuildingItem *BuildingItem::clone() const { return new BuildingItem(*this); }
 
-map<string, int> *BuildingItem::getIngredients() {
-	return &this->building;
+map<string, int> &BuildingItem::getIngredients() {
+	return this->building;
 };
 
 // Don't we love exception???

@@ -1,6 +1,6 @@
 #include "Model/Item/FarmItem.hpp"
 
-FarmItem::FarmItem() { this->type = Farm; }
+FarmItem::FarmItem() : currentAge(0) { this->type = Farm; }
 FarmItem::~FarmItem() {}
 FarmItem *FarmItem::clone() const { return new FarmItem(*this); }
 
@@ -8,6 +8,10 @@ FarmItemType FarmItem::getFarmItemType() { return this->farmItemType; }
 
 int FarmItem::getAge() { return this->currentAge; }
 void FarmItem::setAge(int age) { this->currentAge = age; }
+
+bool FarmItem::harvestable() { return this->getAge() >= this->getDurationToHarvest(); }
+void FarmItem::readHarvestState(istream &inputStream) { inputStream >> this->currentAge; };
+void FarmItem::writeHarvestState(ostream &outputStream) { outputStream << this->currentAge; };
 
 void FarmItem::readAttributeFromStream(istream &inputStream) {
 	string type;

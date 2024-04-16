@@ -1,8 +1,9 @@
 #ifndef MODEL_ITEM_BARNITEM_HPP
 #define MODEL_ITEM_BARNITEM_HPP
 
-#include "Model/Item.hpp"
 #include "Controller/GameContext.hpp"
+#include "Model/Harvestable.hpp"
+#include "Model/Item.hpp"
 
 enum BarnItemType {
 	Herbivore,
@@ -10,12 +11,11 @@ enum BarnItemType {
 	Omnivore
 };
 
-class BarnItem : public Item {
+class BarnItem : public Harvestable {
 private:
 	BarnItemType barnItemType;
 	int weightToHarvest;
 	int currentWeight;
-	static int p;
 	virtual void readAttributeFromStream(istream &inputStream);
 
 public:
@@ -27,7 +27,13 @@ public:
 	BarnItemType getBarnItemType();
 	int getWeight();
 	void setWeight(int weight);
-};
 
+	bool harvestable();
+	void readHarvestState(istream &inputStream);
+	void writeHarvestState(ostream &outputStream);
+
+	inline static const string fieldName = "Peternakan";
+	inline static const string pronoun = "Ternak";
+};
 
 #endif

@@ -1,34 +1,28 @@
 #ifndef MODEL_PLAYER_BREEDER_HPP
 #define MODEL_PLAYER_BREEDER_HPP
 
+#include "Model/Harvester.hpp"
 #include "Model/Item/BarnItem.hpp"
-#include "Model/Item/ProductItem.hpp"
-#include "Controller/ItemFactory.hpp"
-#include "Controller/GameContext.hpp"
 #include "Model/Player.hpp"
-#include "Exception/StorageException.hpp"
-#include "Exception/ItemFactoryException.hpp"
-#include "Exception/DowncastException.hpp"
 
-class ProductItem;
-
-class Breeder : public Player {
-
+class Breeder : public Harvester<BarnItem> {
 public:
-	Storage<BarnItem> barn;
-	
 	Breeder();
 	virtual Breeder *clone();
 	virtual ~Breeder();
 
-	virtual int calculateTax();
+	int calculateTax();
 	int countBarnWealth();
 
-	//function build by me
-	void placeAnimal(string&, string&); 
-	void giveFood(string&, string&);
-	void giveFoodChecker(string&);
-	void harvestAnimal(string&);
+	virtual void readSpecializedConfig(istream &inputStream);
+	void writeSpecializedConfig(ostream &outputStream);
+
+	void placeAnimal(string &, string &);
+	void giveFood(string &, string &);
+	bool hasProductToFeed(BarnItemType type);
+	void harvestAnimal(string &);
+
+	static bool ableToFeed(BarnItemType animal, ProductItemType product);
 };
 
 #endif

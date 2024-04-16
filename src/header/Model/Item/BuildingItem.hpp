@@ -14,7 +14,7 @@ public:
 	virtual BuildingItem *clone() const;
 	virtual ~BuildingItem();
 
-	map<string, int> *getIngredients();
+	map<string, int> &getIngredients();
 
 	friend istream &operator>>(istream &inputStream, BuildingItem &item);
 };

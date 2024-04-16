@@ -6,12 +6,15 @@
 
 using namespace std;
 class Config {
+private:
+	static string defaultState;
+
 public:
-	// TODO: Seperate state reader
-	static void readConfig(
-			string dir,
-			GameContext &context
-	);
+	static void readConfig(string dir, GameContext &context);
+
+	static void readState(string location, GameContext &context);
+	static void readDefaultState(GameContext &context);
+	static void writeState(string location, GameContext &context);
 };
 
 #endif

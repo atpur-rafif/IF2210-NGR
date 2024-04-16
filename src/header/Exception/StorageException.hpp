@@ -4,51 +4,9 @@
 #include "Exception/GameException.hpp"
 using namespace std;
 
-class StorageException : public GameException {};
-
-class InvalidItemNotFoundException : public StorageException{
-public: 
-	const char *what() const noexcept override;
-};
-
-class InvalidFoodNotFoundException : public StorageException{
-	const char *what() const noexcept override; 
-};
-
-class InvalidCoordinateStorageException : public StorageException {
+class InvalidCoordinateStorageException : public BaseException {
 public:
-	const char *what() const noexcept override;
-};
-
-class InvalidTypeValueException : public StorageException{
-public: 
-	const char *what() const noexcept override;
-};
-
-class InvalidFieldEmptyException : public StorageException {
-public: 
-	const char *what() const noexcept override;
-};
-
-class InvalidNotFoodException : public StorageException {
-public:
-	const char *what() const noexcept override; 
-};
-
-class InvalidFoodHerbivores : public StorageException {
-public: 
-	const char *what() const noexcept override; 
-};
-
-class InvalidFoodCarnivores : public StorageException{
-public: 
-	const char *what() const noexcept override; 
-};
-
-
-class InvalidHarvestException : public StorageException {
-public: 
-	const char *what() const noexcept override; 
+	InvalidCoordinateStorageException();
 };
 
 #endif

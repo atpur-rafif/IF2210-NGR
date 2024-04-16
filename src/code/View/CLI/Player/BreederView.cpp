@@ -1,5 +1,7 @@
 #include "View/CLI/Player/BreederView.hpp"
-#include "Exception/PlayerViewException.hpp"
+#include "Exception/CLIException.hpp"
+#include "View/CLI/CLI.hpp"
+#include "View/CLI/HarvesterView.hpp"
 #include <algorithm>
 #include <limits>
 
@@ -7,203 +9,43 @@ BreederView::~BreederView(){};
 BreederView *BreederView::clone() { return new BreederView(*this); }
 void BreederView::runSpecializedPlayerCommand(Player &player, string command) {
 	Breeder &breeder = *(dynamic_cast<Breeder *>(&player));
-	if (command == "TERNAK") {
-
-		string location;
-		string locationAnimal;
-		shared_ptr<BarnItem> barnItem;
-		while (true) {
-			this->printInventory(player);
-			location = this->promptItemFromInventory(player, barnItem);
-			this->printBarn(breeder);
-			locationAnimal = this->promptFieldFromBarn(breeder, "Pilih petak yang ingin ditinggali: ", true);
-			try {
-				breeder.placeAnimal(location, locationAnimal);
-				break;
-			} catch (const std::exception &e) {
-				std::cerr << e.what() << '\n';
-			}
-		}
-
-	} else if (command == "CETAK_PETERNAKAN") {
-		printBarn(breeder);
-	} else if (command == "KASIH_MAKAN") {
-		while (true) {
-			string loc;
-			string locFood;
-			shared_ptr<ProductItem> foodItem;
-			// Ini perintah kasih makannya
-			this->printBarn(breeder);
-			loc = this->promptFieldFromBarn(breeder, "Pilih petak yang ingin diberi makan: ", false);
-			breeder.giveFoodChecker(loc);
-			this->printInventory(player);
-			locFood = this->promptItemFromInventory(player, foodItem);
-			try {
-				breeder.giveFood(locFood, loc);
-				break;
-			} catch (const exception &e) {
-				cerr << e.what() << "\n";
-			}
-		}
-	} else if (command == "PANEN") {
-		string choose;
-		string total;
-		vector<pair<int, string>> listNumber;
-
-		cout << "=======================PETERNAKAN======================" << endl;
-		detail(breeder);
-	} else {
-		throw CommandNotFoundPlayerViewException();
-	}
+	if (command == "TERNAK") this->place(breeder);
+	else if (command == "CETAK_PETERNAKAN") this->printField(breeder);
+	else if (command == "KASIH_MAKAN") this->feed(breeder);
+	else if (command == "PANEN") this->harvest(breeder);
+	else throw CommandNotFoundCLIException();
 }
 
-void BreederView::printBarn(Breeder &breeder) {
-	auto &barnInventory = breeder.barn;
-	pair<int, int> size = {barnInventory.getWidth(), barnInventory.getHeight()};
-	cout << "=======================PETERNAKAN======================" << endl;
-	for (int y = 0; y < size.second; y++) {
-		cout << "| ";
-		for (int x = 0; x < size.first; x++) {
-			auto result = barnInventory.getItem(x, y);
-			if (result.has_value())
-				if (result.value().getWeight() >= result.value().getWeightToHarvest()) {
-					print_green(result->getCode());
-				} else {
-					print_red(result->getCode());
-				}
-			else cout << "   ";
-			cout << " | ";
-		}
-		cout << endl;
-	}
-}
-
-void BreederView::detail(Breeder &breeder) {
-	auto &barnInventory = breeder.barn;
-	pair<int, int> farm_size = {barnInventory.getWidth(), barnInventory.getHeight()};
-	vector<pair<string, int>> list_item = {{"COW", 0}, {"SHP", 0}, {"RBT", 0}, {"HRS", 0}, {"SNK", 0}, {"CHK", 0}, {"DCK", 0}};
-	vector<pair<string, string>> list_item_grid;
-
-	for (int y = 0; y < farm_size.second; y++) {
-		cout << "| ";
-		for (int x = 0; x < farm_size.first; x++) {
-			auto item = barnInventory.getItem(x, y);
-			if (item.has_value() && item.value().getWeight() >= item.value().getWeightToHarvest()) {
-				// cout << item.value().getWeight() << " " << item.value().getWeightToHarvest();
-				list_item_grid.push_back({intToCoordinate(x, y), item->getName()});
-				for (int i = 0; i < 7; ++i) {
-					if (item->getCode() == list_item[i].first) {
-						list_item[i].second++;
-						break;
-					}
-				}
-				/**
-				 * TODO:
-				 * kasih kode hijau  kalo bisa diharvest
-				 */
-				print_green(item->getCode());
-				// cout << item->getCode();
-			} else if (item.has_value() && item->getWeight() < item->getWeightToHarvest()) {
-				/**
-				 * TODO: kasih kode merah kalo gabisa diharvest
-				 */
-				print_red(item->getCode());
-				// cout << item->getCode();
-			} else {
-				cout << "   ";
-			}
-			cout << " | ";
-		}
-		cout << endl;
-		std::sort(list_item.begin(), list_item.end(), [](const pair<string, int> &a, const pair<string, int> &b) {
-			return a.second > b.second;
-		});
-	}
-	// validasi kalo ada yang bisa dipanen
-	bool canHarvest = false;
-	for (size_t i = 0; i < list_item.size(); i++) {
-		if (list_item[i].second > 0) {
-			canHarvest = true;
-		}
+void BreederView::feed(Breeder &breeder) {
+	auto &barn = breeder.getField();
+	if (barn.getFilledSpaceCount() == 0) {
+		cout << "Peternakan Anda kosong" << endl;
+		return;
 	}
 
-	// print semua gridnya
-	for (size_t i = 0; i < list_item_grid.size(); i++) {
-		cout << "- " << list_item_grid[i].first << ": " << list_item_grid[i].second << endl;
-	}
+	function<void(string, optional<BarnItem> &)> animalValidator = [&](string, optional<BarnItem> &item) mutable {
+		if (!item.has_value()) throw PromptException("Petak ini kosong!");
+		if (!breeder.hasProductToFeed(item->getBarnItemType())) throw PromptException("Kamu tidak memiliki makanan untuk binatang ini!");
+	};
+	BreederView::printField(breeder);
+	string animalLocation = CLI::promptStorageLocation("Petak untuk diberi makan: ", breeder.getField(), animalValidator);
+	auto &animal = breeder.getField().getItem(animalLocation).value();
 
-	if (canHarvest) {
-		int i = 1;
-		cout << "Pilih hewan siap panen yang kamu miliki: " << endl;
-		vector<pair<int, pair<string, int>>> pick_list;
-		for (pair<string, int> item : list_item) {
-			if (item.second > 0) {
-				cout << i << ". " << item.first << "(" << item.second << " petak siap dipanen)" << endl;
-				pick_list.push_back({i++, item});
-			}
-		}
+	function<void(string, optional<shared_ptr<Item>> &)> foodValidator = [=](string, optional<shared_ptr<Item>> &item) mutable {
+		if (!item.has_value()) throw PromptException("Petak ini kosong!");
+		if ((*item)->getType() != Product) throw PromptException("Barang ini tidak bisa dimakan");
 
-		int no_hewan = 0;
-		bool invalidInput = false;
-		while (true) {
-			if (invalidInput) {
-				cout << "Periksa kembali nomor yang dipilih" << endl;
-				invalidInput = false;
-			}
-			cout << "Nomor hewan yang ingin dipanen: ";
-			cin >> no_hewan;
-			int size = pick_list.size();
-			if (cin.fail()) {
-				cout << "Input harus berupa bilangan bulat.\n";
-				cin.clear();
-				cin.ignore(numeric_limits<streamsize>::max(), '\n');
-				continue;
-			}
-			if (no_hewan > 0 && no_hewan <= size) {
-				break;
-			} else {
-				invalidInput = true;
-			}
-		}
-		int amount = 0;
-		bool isValid = false;
-		while (true) {
-			cout << "Berapa petak yang ingin dipanen: ";
-			cin >> amount;
-			if (cin.fail()) {
-				cout << "Input harus sebuah angka." << endl;
-				cin.clear();
-				cin.ignore(numeric_limits<streamsize>::max(), '\n');
-				continue;
-			}
-			if (amount <= pick_list.at(no_hewan - 1).second.second && amount >= 0) {
-				isValid = true;
-				break;
-			} else if (amount > pick_list.at(no_hewan - 1).second.second && amount >= 0) {
-				cout << "Jumlah hewan yang dapat dipanen lebih sedikit daripada yang ingin anda panen!" << endl;
-				continue;
-			} else {
-				cout << "Input tidak valid" << endl;
-				continue;
-			}
-		}
-		if (isValid) {
-			for (int j = 0; j < amount; j++) {
-				string plot_input;
-				cout << "Petak ke-" << j << ": ";
-				cin >> plot_input;
-				while (pick_list.at(no_hewan - 1).second.first != breeder.barn.getItem(plot_input)->getCode()) {
-					cout << "Beda Hewan bang, pilih yang betul" << endl;
-					cout << "Petak ke-" << j << ": ";
-					cin >> plot_input;
-				}
-				breeder.harvestAnimal(plot_input);
-			}
-		} else {
-			cout << "Input tidak Valid, Keluar dari perintah PANEN secara paksa";
-		}
+		BarnItemType type = animal.getBarnItemType();
+		ProductItemType productType = dynamic_pointer_cast<ProductItem>(item.value())->getProductItemType();
+		if (!Breeder::ableToFeed(type, productType)) {
+			if (type == Herbivore) throw PromptException("Ternak ini adalah vegetarian");
+			else if (type == Carnivore) throw PromptException("Ternak ini adalah kanibal");
+			else if (productType == MaterialProduct) throw PromptException("Ternak ini bukanlah bangunan");
+		};
+	};
+	PlayerView::printInventory(breeder);
+	string foodLocation = CLI::promptStorageLocation("Petak untuk dimakan ternak: ", breeder.inventory, foodValidator);
 
-	} else {
-		throw InvalidHarvestException();
-	}
-}
+	breeder.giveFood(foodLocation, animalLocation);
+	cout << "Ternak " << animal.getName() << " telah diberi makan dan beratnya menjadi " << animal.getWeight() << endl;
+};

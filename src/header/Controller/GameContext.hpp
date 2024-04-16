@@ -3,15 +3,22 @@
 
 #include "Controller/ItemFactory.hpp"
 #include "Controller/PlayerController.hpp"
+#include "Controller/ShopController.hpp"
 #include "View/Config/MiscConfig.hpp"
 
 class GameContext {
-public:
-	int id;
-	GameContext();
+protected:
 	ItemFactory itemFactory;
 	MiscConfig miscConfig;
-	PlayerController players;
+	PlayerController playerController;
+	ShopController shopController;
+
+public:
+	GameContext();
+	ItemFactory &getItemFactory();
+	MiscConfig &getMiscConfig();
+	PlayerController &getPlayerController();
+	ShopController &getShopController();
 };
 
 #endif
