@@ -67,7 +67,7 @@ void Mayor::buildBuilding(string name, vector<string> &ingredientLocation) {
 		throw GameException("Insufficient supplied ingredient location");
 
 	shared_ptr<Item> newBuilding = itemFactory.createBaseItemByName(building->getName());
-	this->inventory.addItem(newBuilding);
+	this->inventory + newBuilding;
 }
 
 pair<vector<string>, map<string, int>> Mayor::checkInventory(map<string, int> items) {

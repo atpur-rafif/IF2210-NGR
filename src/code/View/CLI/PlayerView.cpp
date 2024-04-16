@@ -18,8 +18,15 @@ void PlayerView::start(Player &player) {
 		function<string(string)> fn = [](string input) {
 			return input;
 		};
-		string prompt = player.getUsername() + "> ";
-		string command = CLI::prompt(prompt, fn);
+
+		string prompt = player.getUsername() + ">";
+		string command;
+		try {
+			command = CLI::prompt(prompt, fn);
+		} catch (const UserCancelledCLIException &) {
+			cout << "Gunakan command EXIT untuk keluar" << endl;
+			continue;
+		}
 
 		if (command == "NEXT") {
 			auto list_player = player.getContext().getPlayerController().getPlayers();
@@ -44,7 +51,9 @@ void PlayerView::start(Player &player) {
 			}
 			this->runSpecializedPlayerCommand(player, command);
 			continue;
-		} catch (const CLIException &err) {
+		} catch (const CommandNotFoundCLIException &err) {
+			cout << err.what() << endl;
+		} catch (const UserCancelledCLIException &err) {
 			cout << err.what() << endl;
 		}
 	}

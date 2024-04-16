@@ -70,7 +70,7 @@ void Player::readInventory(istream &inputStream) {
 		string name;
 		inputStream >> name;
 		shared_ptr<Item> item = ctx.getItemFactory().createBaseItemByName(name);
-		this->inventory.addItem(item);
+		this->inventory+item;
 	}
 };
 
