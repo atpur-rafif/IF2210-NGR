@@ -46,9 +46,6 @@ void Mayor::buildBuilding(string name, vector<string> &ingredientLocation) {
 	if (building == nullptr)
 		throw GameException("Parameter " + name + " isn't a building");
 
-	if (building->getPrice() > this->getMoney())
-		throw GameException("Insufficient funds when building");
-
 	auto &counter = building->getIngredients();
 	for (auto &location : ingredientLocation) {
 		auto &opt = this->inventory.getItem(location);

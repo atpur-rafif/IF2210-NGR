@@ -57,15 +57,13 @@ void MayorView::build(Mayor &mayor) {
 			throw PromptException("Kamu tidak punya resep bangunan tersebut!");
 
 		auto &building = recipes[name];
-		int money = mayor.getMoney() - building->getPrice();
 		auto [locations, remaining] = mayor.checkInventory(building->getIngredients());
 
-		if (remaining.size() != 0 || money < 0) {
+		if (remaining.size() != 0) {
 			string err = "";
 			err += "Kamu tidak punya sumber daya yang cukup! Masih memerlukan ";
 
 			vector<string> needs;
-			if (money < 0) needs.push_back(to_string(money * -1) + " GULDEN");
 			for (auto &[ingredient, count] : remaining) needs.push_back(to_string(count) + " " + ingredient);
 
 			int size = needs.size();
