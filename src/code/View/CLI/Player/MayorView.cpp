@@ -45,7 +45,7 @@ void MayorView::build(Mayor &mayor) {
 	cout << "Resep bangunan yang ada adalah sebagai berikut:" << endl;
 	int i = 0;
 	for (auto &[name, building] : recipes) {
-		cout << ++i << ". " << name << " (" << building->getPrice() << " GULDEN";
+		cout << ++i << ". " << name << " (0 GULDEN";
 		for (auto &[ingredient, count] : building->getIngredients()) {
 			cout << ", " << ingredient << " " << count;
 		}
