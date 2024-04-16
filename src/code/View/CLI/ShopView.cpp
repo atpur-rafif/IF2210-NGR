@@ -6,7 +6,6 @@
 #include "Model/Item.hpp"
 #include "View/CLI/CLI.hpp"
 #include <climits>
-#include <cstdio>
 #include <iostream>
 #include <sstream>
 #include <string>
