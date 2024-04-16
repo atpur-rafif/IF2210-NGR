@@ -75,7 +75,6 @@ void CLI::start() {
 
 	try {
 		while (true) {
-			this->context.getPlayerController().checkWinner();
 			shared_ptr<Player> current = this->context.getPlayerController().getCurrentPlayer();
 			shared_ptr<PlayerView> view = this->getView(current->getType());
 			view->start(*current);
@@ -86,5 +85,5 @@ void CLI::start() {
 		cout << err.what() << endl;
 	}
 
-	cout << "Permainan berakhir!";
+	cout << "Permainan berakhir!\n";
 }
